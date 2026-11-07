@@ -1,0 +1,25 @@
+OK VdotReduce.sv
+OK VIMac64b.sv
+OK VIMacU.sv
+OK VIMacSrcTypeModule.sv
+summary rc=1
+  buffer               预算   0.4  已用   0.000  占比    0%
+  合计（不含缓冲） 预算  10.6  已用  10.439
+[2026-11-06 14:00:31] P0 完成状态（读 results/*.json 最新 status）：全部通过
+
+## 2026-11-07 只读复核（ssh BatchMode，未提交任何作业）
+OK /public/home/**********/tools/env.sh
+OK /public/home/**********/core/src/XiangShan/difftest/verilator.mk
+OK /public/home/**********/core/src/XiangShan/build/emu
+OK /public/home/**********/core/src/XiangShan/build/rtl/VdotReduce.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VIMacU.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VIMacSrcTypeModule.sv
+OK /public/home/**********/core/test/manifest.30.tsv
+OK /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so
+MISS /public/home/**********/core/design/verify/cases/vdot_pos1.bin
+MISS /public/home/**********/core/design/verify/cases/vdot_pos1.c
+verilator_coverage=/public/home/**********/tools/verilator/bin/verilator_coverage
+Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+remote 95-coverage.sh sha256=f62b15df7765c0f856e1d50896599a72f4f186b41fb67bb4b787a12062056714（修复前版本；本轮未回传）
+design/verify/cases 远端不存在（.bin=0、.c=0）⇒ 95 脚本的 gen_hits --bins 回退到 test/bin（仅二进制扫描）

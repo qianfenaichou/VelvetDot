@@ -1,0 +1,17 @@
+=== q1: --diff full run, NO dump (baseline of the same case) ===
+q1_rc=139
+1
+=== q2: --diff + -C 100 + dump (truncated) ===
+q2_rc=0
+3320861425 /public/home/**********/core/results/coverage/debug2-20261107T071429/q2/build/2026-11-07-07-22-40.coverage.dat
+=== q3: gdb backtrace on --diff full run + dump ===
+q3_gdb_rc=0
+Thread 1 "emu" received signal SIGSEGV, Segmentation fault.
+#0  std::_Rb_tree_insert_and_rebalance (__insert_left=<optimized out>, __x=0x2c749a910, __p=<optimized out>, __header=...) at ../../../.././libstdc++-v3/src/c++98/tree.cc:237
+#1  0x0000000000460c92 in std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_Auto_node::_M_insert(std::pair<std::_Rb_tree_node_base*, std::_Rb_tree_node_base*>) ()
+#2  0x0000000000460e94 in std::map<int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::operator[](int const&) ()
+#3  0x0000000000461ee0 in VerilatedCovImp::write(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) ()
+#4  0x000000000044636e in Emulator::save_coverage() ()
+#5  0x0000000000446da5 in Emulator::~Emulator() ()
+#6  0x000000000041bab4 in main ()
+=== done D=/public/home/**********/core/results/coverage/debug2-20261107T071429 ===

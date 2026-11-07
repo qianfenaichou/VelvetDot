@@ -1,0 +1,871 @@
+# cid	cls	cp_id	cp_name	status	basis	evidence
+vadd-microbench	vadd	F01	vstart_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F02	vstart_nonzero_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F03	vl_max	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F04	vl_not_max	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F05	vl_zero_full_write	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F06	vtype_prev_vill_clear	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F07	vtype_prev_vill_set_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F08	cp_csr_vtype_vta	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F09	cp_csr_vtype_vma	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F10	cr_vtype_agnostic	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F11	vm_unmasked	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F12	mask_enabled_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F13	vd_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F14	vd_eq_vs2	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F15	vs2_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F16	vtype_sew_8	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F17	sew_ne_8_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F18	vtype_lmul_1	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F19	lmul_ne_1_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F20	vs_off_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F21	vs1_vs2_edges	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F22	random_groups	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F23	hi96_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F24	vd_changed_value	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F25	vxsat_unchanged	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F26	back_to_back_raw	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F27	high64_interference	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F28	reg_index_space	na	bin	二进制无 vdot 编码，不发射 vdot
+vadd-microbench	vadd	F29	sign_mix	na	bin	二进制无 vdot 编码，不发射 vdot
+vdot_pos1	vdot-pos	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_pos1	vdot-pos	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_pos1	vdot-pos	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_pos1	vdot-pos	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_pos1	vdot-pos	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_pos1	vdot-pos	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_pos1	vdot-pos	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_pos1	vdot-pos	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_pos1	vdot-pos	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_pos1	vdot-pos	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_pos1	vdot-pos	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_pos1	vdot-pos	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_pos1	vdot-pos	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_pos1	vdot-pos	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_pos1	vdot-pos	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_pos1	vdot-pos	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_pos1	vdot-pos	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_pos1	vdot-pos	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_pos1	vdot-pos	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_pos1	vdot-pos	F20	vs_off_trap	na	-	trap 域不适用
+vdot_pos1	vdot-pos	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_pos1	vdot-pos	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_pos1	vdot-pos	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_pos1	vdot-pos	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_pos1	vdot-pos	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_pos1	vdot-pos	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_pos1	vdot-pos	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_pos1	vdot-pos	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_pos1	vdot-pos	F29	sign_mix	partial	static+legal	仅正操作数一类
+vdot_pos2	vdot-pos	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_pos2	vdot-pos	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_pos2	vdot-pos	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_pos2	vdot-pos	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_pos2	vdot-pos	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_pos2	vdot-pos	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_pos2	vdot-pos	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_pos2	vdot-pos	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_pos2	vdot-pos	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_pos2	vdot-pos	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_pos2	vdot-pos	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_pos2	vdot-pos	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_pos2	vdot-pos	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_pos2	vdot-pos	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_pos2	vdot-pos	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_pos2	vdot-pos	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_pos2	vdot-pos	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_pos2	vdot-pos	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_pos2	vdot-pos	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_pos2	vdot-pos	F20	vs_off_trap	na	-	trap 域不适用
+vdot_pos2	vdot-pos	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_pos2	vdot-pos	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_pos2	vdot-pos	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_pos2	vdot-pos	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_pos2	vdot-pos	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_pos2	vdot-pos	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_pos2	vdot-pos	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_pos2	vdot-pos	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_pos2	vdot-pos	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_pos3	vdot-pos	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_pos3	vdot-pos	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_pos3	vdot-pos	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_pos3	vdot-pos	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_pos3	vdot-pos	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_pos3	vdot-pos	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_pos3	vdot-pos	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_pos3	vdot-pos	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_pos3	vdot-pos	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_pos3	vdot-pos	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_pos3	vdot-pos	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_pos3	vdot-pos	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_pos3	vdot-pos	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_pos3	vdot-pos	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_pos3	vdot-pos	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_pos3	vdot-pos	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_pos3	vdot-pos	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_pos3	vdot-pos	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_pos3	vdot-pos	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_pos3	vdot-pos	F20	vs_off_trap	na	-	trap 域不适用
+vdot_pos3	vdot-pos	F21	vs1_vs2_edges	hit	static+legal	操作数/期望含边界 bin：-128,127（expect=-1）
+vdot_pos3	vdot-pos	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_pos3	vdot-pos	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_pos3	vdot-pos	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_pos3	vdot-pos	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_pos3	vdot-pos	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_pos3	vdot-pos	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_pos3	vdot-pos	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_pos3	vdot-pos	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_neg1	vdot-neg	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_neg1	vdot-neg	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_neg1	vdot-neg	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_neg1	vdot-neg	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_neg1	vdot-neg	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_neg1	vdot-neg	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_neg1	vdot-neg	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_neg1	vdot-neg	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_neg1	vdot-neg	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_neg1	vdot-neg	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_neg1	vdot-neg	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_neg1	vdot-neg	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_neg1	vdot-neg	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_neg1	vdot-neg	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_neg1	vdot-neg	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_neg1	vdot-neg	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_neg1	vdot-neg	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_neg1	vdot-neg	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_neg1	vdot-neg	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_neg1	vdot-neg	F20	vs_off_trap	na	-	trap 域不适用
+vdot_neg1	vdot-neg	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_neg1	vdot-neg	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_neg1	vdot-neg	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_neg1	vdot-neg	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_neg1	vdot-neg	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_neg1	vdot-neg	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_neg1	vdot-neg	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_neg1	vdot-neg	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_neg1	vdot-neg	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_neg_odd1	vdot-neg	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_neg_odd1	vdot-neg	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_neg_odd1	vdot-neg	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_neg_odd1	vdot-neg	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_neg_odd1	vdot-neg	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_neg_odd1	vdot-neg	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_neg_odd1	vdot-neg	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_neg_odd1	vdot-neg	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_neg_odd1	vdot-neg	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_neg_odd1	vdot-neg	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_neg_odd1	vdot-neg	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_neg_odd1	vdot-neg	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_neg_odd1	vdot-neg	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_neg_odd1	vdot-neg	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_neg_odd1	vdot-neg	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_neg_odd1	vdot-neg	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_neg_odd1	vdot-neg	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_neg_odd1	vdot-neg	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_neg_odd1	vdot-neg	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_neg_odd1	vdot-neg	F20	vs_off_trap	na	-	trap 域不适用
+vdot_neg_odd1	vdot-neg	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_neg_odd1	vdot-neg	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_neg_odd1	vdot-neg	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_neg_odd1	vdot-neg	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_neg_odd1	vdot-neg	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_neg_odd1	vdot-neg	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_neg_odd1	vdot-neg	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_neg_odd1	vdot-neg	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_neg_odd1	vdot-neg	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_neg_odd3	vdot-neg	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_neg_odd3	vdot-neg	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_neg_odd3	vdot-neg	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_neg_odd3	vdot-neg	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_neg_odd3	vdot-neg	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_neg_odd3	vdot-neg	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_neg_odd3	vdot-neg	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_neg_odd3	vdot-neg	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_neg_odd3	vdot-neg	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_neg_odd3	vdot-neg	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_neg_odd3	vdot-neg	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_neg_odd3	vdot-neg	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_neg_odd3	vdot-neg	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_neg_odd3	vdot-neg	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_neg_odd3	vdot-neg	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_neg_odd3	vdot-neg	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_neg_odd3	vdot-neg	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_neg_odd3	vdot-neg	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_neg_odd3	vdot-neg	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_neg_odd3	vdot-neg	F20	vs_off_trap	na	-	trap 域不适用
+vdot_neg_odd3	vdot-neg	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_neg_odd3	vdot-neg	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_neg_odd3	vdot-neg	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_neg_odd3	vdot-neg	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_neg_odd3	vdot-neg	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_neg_odd3	vdot-neg	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_neg_odd3	vdot-neg	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_neg_odd3	vdot-neg	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_neg_odd3	vdot-neg	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_neg_odd5	vdot-neg	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_neg_odd5	vdot-neg	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_neg_odd5	vdot-neg	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_neg_odd5	vdot-neg	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_neg_odd5	vdot-neg	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_neg_odd5	vdot-neg	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_neg_odd5	vdot-neg	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_neg_odd5	vdot-neg	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_neg_odd5	vdot-neg	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_neg_odd5	vdot-neg	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_neg_odd5	vdot-neg	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_neg_odd5	vdot-neg	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_neg_odd5	vdot-neg	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_neg_odd5	vdot-neg	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_neg_odd5	vdot-neg	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_neg_odd5	vdot-neg	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_neg_odd5	vdot-neg	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_neg_odd5	vdot-neg	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_neg_odd5	vdot-neg	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_neg_odd5	vdot-neg	F20	vs_off_trap	na	-	trap 域不适用
+vdot_neg_odd5	vdot-neg	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_neg_odd5	vdot-neg	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_neg_odd5	vdot-neg	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_neg_odd5	vdot-neg	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_neg_odd5	vdot-neg	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_neg_odd5	vdot-neg	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_neg_odd5	vdot-neg	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_neg_odd5	vdot-neg	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_neg_odd5	vdot-neg	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_neg_odd7	vdot-neg	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_neg_odd7	vdot-neg	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_neg_odd7	vdot-neg	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_neg_odd7	vdot-neg	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_neg_odd7	vdot-neg	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_neg_odd7	vdot-neg	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_neg_odd7	vdot-neg	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_neg_odd7	vdot-neg	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_neg_odd7	vdot-neg	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_neg_odd7	vdot-neg	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_neg_odd7	vdot-neg	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_neg_odd7	vdot-neg	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_neg_odd7	vdot-neg	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_neg_odd7	vdot-neg	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_neg_odd7	vdot-neg	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_neg_odd7	vdot-neg	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_neg_odd7	vdot-neg	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_neg_odd7	vdot-neg	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_neg_odd7	vdot-neg	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_neg_odd7	vdot-neg	F20	vs_off_trap	na	-	trap 域不适用
+vdot_neg_odd7	vdot-neg	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_neg_odd7	vdot-neg	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_neg_odd7	vdot-neg	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_neg_odd7	vdot-neg	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_neg_odd7	vdot-neg	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_neg_odd7	vdot-neg	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_neg_odd7	vdot-neg	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_neg_odd7	vdot-neg	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_neg_odd7	vdot-neg	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_bound1	vdot-bound	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_bound1	vdot-bound	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_bound1	vdot-bound	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_bound1	vdot-bound	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_bound1	vdot-bound	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_bound1	vdot-bound	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_bound1	vdot-bound	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_bound1	vdot-bound	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_bound1	vdot-bound	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_bound1	vdot-bound	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_bound1	vdot-bound	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_bound1	vdot-bound	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_bound1	vdot-bound	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_bound1	vdot-bound	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_bound1	vdot-bound	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_bound1	vdot-bound	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_bound1	vdot-bound	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_bound1	vdot-bound	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_bound1	vdot-bound	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_bound1	vdot-bound	F20	vs_off_trap	na	-	trap 域不适用
+vdot_bound1	vdot-bound	F21	vs1_vs2_edges	hit	static+legal	操作数/期望含边界 bin：-128,overflow(|S|>32767)（expect=131072）
+vdot_bound1	vdot-bound	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_bound1	vdot-bound	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_bound1	vdot-bound	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_bound1	vdot-bound	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_bound1	vdot-bound	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_bound1	vdot-bound	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_bound1	vdot-bound	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_bound1	vdot-bound	F29	sign_mix	partial	static+legal	仅负操作数一类
+vdot_bound2	vdot-bound	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_bound2	vdot-bound	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_bound2	vdot-bound	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_bound2	vdot-bound	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_bound2	vdot-bound	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_bound2	vdot-bound	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_bound2	vdot-bound	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_bound2	vdot-bound	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_bound2	vdot-bound	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_bound2	vdot-bound	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_bound2	vdot-bound	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_bound2	vdot-bound	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_bound2	vdot-bound	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_bound2	vdot-bound	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_bound2	vdot-bound	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_bound2	vdot-bound	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_bound2	vdot-bound	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_bound2	vdot-bound	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_bound2	vdot-bound	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_bound2	vdot-bound	F20	vs_off_trap	na	-	trap 域不适用
+vdot_bound2	vdot-bound	F21	vs1_vs2_edges	hit	static+legal	操作数/期望含边界 bin：-128,127,overflow(|S|>32767)（expect=-130048）
+vdot_bound2	vdot-bound	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_bound2	vdot-bound	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_bound2	vdot-bound	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_bound2	vdot-bound	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_bound2	vdot-bound	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_bound2	vdot-bound	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_bound2	vdot-bound	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_bound2	vdot-bound	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_bound3	vdot-bound	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_bound3	vdot-bound	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_bound3	vdot-bound	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_bound3	vdot-bound	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_bound3	vdot-bound	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_bound3	vdot-bound	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_bound3	vdot-bound	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_bound3	vdot-bound	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_bound3	vdot-bound	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_bound3	vdot-bound	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_bound3	vdot-bound	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_bound3	vdot-bound	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_bound3	vdot-bound	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_bound3	vdot-bound	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_bound3	vdot-bound	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_bound3	vdot-bound	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_bound3	vdot-bound	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_bound3	vdot-bound	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_bound3	vdot-bound	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_bound3	vdot-bound	F20	vs_off_trap	na	-	trap 域不适用
+vdot_bound3	vdot-bound	F21	vs1_vs2_edges	hit	static+legal	操作数/期望含边界 bin：-128,127,0（expect=0）
+vdot_bound3	vdot-bound	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_bound3	vdot-bound	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_bound3	vdot-bound	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_bound3	vdot-bound	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_bound3	vdot-bound	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_bound3	vdot-bound	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_bound3	vdot-bound	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_bound3	vdot-bound	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=是）
+vdot_bound4	vdot-bound	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_bound4	vdot-bound	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_bound4	vdot-bound	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_bound4	vdot-bound	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_bound4	vdot-bound	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_bound4	vdot-bound	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_bound4	vdot-bound	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_bound4	vdot-bound	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_bound4	vdot-bound	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_bound4	vdot-bound	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_bound4	vdot-bound	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_bound4	vdot-bound	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_bound4	vdot-bound	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_bound4	vdot-bound	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_bound4	vdot-bound	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_bound4	vdot-bound	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_bound4	vdot-bound	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_bound4	vdot-bound	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_bound4	vdot-bound	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_bound4	vdot-bound	F20	vs_off_trap	na	-	trap 域不适用
+vdot_bound4	vdot-bound	F21	vs1_vs2_edges	hit	static+legal	操作数/期望含边界 bin：127,overflow(|S|>32767)（expect=129032）
+vdot_bound4	vdot-bound	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_bound4	vdot-bound	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_bound4	vdot-bound	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_bound4	vdot-bound	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_bound4	vdot-bound	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_bound4	vdot-bound	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_bound4	vdot-bound	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_bound4	vdot-bound	F29	sign_mix	partial	static+legal	仅正操作数一类
+vdot_bound5	vdot-bound	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_bound5	vdot-bound	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_bound5	vdot-bound	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_bound5	vdot-bound	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_bound5	vdot-bound	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_bound5	vdot-bound	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_bound5	vdot-bound	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_bound5	vdot-bound	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_bound5	vdot-bound	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_bound5	vdot-bound	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_bound5	vdot-bound	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_bound5	vdot-bound	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_bound5	vdot-bound	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_bound5	vdot-bound	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_bound5	vdot-bound	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_bound5	vdot-bound	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_bound5	vdot-bound	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_bound5	vdot-bound	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_bound5	vdot-bound	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_bound5	vdot-bound	F20	vs_off_trap	na	-	trap 域不适用
+vdot_bound5	vdot-bound	F21	vs1_vs2_edges	hit	static+legal	操作数/期望含边界 bin：-128,127（expect=1）
+vdot_bound5	vdot-bound	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_bound5	vdot-bound	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_bound5	vdot-bound	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_bound5	vdot-bound	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_bound5	vdot-bound	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_bound5	vdot-bound	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_bound5	vdot-bound	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_bound5	vdot-bound	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_rand	vdot-rand	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_rand	vdot-rand	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_rand	vdot-rand	F03	vl_max	hit	static+legal	源码 `li t1,16`；GOOD TRAP=1
+vdot_rand	vdot-rand	F04	vl_not_max	miss	static	源码固定 vl=16
+vdot_rand	vdot-rand	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_rand	vdot-rand	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_rand	vdot-rand	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_rand	vdot-rand	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_rand	vdot-rand	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_rand	vdot-rand	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_rand	vdot-rand	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_rand	vdot-rand	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_rand	vdot-rand	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_rand	vdot-rand	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_rand	vdot-rand	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_rand	vdot-rand	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_rand	vdot-rand	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_rand	vdot-rand	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_rand	vdot-rand	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_rand	vdot-rand	F20	vs_off_trap	na	-	trap 域不适用
+vdot_rand	vdot-rand	F21	vs1_vs2_edges	hit	static+legal	随机 16 字节操作数（统计上覆盖边界组合）+ RAND_SUMMARY
+vdot_rand	vdot-rand	F22	random_groups	hit	runtime	RAND_SUMMARY groups=1024 mism=0
+vdot_rand	vdot-rand	F23	hi96_zero	hit	static+legal	用例断言 vd[127:32]==0 且判据串在场
+vdot_rand	vdot-rand	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_rand	vdot-rand	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_rand	vdot-rand	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_rand	vdot-rand	F27	high64_interference	hit	runtime	16 字节随机 + ab_bad=0
+vdot_rand	vdot-rand	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_rand	vdot-rand	F29	sign_mix	hit	static+legal	随机操作数（正/负/零混合，1024 组）
+vdot_matrix	vdot-matrix	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_matrix	vdot-matrix	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_matrix	vdot-matrix	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_matrix	vdot-matrix	F04	vl_not_max	hit	runtime	MATRIX vlinvar vl=1,2,3,4,5,6,7,8 OK
+vdot_matrix	vdot-matrix	F05	vl_zero_full_write	hit	runtime	MATRIX vlinvar vl=0 … OK（hi_nonzero=000）
+vdot_matrix	vdot-matrix	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_matrix	vdot-matrix	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_matrix	vdot-matrix	F08	cp_csr_vtype_vta	hit	runtime	MATRIX vta=0/1 均有 OK 行
+vdot_matrix	vdot-matrix	F09	cp_csr_vtype_vma	hit	runtime	MATRIX vma=0/1 均有 OK 行
+vdot_matrix	vdot-matrix	F10	cr_vtype_agnostic	hit	runtime	四组合 4/4 OK
+vdot_matrix	vdot-matrix	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（10 条）
+vdot_matrix	vdot-matrix	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_matrix	vdot-matrix	F13	vd_eq_vs1	hit	bin+legal	编码 vd==vs1 存在
+vdot_matrix	vdot-matrix	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_matrix	vdot-matrix	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_matrix	vdot-matrix	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_matrix	vdot-matrix	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_matrix	vdot-matrix	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_matrix	vdot-matrix	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_matrix	vdot-matrix	F20	vs_off_trap	na	-	trap 域不适用
+vdot_matrix	vdot-matrix	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_matrix	vdot-matrix	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_matrix	vdot-matrix	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_matrix	vdot-matrix	F24	vd_changed_value	hit	runtime	MATRIX oldvd_prefill … OK
+vdot_matrix	vdot-matrix	F25	vxsat_unchanged	hit	runtime	MATRIX vxsat before=0x0 after=0x0 OK
+vdot_matrix	vdot-matrix	F26	back_to_back_raw	hit	runtime	back_to_back / MIX / chain 自检串
+vdot_matrix	vdot-matrix	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_matrix	vdot-matrix	F28	reg_index_space	partial	bin	vd=[1, 3, 4, 5, 6, 7] vs1=[1] vs2=[2]
+vdot_matrix	vdot-matrix	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）
+vdot_g0_badexp	g0	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_g0_badexp	g0	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_g0_badexp	g0	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_g0_badexp	g0	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_g0_badexp	g0	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_g0_badexp	g0	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_g0_badexp	g0	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_g0_badexp	g0	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_g0_badexp	g0	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_g0_badexp	g0	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_g0_badexp	g0	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（1 条）
+vdot_g0_badexp	g0	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_g0_badexp	g0	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_g0_badexp	g0	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_g0_badexp	g0	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_g0_badexp	g0	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_g0_badexp	g0	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_g0_badexp	g0	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_g0_badexp	g0	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_g0_badexp	g0	F20	vs_off_trap	na	-	trap 域不适用
+vdot_g0_badexp	g0	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_g0_badexp	g0	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_g0_badexp	g0	F23	hi96_zero	hit	runtime	运行行断言高 96 位为 0（hi_nonzero=000 / hi=[0x0 0x0 0x0]）
+vdot_g0_badexp	g0	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_g0_badexp	g0	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_g0_badexp	g0	F26	back_to_back_raw	miss	runtime	无背靠背/RAW 自检串
+vdot_g0_badexp	g0	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_g0_badexp	g0	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_g0_badexp	g0	F29	sign_mix	partial	static+legal	仅正操作数一类
+vdot_ill_sew	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_sew	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_sew	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_sew	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_sew	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_sew	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_sew	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_sew	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_sew	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_sew	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_sew	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_sew	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_sew	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_sew	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_sew	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_sew	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_sew	negative	F17	sew_ne_8_trap	hit	static+runtime	源码 e16；HIT CRITICAL ERROR=1
+vdot_ill_sew	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_sew	negative	F19	lmul_ne_1_trap	miss	static	未构造 LMUL!=1
+vdot_ill_sew	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_sew	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_sew	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_sew	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_sew	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_sew	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_sew	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_sew	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_sew	negative	F28	reg_index_space	partial	bin	vd=[0] vs1=[0] vs2=[0]
+vdot_ill_sew	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_lmul2	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_lmul2	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_lmul2	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_lmul2	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_lmul2	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_lmul2	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_lmul2	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_lmul2	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_lmul2	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_lmul2	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_lmul2	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_lmul2	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_lmul2	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_lmul2	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_lmul2	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_lmul2	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_lmul2	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_lmul2	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_lmul2	negative	F19	lmul_ne_1_trap	hit	static+runtime	源码 m2；HIT CRITICAL ERROR=1
+vdot_ill_lmul2	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_lmul2	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_lmul2	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_lmul2	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_lmul2	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_lmul2	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_lmul2	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_lmul2	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_lmul2	negative	F28	reg_index_space	partial	bin	vd=[4] vs1=[2] vs2=[0]
+vdot_ill_lmul2	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_lmul4	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_lmul4	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_lmul4	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_lmul4	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_lmul4	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_lmul4	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_lmul4	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_lmul4	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_lmul4	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_lmul4	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_lmul4	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_lmul4	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_lmul4	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_lmul4	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_lmul4	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_lmul4	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_lmul4	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_lmul4	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_lmul4	negative	F19	lmul_ne_1_trap	hit	static+runtime	源码 m4；HIT CRITICAL ERROR=1
+vdot_ill_lmul4	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_lmul4	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_lmul4	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_lmul4	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_lmul4	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_lmul4	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_lmul4	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_lmul4	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_lmul4	negative	F28	reg_index_space	partial	bin	vd=[8] vs1=[4] vs2=[0]
+vdot_ill_lmul4	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_lmul8	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_lmul8	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_lmul8	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_lmul8	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_lmul8	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_lmul8	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_lmul8	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_lmul8	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_lmul8	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_lmul8	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_lmul8	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_lmul8	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_lmul8	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_lmul8	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_lmul8	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_lmul8	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_lmul8	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_lmul8	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_lmul8	negative	F19	lmul_ne_1_trap	hit	static+runtime	源码 m8；HIT CRITICAL ERROR=1
+vdot_ill_lmul8	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_lmul8	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_lmul8	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_lmul8	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_lmul8	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_lmul8	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_lmul8	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_lmul8	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_lmul8	negative	F28	reg_index_space	partial	bin	vd=[16] vs1=[8] vs2=[0]
+vdot_ill_lmul8	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_vm0	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_vm0	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_vm0	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_vm0	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_vm0	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_vm0	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_vm0	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_vm0	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_vm0	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_vm0	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_vm0	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_vm0	negative	F12	mask_enabled_trap	hit	bin+runtime	编码 vm=0；HIT CRITICAL ERROR=1
+vdot_ill_vm0	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_vm0	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_vm0	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_vm0	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_vm0	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_vm0	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_vm0	negative	F19	lmul_ne_1_trap	miss	static	未构造 LMUL!=1
+vdot_ill_vm0	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_vm0	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_vm0	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_vm0	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_vm0	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_vm0	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_vm0	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_vm0	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_vm0	negative	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_ill_vm0	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_vstart	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_vstart	negative	F02	vstart_nonzero_trap	hit	static+runtime	csrw 0x008 后 vdot；HIT CRITICAL ERROR=1
+vdot_ill_vstart	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_vstart	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_vstart	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_vstart	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_vstart	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_vstart	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_vstart	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_vstart	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_vstart	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_vstart	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_vstart	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_vstart	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_vstart	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_vstart	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_vstart	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_vstart	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_vstart	negative	F19	lmul_ne_1_trap	miss	static	未构造 LMUL!=1
+vdot_ill_vstart	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_vstart	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_vstart	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_vstart	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_vstart	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_vstart	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_vstart	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_vstart	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_vstart	negative	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_ill_vstart	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_vill	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_vill	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_vill	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_vill	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_vill	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_vill	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_vill	negative	F07	vtype_prev_vill_set_trap	hit	static+runtime	vsetvl(0x38) 后 vdot；HIT CRITICAL ERROR=1
+vdot_ill_vill	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_vill	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_vill	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_vill	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_vill	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_vill	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_vill	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_vill	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_vill	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_vill	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_vill	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_vill	negative	F19	lmul_ne_1_trap	miss	static	未构造 LMUL!=1
+vdot_ill_vill	negative	F20	vs_off_trap	miss	static	未清 mstatus.VS
+vdot_ill_vill	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_vill	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_vill	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_vill	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_vill	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_vill	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_vill	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_vill	negative	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_ill_vill	negative	F29	sign_mix	na	-	非合法执行
+vdot_ill_vs	negative	F01	vstart_zero	na	-	非合法执行（negative）
+vdot_ill_vs	negative	F02	vstart_nonzero_trap	miss	static	源码未设 vstart≠0
+vdot_ill_vs	negative	F03	vl_max	na	-	非合法执行
+vdot_ill_vs	negative	F04	vl_not_max	na	-	非合法执行
+vdot_ill_vs	negative	F05	vl_zero_full_write	na	static	无 vl=0 运行行
+vdot_ill_vs	negative	F06	vtype_prev_vill_clear	na	-	非合法执行
+vdot_ill_vs	negative	F07	vtype_prev_vill_set_trap	miss	static	未构造 vill=1
+vdot_ill_vs	negative	F08	cp_csr_vtype_vta	na	-	非合法执行
+vdot_ill_vs	negative	F09	cp_csr_vtype_vma	na	-	非合法执行
+vdot_ill_vs	negative	F10	cr_vtype_agnostic	na	-	非合法执行
+vdot_ill_vs	negative	F11	vm_unmasked	na	-	非合法执行
+vdot_ill_vs	negative	F12	mask_enabled_trap	miss	bin	编码无 vm=0
+vdot_ill_vs	negative	F13	vd_eq_vs1	na	-	非合法执行
+vdot_ill_vs	negative	F14	vd_eq_vs2	na	-	非合法执行
+vdot_ill_vs	negative	F15	vs2_eq_vs1	na	-	非合法执行
+vdot_ill_vs	negative	F16	vtype_sew_8	na	-	非合法执行
+vdot_ill_vs	negative	F17	sew_ne_8_trap	miss	static	未构造 SEW!=8
+vdot_ill_vs	negative	F18	vtype_lmul_1	na	-	非合法执行
+vdot_ill_vs	negative	F19	lmul_ne_1_trap	miss	static	未构造 LMUL!=1
+vdot_ill_vs	negative	F20	vs_off_trap	hit	static+runtime	csrc mstatus 清 VS；HIT CRITICAL ERROR=1
+vdot_ill_vs	negative	F21	vs1_vs2_edges	na	-	非合法执行
+vdot_ill_vs	negative	F22	random_groups	na	runtime	无 RAND_SUMMARY
+vdot_ill_vs	negative	F23	hi96_zero	na	-	非合法执行
+vdot_ill_vs	negative	F24	vd_changed_value	na	runtime	无 oldvd_prefill 行
+vdot_ill_vs	negative	F25	vxsat_unchanged	na	runtime	无 vxsat 前后对照行
+vdot_ill_vs	negative	F26	back_to_back_raw	na	-	非合法执行
+vdot_ill_vs	negative	F27	high64_interference	na	runtime	未干扰高 64 位
+vdot_ill_vs	negative	F28	reg_index_space	partial	bin	vd=[3] vs1=[1] vs2=[2]
+vdot_ill_vs	negative	F29	sign_mix	na	-	非合法执行
+perf_vdot	perf	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+perf_vdot	perf	F02	vstart_nonzero_trap	na	-	trap 域不适用
+perf_vdot	perf	F03	vl_max	miss	static	源码 vl=None（≠VLMAX=16）
+perf_vdot	perf	F04	vl_not_max	miss	static	vl 未定
+perf_vdot	perf	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+perf_vdot	perf	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+perf_vdot	perf	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+perf_vdot	perf	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+perf_vdot	perf	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+perf_vdot	perf	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+perf_vdot	perf	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（11 条）
+perf_vdot	perf	F12	mask_enabled_trap	na	-	trap 域不适用
+perf_vdot	perf	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+perf_vdot	perf	F14	vd_eq_vs2	partial	bin+自检	vd==vs2 仅 --no-diff 自检，无 difftest 比对
+perf_vdot	perf	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+perf_vdot	perf	F16	vtype_sew_8	miss	static	SEW=None
+perf_vdot	perf	F17	sew_ne_8_trap	na	-	trap 域不适用
+perf_vdot	perf	F18	vtype_lmul_1	miss	static	LMUL=None
+perf_vdot	perf	F19	lmul_ne_1_trap	na	-	trap 域不适用
+perf_vdot	perf	F20	vs_off_trap	na	-	trap 域不适用
+perf_vdot	perf	F21	vs1_vs2_edges	miss	static	无内联操作数数组
+perf_vdot	perf	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+perf_vdot	perf	F23	hi96_zero	miss	static	无用例侧高 96 位断言
+perf_vdot	perf	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+perf_vdot	perf	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+perf_vdot	perf	F26	back_to_back_raw	hit	runtime	back_to_back / MIX / chain 自检串
+perf_vdot	perf	F27	high64_interference	miss	runtime	未干扰高 64 位
+perf_vdot	perf	F28	reg_index_space	partial	bin	vd=[3, 8, 9, 10, 11, 12, 13, 14, 15] vs1=[1] vs2=[2, 10]
+perf_vdot	perf	F29	sign_mix	miss	static	无内联操作数数组
+perf_base	perf	F01	vstart_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F02	vstart_nonzero_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F03	vl_max	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F04	vl_not_max	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F05	vl_zero_full_write	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F06	vtype_prev_vill_clear	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F07	vtype_prev_vill_set_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F08	cp_csr_vtype_vta	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F09	cp_csr_vtype_vma	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F10	cr_vtype_agnostic	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F11	vm_unmasked	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F12	mask_enabled_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F13	vd_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F14	vd_eq_vs2	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F15	vs2_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F16	vtype_sew_8	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F17	sew_ne_8_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F18	vtype_lmul_1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F19	lmul_ne_1_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F20	vs_off_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F21	vs1_vs2_edges	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F22	random_groups	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F23	hi96_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F24	vd_changed_value	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F25	vxsat_unchanged	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F26	back_to_back_raw	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F27	high64_interference	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F28	reg_index_space	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_base	perf	F29	sign_mix	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F01	vstart_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F02	vstart_nonzero_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F03	vl_max	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F04	vl_not_max	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F05	vl_zero_full_write	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F06	vtype_prev_vill_clear	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F07	vtype_prev_vill_set_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F08	cp_csr_vtype_vta	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F09	cp_csr_vtype_vma	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F10	cr_vtype_agnostic	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F11	vm_unmasked	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F12	mask_enabled_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F13	vd_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F14	vd_eq_vs2	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F15	vs2_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F16	vtype_sew_8	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F17	sew_ne_8_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F18	vtype_lmul_1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F19	lmul_ne_1_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F20	vs_off_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F21	vs1_vs2_edges	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F22	random_groups	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F23	hi96_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F24	vd_changed_value	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F25	vxsat_unchanged	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F26	back_to_back_raw	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F27	high64_interference	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F28	reg_index_space	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vadd	perf	F29	sign_mix	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F01	vstart_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F02	vstart_nonzero_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F03	vl_max	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F04	vl_not_max	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F05	vl_zero_full_write	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F06	vtype_prev_vill_clear	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F07	vtype_prev_vill_set_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F08	cp_csr_vtype_vta	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F09	cp_csr_vtype_vma	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F10	cr_vtype_agnostic	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F11	vm_unmasked	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F12	mask_enabled_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F13	vd_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F14	vd_eq_vs2	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F15	vs2_eq_vs1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F16	vtype_sew_8	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F17	sew_ne_8_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F18	vtype_lmul_1	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F19	lmul_ne_1_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F20	vs_off_trap	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F21	vs1_vs2_edges	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F22	random_groups	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F23	hi96_zero	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F24	vd_changed_value	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F25	vxsat_unchanged	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F26	back_to_back_raw	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F27	high64_interference	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F28	reg_index_space	na	bin	二进制无 vdot 编码，不发射 vdot
+perf_vmacc	perf	F29	sign_mix	na	bin	二进制无 vdot 编码，不发射 vdot
+vdot_mix	vdot-mix	F01	vstart_zero	hit	static+legal	源码无 `csrw 0x008`；GOOD TRAP=1 ABORT=0
+vdot_mix	vdot-mix	F02	vstart_nonzero_trap	na	-	trap 域不适用
+vdot_mix	vdot-mix	F03	vl_max	miss	static	源码 vl=8（≠VLMAX=16）
+vdot_mix	vdot-mix	F04	vl_not_max	hit	static+legal	源码 `li t1,8`
+vdot_mix	vdot-mix	F05	vl_zero_full_write	miss	static	无 vl=0 运行行
+vdot_mix	vdot-mix	F06	vtype_prev_vill_clear	hit	static+legal	未写非法 vtype；GOOD TRAP=1
+vdot_mix	vdot-mix	F07	vtype_prev_vill_set_trap	na	-	trap 域不适用
+vdot_mix	vdot-mix	F08	cp_csr_vtype_vta	miss	static	vta 未显式扫描（ta 固定）
+vdot_mix	vdot-mix	F09	cp_csr_vtype_vma	miss	static	vma 未显式扫描（ma 固定）
+vdot_mix	vdot-mix	F10	cr_vtype_agnostic	miss	static	无 vta×vma 扫描
+vdot_mix	vdot-mix	F11	vm_unmasked	hit	bin+legal	全部编码 vm=1（6 条）
+vdot_mix	vdot-mix	F12	mask_enabled_trap	na	-	trap 域不适用
+vdot_mix	vdot-mix	F13	vd_eq_vs1	miss	bin	无 vd==vs1 编码
+vdot_mix	vdot-mix	F14	vd_eq_vs2	miss	bin	无 vd==vs2 编码
+vdot_mix	vdot-mix	F15	vs2_eq_vs1	miss	bin	无 vs1==vs2 编码（30 例全缺口）
+vdot_mix	vdot-mix	F16	vtype_sew_8	hit	static+legal	vsetvli e8 + 合法执行
+vdot_mix	vdot-mix	F17	sew_ne_8_trap	na	-	trap 域不适用
+vdot_mix	vdot-mix	F18	vtype_lmul_1	hit	static+legal	vsetvli m1
+vdot_mix	vdot-mix	F19	lmul_ne_1_trap	na	-	trap 域不适用
+vdot_mix	vdot-mix	F20	vs_off_trap	na	-	trap 域不适用
+vdot_mix	vdot-mix	F21	vs1_vs2_edges	miss	static	操作数无 −128/127/0 且 |S|≤32767
+vdot_mix	vdot-mix	F22	random_groups	miss	runtime	无 RAND_SUMMARY
+vdot_mix	vdot-mix	F23	hi96_zero	miss	static	无用例侧高 96 位断言
+vdot_mix	vdot-mix	F24	vd_changed_value	miss	runtime	无 oldvd_prefill 行
+vdot_mix	vdot-mix	F25	vxsat_unchanged	miss	runtime	无 vxsat 前后对照行
+vdot_mix	vdot-mix	F26	back_to_back_raw	hit	runtime	back_to_back / MIX / chain 自检串
+vdot_mix	vdot-mix	F27	high64_interference	miss	runtime	未干扰高 64 位
+vdot_mix	vdot-mix	F28	reg_index_space	partial	bin	vd=[3, 6, 7] vs1=[1] vs2=[2]
+vdot_mix	vdot-mix	F29	sign_mix	hit	static+legal	操作数正负混合（含 0=否）

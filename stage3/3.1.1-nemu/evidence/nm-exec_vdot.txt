@@ -1,0 +1,20 @@
+# 3.1.1 证据：nm build/riscv64-nemu-interpreter-so | grep exec_vdot
+# 复跑时间：2026-11-03 09:04 CST（远端 `date` 输出 2026-11-03 09:04:49 CST）
+# 执行位置：昆山超算登录节点，源码树 ~/core/src/NEMU（作业 126630755 的 10-build-emu.sh 产物）
+# 被测文件：/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so
+#   size   = 9,068,656 B
+#   mtime  = 2026-11-03 03:23:39 +0800
+#   sha256 = 6e10e810669d511c9a2e7d1abe5cc93837f61bb4dc94727878986dcf83ce1b0c
+# 完整命令：
+
+ssh kunshan 'cd ~/core/src/NEMU && nm build/riscv64-nemu-interpreter-so | grep exec_vdot'
+
+# 原始输出（逐字）：
+
+0000000000031a20 t exec_vdot
+000000000002c6e0 t exec_vdot.part.0
+
+# 退出码：0
+# 命中行数：2（判据要求 >= 1 行）
+# 备注：必须用普通 `nm`（静态符号表）；`nm -D` 读不到该符号（HANDOFF §0 / T-kunshan 第 4 条）。
+# 备注：本机 repos/NEMU 无 build/ 产物（find 无命中），该命令只能在本远端源码树复跑。

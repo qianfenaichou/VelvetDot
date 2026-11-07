@@ -1,0 +1,22 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P4-coverage",
+  "script": "scripts/95-coverage.sh",
+  "status": "未运行",
+  "platform": "slurm",
+  "slurm_job_id": "fake",
+  "started_at": "2026-11-07T00:47:16+08:00",
+  "ended_at": "2026-11-07T00:47:16+08:00",
+  "machine_hours_planned": 4.0,
+  "mode": "coverage",
+  "versions": {"xiangshan": "", "difftest": "", "verilator": ""},
+  "manifest": {"path": "/tmp/covfix-r6/core/test/manifest.30.tsv", "sha256": "0854c5fc2e8f10611482ac4e715b6786e06d2da6724a307227cc99f3165fecf5", "rows": "30"},
+  "criteria": [
+    {"name": "manifest_rows", "expected": "清单数据行 == 30", "actual": "30 行", "status": "达标"},
+    {"name": "budget_guard", "expected": "90-budget-log.sh summary rc=0", "actual": "rc=1（合计超 10.6 机时或缓冲被动用）", "status": "未运行"},
+    {"name": "preconditions", "expected": "前置齐备", "actual": "预算闸拒绝：先重估预算，或用户显式加预算后用 --no-budget-guard", "status": "未运行"}
+  ],
+  "cases": [
+  ],
+  "coverage": {"run_dir": "/tmp/covfix-r6/core/results/coverage/20261107T004716", "dats": 0, "report": "", "modules": []}
+}

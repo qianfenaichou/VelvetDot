@@ -1,0 +1,30 @@
+# cp_id	cp_name	act4_ref	sampling	status	hit_cases	partial_cases	hit_count	note
+F01	vstart_zero	std-vec:31	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp,perf_vdot,vdot_mix	-	18	vstart==0 才命中；ACT4 无 vstart!=0 的 bin
+F02	vstart_nonzero_trap	无（自定义扩展）	trap	thin	vdot_ill_vstart	-	1	vstart!=0 ⇒ 非法；ACT4 模板无此 bin
+F03	vl_max	std-vec:109	legal	thin	vdot_rand	-	1	vl==VLMAX；SEW=8/LMUL=1 ⇒ VLEN/8=16
+F04	vl_not_max	std-vec:114	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_matrix,vdot_g0_badexp,vdot_mix	-	16	0<vl<VLMAX
+F05	vl_zero_full_write	Vx8:88 cp_vl_0	legal	thin	vdot_matrix	-	1	vl=0 仍全写 vd（SPEC §1.1 明确偏离 RVV）
+F06	vtype_prev_vill_clear	std-vec:23	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp,perf_vdot,vdot_mix	-	18	vill==0
+F07	vtype_prev_vill_set_trap	std-vec:27	trap	thin	vdot_ill_vill	-	1	vill==1 ⇒ 非法
+F08	cp_csr_vtype_vta	Vx8:206	legal	thin	vdot_matrix	-	1	vta ∈ {0,1}
+F09	cp_csr_vtype_vma	Vx8:210	legal	thin	vdot_matrix	-	1	vma ∈ {0,1}
+F10	cr_vtype_agnostic	Vx8:218（裁剪）	legal	thin	vdot_matrix	-	1	vta×vma 四组合；ACT4 原 cross 的 mask bin 对 vdot 不可达
+F11	vm_unmasked	std-vec:40 的反面	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp,perf_vdot,vdot_mix	-	18	vm==1（ACT4 mask_enabled 只收 vm==0，对 vdot 合法域不可达）
+F12	mask_enabled_trap	std-vec:40（bin enabled={0}）	trap	thin	vdot_ill_vm0	-	1	vm==0 ⇒ 非法（vdot 强制 unmasked）
+F13	vd_eq_vs1	std-vec:85	legal	thin	vdot_matrix	-	1	vd==vs1（5 位全等；ACT4 的 [24:21]==[11:8] 会误报，不照抄）
+F14	vd_eq_vs2	std-vec:89	legal	partial	-	perf_vdot	0	vd==vs2
+F15	vs2_eq_vs1	std-vec:93	legal	gap	-	-	0	vs1==vs2（30 例缺口）
+F16	vtype_sew_8	std-vec:216	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp,vdot_mix	-	17	SEW=8
+F17	sew_ne_8_trap	无（自定义）	trap	thin	vdot_ill_sew	-	1	SEW!=8 ⇒ 非法
+F18	vtype_lmul_1	std-vec:172	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp,vdot_mix	-	17	LMUL=1
+F19	lmul_ne_1_trap	无（自定义）	trap	covered	vdot_ill_lmul2,vdot_ill_lmul4,vdot_ill_lmul8	-	3	LMUL∈{2,4,8} ⇒ 非法
+F20	vs_off_trap	std-vec:64 std_trap_vec 的补集	trap	thin	vdot_ill_vs	-	1	mstatus.VS=OFF ⇒ 非法
+F21	vs1_vs2_edges	Vx8:106,138	legal	covered	vdot_pos3,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand	-	7	±127/±128/0/累加溢出（官方 docx/04:94）
+F22	random_groups	ACT4 约束随机（生成侧）	legal	thin	vdot_rand	-	1	随机 1024 组
+F23	hi96_zero	无（自定义）	legal	covered	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp	-	16	vd[127:32] 恒 0
+F24	vd_changed_value	std-vec:290（近似）	legal	thin	vdot_matrix	-	1	旧 vd 非零不参与结果
+F25	vxsat_unchanged	无（自定义）	legal	thin	vdot_matrix	-	1	vxsat 前后不变
+F26	back_to_back_raw	无（自定义）	legal	covered	vdot_matrix,perf_vdot,vdot_mix	-	3	背靠背 / RAW / 混发
+F27	high64_interference	无（自定义）	legal	thin	vdot_rand	-	1	vs1/vs2[127:64] 高 64 位不参与
+F28	reg_index_space	std-vec:73,77,81	legal	partial	vdot_pos1,vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound1,vdot_bound2,vdot_bound3,vdot_bound4,vdot_bound5,vdot_rand,vdot_matrix,vdot_g0_badexp,vdot_ill_sew,vdot_ill_lmul2,vdot_ill_lmul4,vdot_ill_lmul8,vdot_ill_vm0,vdot_ill_vstart,vdot_ill_vill,vdot_ill_vs,perf_vdot,vdot_mix	-	26	vd/vs1/vs2 全 32 寄存器索引
+F29	sign_mix	官方 2.3.1–2.3.3	legal	covered	vdot_pos2,vdot_pos3,vdot_neg1,vdot_neg_odd1,vdot_neg_odd3,vdot_neg_odd5,vdot_neg_odd7,vdot_bound2,vdot_bound3,vdot_bound5,vdot_rand,vdot_matrix,vdot_mix	vdot_pos1,vdot_bound1,vdot_bound4,vdot_g0_badexp	13	正/负/混合符号

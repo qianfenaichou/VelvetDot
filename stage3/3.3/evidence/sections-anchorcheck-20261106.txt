@@ -1,0 +1,166 @@
+# sections/methodology.md 锚点静态自查（2026-11-06，终版）
+# 目的：校验正文里每条 `file:line` / `file:a-b,c` 引用的文件真实存在、行号不越界
+# 说明：脚本按 basename 在固定候选目录集内解析路径；/tmp 下的 agner.txt / kalibera.txt / nanhu.txt
+#       是本轮 curl 取回的原 PDF 经 pdftotext -layout 抽取的文本；orfs_synth.tcl / orfs_load.tcl
+#       是本轮 gh api 取回的 OpenROAD-flow-scripts 源码。这些都不是仓库文件，故单独列出。
+
+$ python3 /tmp/anchorcheck2.py
+refs=43 BAD=0
+
+## 引用行抽样回显（每条取首个行号，确认行内容与正文主张一致）
+### report.md:171-173 -> stage3/3.3/report.md
+   L171: ### 4.10 `sections/methodology.md`（**已到件，2026-11-06 13:57 装配**）
+### report.md:153 -> stage3/3.3/report.md
+   L153: | §4.10 | `sections/methodology.md` | 测量方法学（口径防御 / 时序边界 / 功耗边界） | 见 §4.10（**已装配**：4.10.1–4.10.3） | **已到件（13:57，33,685 B / 221 行）** |
+### design/HANDOFF.md:19 -> design/HANDOFF.md
+   L19: | 工作区版本 | 基线 pin：XiangShan `a4eeaab` / yunsuan `9559211` / NEMU `a683e0b`；实施 HEAD：XiangShan `913ddd3` / yunsuan `83059b5` / NEMU `a9dca53`（§2 两栏口径） |
+### design/verify/cases/perf_vadd.c:42,44,84,90-101 -> design/verify/cases/perf_vadd.c
+   L42: #define N_RAW    2000  // 依赖链条数（与 perf_vdot.c 的 L_vdot 同规模）
+   L44: #define N_WARMUP 16    // 冷启动/流水线填充样本，不计入统计
+### perf_vmacc.c:42,44 -> design/verify/cases/perf_vmacc.c
+   L42: #define N_RAW    2000  // 依赖链条数（与 perf_vdot.c 的 L_vdot 同规模）
+   L44: #define N_WARMUP 16    // 冷启动/流水线填充样本，不计入统计
+### design/verify/perf/perf_vdot.c:41,43,118-129 -> design/verify/perf/perf_vdot.c
+   L41: #define N_RAW    2000  // 依赖链条数（与 perf_vadd.c / perf_vmacc.c 同规模）
+   L43: #define N_WARMUP 16    // 冷启动/流水线填充样本，不计入统计
+### perf_vadd.c:138-144 -> design/verify/cases/perf_vadd.c
+   L138:   printf("PERF %s : ops=%d cycles=%llu mean=%llu median=%llu cycles_per_op=%llu "
+### stage3/3.3/evidence/perf_vadd.20261103T075552.log:4 -> stage3/3.3/evidence/perf_vadd.20261103T075552.log
+   L4: PERF L_vadd : ops=1984 cycles=6558 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=42 result=0xA0 want=0xA0 chain=OK
+### stage3/3.1.2-difftest/full-logs-20261103T142246/perf_vadd.20261103T142246.log:4 -> stage3/3.1.2-difftest/full-logs-20261103T142246/perf_vadd.20261103T142246.log
+   L4: PERF L_vadd : ops=1984 cycles=6558 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=42 result=0xA0 want=0xA0 chain=OK
+### results/difftest/b3/91-b3-20261104T115624.log:5-13 -> results/difftest/b3/91-b3-20261104T115624.log
+   L5: PERF chain_free_round: round=0 seed=1 samples=2000 median=16 mean=16 min=3 max=18 over=0 result=0x91A7 want=0x91A7 chain=OK
+### results/difftest/kernel/run-20261106T053316/93-kcmp-20261106T053316.log:14 -> results/difftest/kernel/run-20261106T053316/93-kcmp-20261106T053316.log
+   L14: KCMP est base_rounds=8 cyc_med=16 cyc_mean=15 cyc_min=15 cyc_max=16 over=0 i1_med_raw=1440 i1_q_min=18 i1_q_max=18 i1_q_varied=no
+### design/verify/cases/perf_base_chain.c:55-56 -> design/verify/cases/perf_base_chain.c
+   L55: //      ⚠ 内部自设口径：官方 docx/02-赛题与评分细则.md 只要求「用已有向量指令组合实现」，未规定条数/
+### results/emu/10-build-20261103T032307.log:4,8 -> results/emu/10-build-20261103T032307.log
+   L4: [2026-11-03 03:23:10] verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5 EMU_THREADS=8
+   L8: [2026-11-03 03:23:39] == 构建 emu：make emu -j32 EMU_THREADS=8 JVM_XMX=40G ==
+### repos/XiangShan/src/main/scala/xiangshan/backend/fu/NewCSR/NewCSR.scala:942-943,1140 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/NewCSR/NewCSR.scala
+   L942:   val addrInPerfCnt = (wenLegal || ren) && (
+   L1140:   io.out.bits.isPerfCnt := DataHoldBypass(addrInPerfCnt, false.B, io.in.fire)
+### repos/XiangShan/src/main/scala/xiangshan/Bundle.scala:365,369 -> repos/XiangShan/src/main/scala/xiangshan/Bundle.scala
+   L365:   val isPerfCnt = Bool()
+   L369:   def isSkipDiff: Bool = isMMIO || isNCIO || isPerfCnt
+### repos/XiangShan/src/main/scala/xiangshan/backend/rob/Rob.scala:1544,1548 -> repos/XiangShan/src/main/scala/xiangshan/backend/rob/Rob.scala
+   L1544:       val dt_skip = Mux(eliminatedMove, false.B, exuOut.isSkipDiff)
+   L1548:       difftest.skip := dt_skip
+### perf_base_chain.c:48 -> design/verify/cases/perf_base_chain.c
+   L48: //      ⚠ ①与②的 vtype 不同（①全程 e16，②是 e8/e16/e32 阶梯），数据通路宽度不同 ⇒ 两个数**不可相减**。
+### design/HARD-DESIGN.md:13,73 -> design/HARD-DESIGN.md
+   L13: 2. **2 拍时序判据（符号式，唯一表述）**：闭合 ⟺ `∀X∈{S1,S2,S3}: X_own + Δ_X ≤ P0`，`P0 = max(ltp(VIMac64b)=100, S3_own)`。K1 时 S1/S3 两约束恒真，**真正起作用的是 S2 一段**；数值捷径「`S2_own 
+   L73: - **两探针（T6，前置 = 先建 `design/verify/area/gen_probes.sh` 生成切段闭包）**：M-S2（`wallaceOut_mid_reg`→`walOut` 切段）、M-S3（Mgu+Mux 闭包）→ `results/yosys/{s2_own,s3_own
+### design/HARD-DESIGN.md:62-63 -> design/HARD-DESIGN.md
+   L62: | I1 | 同使能同边界 | `fireS1 = RegNext(in.valid) ≡ validVec(1)`；vdot 结果寄存器 R 与 `walOut` 是**两个独立 RegEnable**（分属两模块），但共用同一 `fireS1` 使能表达式、同一寄存边界，逐拍并行推进 ⇒ **「
+### repos/XiangShan/src/main/scala/xiangshan/backend/fu/FuConfig.scala:551,563 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/FuConfig.scala
+   L551:   val VimacCfg = FuConfig (
+   L563:     latency = CertainLatency(2),
+### design/ARCHITECTURE.md:103 -> design/ARCHITECTURE.md
+   L103: 2. **G-D 缺省**：**2026-11-04 24:00 前** E-0/E-2 实测与 vmac 回归未齐 ⇒ **锁定 tap0**，2 拍只写"设计目标/预算内候选"，**不自动升 3 拍、不启 X16**。
+### design/HARD-DESIGN.md:13,74,221 -> design/HARD-DESIGN.md
+   L13: 2. **2 拍时序判据（符号式，唯一表述）**：闭合 ⟺ `∀X∈{S1,S2,S3}: X_own + Δ_X ≤ P0`，`P0 = max(ltp(VIMac64b)=100, S3_own)`。K1 时 S1/S3 两约束恒真，**真正起作用的是 S2 一段**；数值捷径「`S2_own 
+   L74: - **决策树（预登记；P-2 触发条件唯一表述）**：① K1 闭合判据成立 → **K1**（默认）；② 否则若 `S2_own>78 ∧ S2_own≤93 ∧ S3_own≤85 ∧ 距截止≥2 天 ∧ 重跑预算够（20/20+miter+面积）` → **P-2**（+21 cells，落
+### synth.tcl:347 -> /tmp/orfs_synth.tcl
+   L347: write_verilog -nohex -nodec $::env(RESULTS_DIR)/1_2_yosys.v
+### load.tcl:33-34,42 -> /tmp/orfs_load.tcl
+   L33:     read_verilog $::env(RESULTS_DIR)/$design_file
+   L42:   log_cmd read_sdc $::env(RESULTS_DIR)/$sdc_file
+### repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala:129-130 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala
+   L129:   vdotReduce.io.sum_wo := vimacs(0).io.sum_wo
+### repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala:44 -> repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+   L44:   io.vd := RegEnable(result, io.fireS1)
+### repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala:159-160 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala
+   L159:   private val outIsVdot = outCtrl.fuOpType === VimacType.vdot
+### design/ALGORITHM.md:114 -> design/ALGORITHM.md
+   L114: | 16 | **操作数隔离/门控（可选低功耗）** | `microarch-frontier.md:261-272`（香山未见显式 operand isolation，需自建） | vdot 空闲时把归约树输入钳 0，降低动态功耗；本机无功耗工具，收益未实测 | C 可选 |
+### agner.txt:9150 -> /tmp/agner.txt
+   L9150: You have to insert XOR EAX,EAX / CPUID before and after each read of the counters in
+### kalibera.txt:866 -> /tmp/kalibera.txt
+   L866:     These trade-offs can be formulated mathematically in order               Calculate arithmetic means of these measurements for different
+### nanhu.txt:242-296 -> /tmp/nanhu.txt
+   L242:       本文基于“香山”开源处理器核（nanhu 版本）架构的相关生态来构建实验环境。考虑到降低 FPGA 资源
+### results/difftest/b3/91-b3-20261104T115624.log:5-22 -> results/difftest/b3/91-b3-20261104T115624.log
+   L5: PERF chain_free_round: round=0 seed=1 samples=2000 median=16 mean=16 min=3 max=18 over=0 result=0x91A7 want=0x91A7 chain=OK
+### perf_vadd.c:80-112 -> design/verify/cases/perf_vadd.c
+   L80: static uint64_t measure_raw_chain(int len, uint64_t *out_sum, uint64_t *out_mean,
+### Bundle.scala:365,369 -> repos/XiangShan/src/main/scala/xiangshan/Bundle.scala
+   L365:   val isPerfCnt = Bool()
+   L369:   def isSkipDiff: Bool = isMMIO || isNCIO || isPerfCnt
+### NewCSR.scala:942-943,1140 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/NewCSR/NewCSR.scala
+   L942:   val addrInPerfCnt = (wenLegal || ren) && (
+   L1140:   io.out.bits.isPerfCnt := DataHoldBypass(addrInPerfCnt, false.B, io.in.fire)
+### Rob.scala:1544,1548 -> repos/XiangShan/src/main/scala/xiangshan/backend/rob/Rob.scala
+   L1544:       val dt_skip = Mux(eliminatedMove, false.B, exuOut.isSkipDiff)
+   L1548:       difftest.skip := dt_skip
+### FuConfig.scala:563 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/FuConfig.scala
+   L563:     latency = CertainLatency(2),
+### HARD-DESIGN.md:13,73-74,221 -> design/HARD-DESIGN.md
+   L13: 2. **2 拍时序判据（符号式，唯一表述）**：闭合 ⟺ `∀X∈{S1,S2,S3}: X_own + Δ_X ≤ P0`，`P0 = max(ltp(VIMac64b)=100, S3_own)`。K1 时 S1/S3 两约束恒真，**真正起作用的是 S2 一段**；数值捷径「`S2_own 
+   L73: - **两探针（T6，前置 = 先建 `design/verify/area/gen_probes.sh` 生成切段闭包）**：M-S2（`wallaceOut_mid_reg`→`walOut` 切段）、M-S3（Mgu+Mux 闭包）→ `results/yosys/{s2_own,s3_own
+### ARCHITECTURE.md:103 -> design/ARCHITECTURE.md
+   L103: 2. **G-D 缺省**：**2026-11-04 24:00 前** E-0/E-2 实测与 vmac 回归未齐 ⇒ **锁定 tap0**，2 拍只写"设计目标/预算内候选"，**不自动升 3 拍、不启 X16**。
+### VIMacU.scala:129-130,159-160 -> repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala
+   L129:   vdotReduce.io.sum_wo := vimacs(0).io.sum_wo
+   L159:   private val outIsVdot = outCtrl.fuOpType === VimacType.vdot
+### VdotReduce.scala:44 -> repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+   L44:   io.vd := RegEnable(result, io.fireS1)
+### ALGORITHM.md:114 -> design/ALGORITHM.md
+   L114: | 16 | **操作数隔离/门控（可选低功耗）** | `microarch-frontier.md:261-272`（香山未见显式 operand isolation，需自建） | vdot 空闲时把归约树输入钳 0，降低动态功耗；本机无功耗工具，收益未实测 | C 可选 |
+
+## 脚本全文（anchorcheck2.py）
+import re, os
+path = 'stage3/3.3/sections/methodology.md'
+text = open(path, encoding='utf-8').read()
+lines = text.split('\n')
+
+CAND_DIRS = [
+    '.', 'design', 'design/verify/cases', 'design/verify/perf', 'design/verify/area',
+    'repos/XiangShan/src/main/scala/xiangshan',
+    'repos/XiangShan/src/main/scala/xiangshan/backend/fu',
+    'repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper',
+    'repos/XiangShan/src/main/scala/xiangshan/backend/fu/NewCSR',
+    'repos/XiangShan/src/main/scala/xiangshan/backend/rob',
+    'repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC',
+    'stage3/3.3','stage3/3.3/evidence', 'stage2/2.2-rtl/wave',
+]
+EXT = {'agner.txt': '/tmp/agner.txt', 'kalibera.txt': '/tmp/kalibera.txt', 'nanhu.txt': '/tmp/nanhu.txt',
+       'synth.tcl': '/tmp/orfs_synth.tcl', 'load.tcl': '/tmp/orfs_load.tcl'}
+
+def resolve(f):
+    if os.path.exists(f): return f
+    if f in EXT and os.path.exists(EXT[f]): return EXT[f]
+    base = os.path.basename(f)
+    for d in CAND_DIRS:
+        p = os.path.join(d, base)
+        if os.path.exists(p): return p
+    if base in EXT and os.path.exists(EXT[base]): return EXT[base]
+    return None
+
+pat = re.compile(r'`([A-Za-z0-9_./\-]+\.[A-Za-z0-9]+):([0-9][0-9,\-]*)`')
+bad, n, seen = [], 0, set()
+for ln, line in enumerate(lines, 1):
+    for m in pat.finditer(line):
+        f, spec = m.group(1), m.group(2)
+        if (f, spec) in seen: continue
+        seen.add((f, spec)); n += 1
+        real = resolve(f)
+        if real is None:
+            bad.append((ln, f, spec, 'FILE_MISSING')); continue
+        total = sum(1 for _ in open(real, encoding='utf-8', errors='replace'))
+        for part in spec.split(','):
+            part = part.strip()
+            if not part: continue
+            if '-' in part:
+                a, b = part.split('-', 1)
+                try: a, b = int(a), int(b)
+                except ValueError: bad.append((ln, f, spec, 'BAD_RANGE')); continue
+                if a < 1 or b > total or a > b:
+                    bad.append((ln, f, spec, f'RANGE_OUT {a}-{b} total={total}'))
+            else:
+                try: v = int(part)
+                except ValueError: bad.append((ln, f, spec, 'BAD_NUM')); continue
+                if v < 1 or v > total: bad.append((ln, f, spec, f'LINE_OUT {v} total={total}'))
+print(f'refs={n} BAD={len(bad)}')
+for b in bad: print('  ', b)

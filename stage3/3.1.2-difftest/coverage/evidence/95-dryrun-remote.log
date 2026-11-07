@@ -1,0 +1,41 @@
+[2026-11-06 15:53:04] ===== 95-coverage.sh run=20261106T155303 jobs=2 emu_threads=8 timeout=2400s guard=0 =====
+[2026-11-06 15:53:04] 已 source /public/home/**********/tools/env.sh
+[2026-11-06 15:53:04] [dry-run] 跳过 verilator_coverage 存在性检查（本机无 Verilator 也允许 dry-run 走完全程）
+[2026-11-06 15:53:04] [WARN] --no-budget-guard：跳过预算闸，机时风险由调用者承担
+[2026-11-06 15:53:05] versions: xiangshan=a4eeaab difftest=3729300 verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+[2026-11-06 15:53:07] == 覆盖率重建：rm -rf build/verilator-compile build/emu（T1）==
+[2026-11-06 15:53:07] [dry-run] rm -rf /public/home/**********/core/src/XiangShan/build/verilator-compile /public/home/**********/core/src/XiangShan/build/emu
+[2026-11-06 15:53:07] [dry-run] make -C /public/home/**********/core/src/XiangShan emu -j2 EMU_COVERAGE=1 EMU_THREADS=8 JVM_XMX=40G JVM_XSS=256m
+[2026-11-06 15:53:08] coverage emu sha256=d34b5286d4c92206d702dc802de7c6a804314a5e5fe73166f569c2328173796d
+[2026-11-06 15:53:08]   case vadd-microbench [vadd] -> 未运行(dry-run)
+[2026-11-06 15:53:08]   case vdot_pos1 [vdot-pos] -> 未运行(dry-run)
+[2026-11-06 15:53:08]   case vdot_pos2 [vdot-pos] -> 未运行(dry-run)
+[2026-11-06 15:53:08]   case vdot_pos3 [vdot-pos] -> 未运行(dry-run)
+[2026-11-06 15:53:08]   case vdot_neg1 [vdot-neg] -> 未运行(dry-run)
+[2026-11-06 15:53:08]   case vdot_neg_odd1 [vdot-neg] -> 未运行(dry-run)
+[2026-11-06 15:53:08]   case vdot_neg_odd3 [vdot-neg] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_neg_odd5 [vdot-neg] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_neg_odd7 [vdot-neg] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_bound1 [vdot-bound] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_bound2 [vdot-bound] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_bound3 [vdot-bound] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_bound4 [vdot-bound] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_bound5 [vdot-bound] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_rand [vdot-rand] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_matrix [vdot-matrix] -> 未运行(dry-run)
+[2026-11-06 15:53:09]   case vdot_g0_badexp [g0] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_sew [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_lmul2 [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_lmul4 [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_lmul8 [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_vm0 [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_vstart [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_vill [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_ill_vs [negative] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case perf_vdot [perf] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case perf_base [perf] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case perf_vadd [perf] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case perf_vmacc [perf] -> 未运行(dry-run)
+[2026-11-06 15:53:10]   case vdot_mix [vdot-mix] -> 未运行(dry-run)
+[2026-11-06 15:53:11] dry-run：用例未执行，本份 JSON 只能证明脚本可跑通，不得作为覆盖率证据
+[2026-11-06 15:53:11] 结果 JSON：/public/home/**********/core/results/coverage/20261106T155303/95-coverage.sh-20261106T155303.json

@@ -1,0 +1,54 @@
+# 3.3 数字溯源（T2 判据「每个数字跟 results/difftest/*.json」）
+# 2026-11-04 重生成：主数据源换成 30 例整份 142246；075552 作同值复核（该清单 4 例不含 perf_base）；000517 仅历史对照
+# 生成方式：脚本读 JSON（未重跑仿真）
+
+| 报告中的数字 | JSON 路径 | 字段 | 文件存在 | JSON 实测值 |
+|---|---|---|---|---|
+| L_vadd = 3 | `results/difftest/20-full-20261103T142246.json` | metrics[7] (name=L_vadd, case_id=perf_vadd) | OK | `3` |
+| L_vmacc = 4 | `results/difftest/20-full-20261103T142246.json` | metrics[10] (name=L_vmacc, case_id=perf_vmacc) | OK | `4` |
+| L_vdot = 4 | `results/difftest/20-full-20261103T142246.json` | metrics[0] (name=L_vdot, case_id=perf_vdot) | OK | `4` |
+| L_vdot_mean = 4 | `results/difftest/20-full-20261103T142246.json` | metrics[1] (name=L_vdot_mean, case_id=perf_vdot) | OK | `4` |
+| L_vdot_loop = 6 | `results/difftest/20-full-20261103T142246.json` | metrics[2] (name=L_vdot_loop, case_id=perf_vdot) | OK | `6` |
+| T_steady = 1 | `results/difftest/20-full-20261103T142246.json` | metrics[3] (name=T_steady, case_id=perf_vdot) | OK | `1` |
+| T_kernel = 290 | `results/difftest/20-full-20261103T142246.json` | metrics[4] (name=T_kernel, case_id=perf_vdot) | OK | `290` |
+| B1 = 6（新口径） | `results/difftest/20-full-20261103T142246.json` | metrics[5] (name=B1, case_id=perf_base) | OK | `6` |
+| B2 = 9（新口径） | `results/difftest/20-full-20261103T142246.json` | metrics[6] (name=B2, case_id=perf_base) | OK | `9` |
+| —— 同值复核（075552，4 例 T5+G0 清单） —— | | | | |
+| L_vadd = 3（复核） | `results/difftest/20-full-20261103T075552.json` | metrics[0] (name=L_vadd) | OK | `3` |
+| L_vmacc = 4（复核） | `results/difftest/20-full-20261103T075552.json` | metrics[3] (name=L_vmacc) | OK | `4` |
+| L_vdot = 4（复核） | `results/difftest/20-full-20261103T075552.json` | metrics[6] (name=L_vdot) | OK | `4` |
+| T_steady = 1（复核） | `results/difftest/20-full-20261103T075552.json` | metrics[9] (name=T_steady) | OK | `1` |
+| T_kernel = 290（复核） | `results/difftest/20-full-20261103T075552.json` | metrics[10] (name=T_kernel) | OK | `290` |
+| B1/B2（复核） | `results/difftest/20-full-20261103T075552.json` | — | — | **未运行**（该清单 4 例不含 `perf_base`，`metrics[]` 里无 B1/B2） |
+| —— 旧口径（仅历史对照，不引用为当前值） —— | | | | |
+| L_vdot = 6（VL=16+均值） | `results/difftest/20-full-20261102T000517.json` | metrics[0] (name=L_vdot) | OK | `6` |
+| T_steady = 1 | `results/difftest/20-full-20261102T000517.json` | metrics[1] (name=T_steady) | OK | `1` |
+| T_kernel = 289 | `results/difftest/20-full-20261102T000517.json` | metrics[2] (name=T_kernel) | OK | `289` |
+| B1 = 6 | `results/difftest/20-full-20261102T000517.json` | metrics[3] (name=B1) | OK | `6` |
+| B2 = 9 | `results/difftest/20-full-20261102T000517.json` | metrics[4] (name=B2) | OK | `9` |
+
+## metrics[] 全表（142246，脚本打印，逐字）
+  {'name': 'L_vdot', 'value': '4', 'case_id': 'perf_vdot'}
+  {'name': 'L_vdot_mean', 'value': '4', 'case_id': 'perf_vdot'}
+  {'name': 'L_vdot_loop', 'value': '6', 'case_id': 'perf_vdot'}
+  {'name': 'T_steady', 'value': '1', 'case_id': 'perf_vdot'}
+  {'name': 'T_kernel', 'value': '290', 'case_id': 'perf_vdot'}
+  {'name': 'B1', 'value': '6', 'case_id': 'perf_base'}
+  {'name': 'B2', 'value': '9', 'case_id': 'perf_base'}
+  {'name': 'L_vadd', 'value': '3', 'case_id': 'perf_vadd'}
+  {'name': 'L_vadd_mean', 'value': '3', 'case_id': 'perf_vadd'}
+  {'name': 'L_vadd_loop', 'value': '5', 'case_id': 'perf_vadd'}
+  {'name': 'L_vmacc', 'value': '4', 'case_id': 'perf_vmacc'}
+  {'name': 'L_vmacc_mean', 'value': '4', 'case_id': 'perf_vmacc'}
+  {'name': 'L_vmacc_loop', 'value': '6', 'case_id': 'perf_vmacc'}
+
+## criteria[] 全表（142246，脚本打印，逐字）
+  nm_exec_vdot: 达标 | 命中 2 行
+  vec_reg_compare: 达标 | /public/home/**********/core/src/XiangShan/build/generated-src/difftest-state.h
+  cases_all_ran: 达标 | 30/30
+  cases_pass: 达标 | 30/30
+  reg_size_match: 达标 | 0 次（1400 B 口径）
+  no_empty_green: 达标 | 自检串 21/21 命中；G0 捕获 1/1（GOOD TRAP 但自检 MISMATCH）
+  metrics_three: 达标 | 齐备
+  t5_delta_latency: 达标 | L_vadd=3 L_vmacc=4 L_vdot=4 (ΔL_mv=1)
+  regression_delta: 达标 | 0

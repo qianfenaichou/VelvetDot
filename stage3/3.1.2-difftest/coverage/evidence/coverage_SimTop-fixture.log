@@ -1,0 +1,45 @@
+LineSelfCoverage:
+[   ('DecodeUnit', (300, 700, 0.30)),
+    ('VIMac64b', (50, 50, 0.50)),
+    ('VdotReduce', (10, 0, 1.0))]
+LineTreeCoverage:
+[   ('DecodeUnit', (300, 700, 0.30)),
+    ('VIMac64b', (50, 50, 0.50)),
+    ('VdotReduce', (10, 0, 1.0))]
+ToggleSelfCoverage:
+[   ('DecodeUnit', (100, 400, 0.20)),
+    ('VIMac64b', (20, 20, 0.50))]
+ToggleTreeCoverage:
+[   ('DecodeUnit', (100, 400, 0.20)),
+    ('VIMac64b', (20, 20, 0.50))]
+AllCoverage:
+- DecodeUnit
+  tree_line(300, 700, 30.00)
+  self_line(300, 700, 30.00)
+  tree_toggle(100, 400, 20.00)
+  self_toggle(100, 400, 20.00)
+- VdotReduce
+  tree_line(10, 0, 100.00)
+  self_line(10, 0, 100.00)
+  tree_toggle(5, 5, 50.00)
+  self_toggle(5, 5, 50.00)
+- VIMac64b
+  tree_line(50, 50, 50.00)
+  self_line(50, 50, 50.00)
+  tree_toggle(20, 20, 50.00)
+  self_toggle(20, 20, 50.00)
+- VIMacU
+  tree_line(30, 10, 75.00)
+  self_line(30, 10, 75.00)
+  tree_toggle(10, 10, 50.00)
+  self_toggle(10, 10, 50.00)
+- VIMacSrcTypeModule
+  tree_line(8, 0, 100.00)
+  self_line(8, 0, 100.00)
+  tree_toggle(4, 0, 100.00)
+  self_toggle(4, 0, 100.00)
+- VecExceptionGen
+  tree_line(20, 5, 80.00)
+  self_line(20, 5, 80.00)
+  tree_toggle(5, 5, 50.00)
+  self_toggle(5, 5, 50.00)

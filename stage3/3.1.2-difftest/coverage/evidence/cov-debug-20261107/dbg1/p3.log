@@ -1,0 +1,11 @@
+emu compiled at Nov  7 2026, 06:12:56
+[INFO] init for constantin: loaded from init.
+CASE vdot_pos1: result=0x00000024 expect=0x00000024 hi=[0x00000000 0x00000000 0x00000000]
+CASE vdot_pos1: MATCH
+Using simulated 1048576B flash
+Core  0's Commit SHA is: a4eeaabb4c, dirty: 1
+Using simulated 8386560MB RAM
+The image is /public/home/**********/core/test/bin/vdot_pos1.bin
+The reference model is /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so
+The first instruction of core 0 has commited. Difftest enabled. 
+dump coverage data to /public/home/**********/core/results/coverage/debug-20261107T065405/p3/build/2026-11-07-07-09-47.coverage.dat...

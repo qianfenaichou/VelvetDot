@@ -1,0 +1,45 @@
+3.3 当前口径指标台账（脚本读取 JSON，2026-11-04 重生成）
+JSON: results/difftest/20-full-20261103T142246.json
+job: 126676734 status: 通过 mode: full
+started: 2026-11-03T14:22:46+0800 ended: 2026-11-03T14:51:47+0800
+manifest: {'path': '/public/home/**********/core/test/manifest.tsv', 'sha256': 'e12470e653e64671129d6c093859841f795805bdd78412c1f04965d853cbb61b', 'rows': '30'}
+regression_delta: 0
+
+metrics[0] name=L_vdot         value=4     case_id=perf_vdot
+metrics[1] name=L_vdot_mean    value=4     case_id=perf_vdot
+metrics[2] name=L_vdot_loop    value=6     case_id=perf_vdot
+metrics[3] name=T_steady       value=1     case_id=perf_vdot
+metrics[4] name=T_kernel       value=290   case_id=perf_vdot
+metrics[5] name=B1             value=6     case_id=perf_base
+metrics[6] name=B2             value=9     case_id=perf_base
+metrics[7] name=L_vadd         value=3     case_id=perf_vadd
+metrics[8] name=L_vadd_mean    value=3     case_id=perf_vadd
+metrics[9] name=L_vadd_loop    value=5     case_id=perf_vadd
+metrics[10] name=L_vmacc        value=4     case_id=perf_vmacc
+metrics[11] name=L_vmacc_mean   value=4     case_id=perf_vmacc
+metrics[12] name=L_vmacc_loop   value=6     case_id=perf_vmacc
+
+criteria[]:
+criteria[0] nm_exec_vdot       达标     | 命中 2 行
+criteria[1] vec_reg_compare    达标     | /public/home/**********/core/src/XiangShan/build/generated-src/difftest-state.h
+criteria[2] cases_all_ran      达标     | 30/30
+criteria[3] cases_pass         达标     | 30/30
+criteria[4] reg_size_match     达标     | 0 次（1400 B 口径）
+criteria[5] no_empty_green     达标     | 自检串 21/21 命中；G0 捕获 1/1（GOOD TRAP 但自检 MISMATCH）
+criteria[6] metrics_three      达标     | 齐备
+criteria[7] t5_delta_latency   达标     | L_vadd=3 L_vmacc=4 L_vdot=4 (ΔL_mv=1)
+criteria[8] regression_delta   达标     | 0
+
+对照（同值复核，4 例 T5+G0）：results/difftest/20-full-20261103T075552.json
+job: 126646321 status: 通过 manifest rows: 4
+metrics[0] name=L_vadd         value=3     case_id=perf_vadd
+metrics[1] name=L_vadd_mean    value=3     case_id=perf_vadd
+metrics[2] name=L_vadd_loop    value=5     case_id=perf_vadd
+metrics[3] name=L_vmacc        value=4     case_id=perf_vmacc
+metrics[4] name=L_vmacc_mean   value=4     case_id=perf_vmacc
+metrics[5] name=L_vmacc_loop   value=6     case_id=perf_vmacc
+metrics[6] name=L_vdot         value=4     case_id=perf_vdot
+metrics[7] name=L_vdot_mean    value=4     case_id=perf_vdot
+metrics[8] name=L_vdot_loop    value=6     case_id=perf_vdot
+metrics[9] name=T_steady       value=1     case_id=perf_vdot
+metrics[10] name=T_kernel       value=290   case_id=perf_vdot

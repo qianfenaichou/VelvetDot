@@ -1,0 +1,46 @@
+# STA/功耗工具核实记录（2026-11-06；只核实不实跑 STA）
+# 工作目录：$REPO
+# 约定：每一段 = 一条命令 + 原样输出；未加修饰
+
+## L1 本机（开发机）工具与工艺库
+$ command -v yosys sta openroad; echo "EXIT=$?"
+EXIT=1
+
+$ find . -path ./.git -prune -o -type f \( -name "*.lib" -o -name "*.lef" -o -name "*.sdc" -o -name "*.db" \) -print | head
+(以上为空 = 仓内 0 个 Liberty/LEF/SDC/DB)
+
+## L2 昆山登录节点（未 source env.sh）
+$ ssh kunshan 'hostname; for t in sta openroad yosys opensta; do printf "%s: " "$t"; command -v "$t" || echo NOT_FOUND; done'
+login04
+sta: NOT_FOUND
+openroad: NOT_FOUND
+yosys: NOT_FOUND
+opensta: NOT_FOUND
+
+## L3 昆山登录节点（source ~/tools/env.sh 之后）
+$ ssh kunshan 'source ~/tools/env.sh >/dev/null 2>&1; for t in yosys sta openroad; do printf "%s: " "$t"; command -v "$t" || echo NOT_FOUND; done; yosys -V'
+yosys: /public/home/**********/tools/yosys/bin/yosys
+sta: NOT_FOUND
+openroad: NOT_FOUND
+Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+
+## L4 昆山 module 系统是否提供 OpenSTA/OpenROAD/PDK
+$ ssh kunshan 'module avail 2>&1 | grep -iE "openroad|opensta|asap7|sky130"'
+grep_EXIT=1
+(grep 退出 1 / 无输出 = module 系统无这些条目)
+
+## L5 昆山 HOME 内是否已有 OpenROAD/OpenSTA/ORFS 目录或 ASAP7/sky130 工艺库
+$ ssh kunshan 'find ~ -maxdepth 4 -type d \( -iname "*openroad*" -o -iname "*opensta*" -o -iname "*orfs*" -o -iname "*asap7*" -o -iname "*sky130*" \) 2>/dev/null | head; find ~ -maxdepth 4 -name "*.sif" 2>/dev/null | head'
+(以上为空 = HOME 内无 OpenROAD/OpenSTA/ORFS 目录、无 Apptainer 镜像)
+
+## L6 昆山 HOME 内 *.lib / *.lef / asap7* / sky130* 文件
+$ ssh kunshan 'find ~ -maxdepth 4 \( -name "*.lib" -o -name "*.lef" -o -name "asap7*" -o -name "sky130*" \) 2>/dev/null | head'
+/public/home/**********/core/src/nexus-am/Makefile.lib
+(唯一命中 core/src/nexus-am/Makefile.lib = 构建用 Makefile 片段，不是 Liberty)
+
+## 结论（只依据以上输出）
+1. 昆山登录节点：yosys 可用（source env.sh 后 0.48）；sta / openroad / opensta 均 NOT_FOUND（source 前后一致）。
+2. 昆山 module 系统、HOME 目录均无 OpenSTA/OpenROAD/ORFS；无 ASAP7/sky130 工艺库；无 Apptainer 镜像。
+3. 本机：yosys / sta / openroad 均不在 PATH（command -v 无输出，EXIT=1）；仓内 0 个 Liberty/LEF/SDC/DB。
+4. 因此 STA 与 report_power 均【未运行】：不是脚本出错，是工具与工艺库数据链缺失。
+5. 本轮只做可达性核实，未安装、未构建、未下载任何 PDK，未跑任何 STA 命令。

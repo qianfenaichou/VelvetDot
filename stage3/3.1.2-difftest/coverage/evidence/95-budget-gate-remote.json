@@ -1,0 +1,22 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P4-coverage",
+  "script": "scripts/95-coverage.sh",
+  "status": "未运行",
+  "platform": "login-node",
+  "slurm_job_id": "",
+  "started_at": "2026-11-06T15:53:59+0800",
+  "ended_at": "2026-11-06T15:54:24+0800",
+  "machine_hours_planned": 4.0,
+  "mode": "coverage",
+  "versions": {"xiangshan": "", "difftest": "", "verilator": ""},
+  "manifest": {"path": "/public/home/**********/core/test/manifest.30.tsv", "sha256": "e12470e653e64671129d6c093859841f795805bdd78412c1f04965d853cbb61b", "rows": "30"},
+  "criteria": [
+    {"name": "manifest_rows", "expected": "清单数据行 == 30", "actual": "30 行", "status": "达标"},
+    {"name": "budget_guard", "expected": "90-budget-log.sh summary rc=0", "actual": "rc=1（合计超 10.6 机时或缓冲被动用）", "status": "未运行"},
+    {"name": "preconditions", "expected": "前置齐备", "actual": "预算闸拒绝：先重估预算，或用户显式加预算后用 --no-budget-guard", "status": "未运行"}
+  ],
+  "cases": [
+  ],
+  "coverage": {"run_dir": "/public/home/**********/core/results/coverage/20261106T155359", "dats": 0, "report": "", "modules": []}
+}

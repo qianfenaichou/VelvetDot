@@ -1,0 +1,14 @@
+D=/public/home/**********/core/results/coverage/debug-20261107T065405
+emu: 70 Nov 7 06:24
+b86f95b41eee5db1861286787fd63958c75b6f79e92d97da6ee37e59024fdc2f  /public/home/**********/core/src/XiangShan/build/emu
+=== gdb? ===
+/opt/rh/devtoolset-7/root/usr/bin/gdb
+=== p1: no-diff -C 100 --dump-coverage ===
+p1_rc=0
+3320861425 /public/home/**********/core/results/coverage/debug-20261107T065405/p1/build/2026-11-07-06-57-46.coverage.dat
+=== p2: no-diff -C 100 (no dump) ===
+p2_rc=0
+=== p3: diff vdot_pos1 --dump-coverage (full case) ===
+p3_rc=139
+0 /public/home/**********/core/results/coverage/debug-20261107T065405/p3/build/2026-11-07-07-09-47.coverage.dat
+=== p4: gdb backtrace on -C 10 --dump-coverage ===

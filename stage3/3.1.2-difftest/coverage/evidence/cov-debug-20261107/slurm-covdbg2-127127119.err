@@ -1,0 +1,30 @@
++ source /public/home/**********/tools/env.sh
++ export NOOP_HOME=/public/home/**********/core/src/XiangShan
++ NOOP_HOME=/public/home/**********/core/src/XiangShan
++ EMU=/public/home/**********/core/src/XiangShan/build/emu
++ REF=/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so
++ IMG=/public/home/**********/core/test/bin/vdot_pos1.bin
+++ date +%Y%m%dT%H%M%S
++ D=/public/home/**********/core/results/coverage/debug2-20261107T071429
++ mkdir -p /public/home/**********/core/results/coverage/debug2-20261107T071429
++ echo '=== q1: --diff full run, NO dump (baseline of the same case) ==='
++ mkdir -p /public/home/**********/core/results/coverage/debug2-20261107T071429/q1/build
++ NOOP_HOME=/public/home/**********/core/results/coverage/debug2-20261107T071429/q1
++ timeout 1200 /public/home/**********/core/src/XiangShan/build/emu --diff /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so -i /public/home/**********/core/test/bin/vdot_pos1.bin --max-instr=200000000
+/public/home/**********/cov_debug2.sh: 行 14: 19709 段错误               NOOP_HOME="$D/q1" timeout 1200 "$EMU" --diff "$REF" -i "$IMG" --max-instr=200000000 > "$D/q1.log" 2>&1
++ echo q1_rc=139
++ grep -ac 'HIT GOOD TRAP' /public/home/**********/core/results/coverage/debug2-20261107T071429/q1.log
++ echo '=== q2: --diff + -C 100 + dump (truncated) ==='
++ mkdir -p /public/home/**********/core/results/coverage/debug2-20261107T071429/q2/build
++ NOOP_HOME=/public/home/**********/core/results/coverage/debug2-20261107T071429/q2
++ timeout 1200 /public/home/**********/core/src/XiangShan/build/emu --diff /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so -i /public/home/**********/core/test/bin/vdot_pos1.bin -C 100 --dump-coverage
++ echo q2_rc=0
++ find /public/home/**********/core/results/coverage/debug2-20261107T071429/q2 -name '*.dat' -printf '%s %p\n'
++ echo '=== q3: gdb backtrace on --diff full run + dump ==='
++ mkdir -p /public/home/**********/core/results/coverage/debug2-20261107T071429/q3/build
++ NOOP_HOME=/public/home/**********/core/results/coverage/debug2-20261107T071429/q3
++ timeout 1800 gdb -batch -ex run -ex 'bt 25' -ex 'info registers rip' --args /public/home/**********/core/src/XiangShan/build/emu --diff /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so -i /public/home/**********/core/test/bin/vdot_pos1.bin --max-instr=200000000 --dump-coverage
++ echo q3_gdb_rc=0
++ grep -aE 'Program received|#[0-9]+ |SIGSEGV|Verilated' /public/home/**********/core/results/coverage/debug2-20261107T071429/q3.log
++ tail -30
++ echo '=== done D=/public/home/**********/core/results/coverage/debug2-20261107T071429 ==='

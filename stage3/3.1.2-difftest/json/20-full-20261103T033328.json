@@ -1,0 +1,44 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P3-full",
+  "script": "scripts/slurm_script",
+  "status": "未运行",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126631414",
+  "started_at": "2026-11-03T03:33:28+0800",
+  "ended_at": "2026-11-03T03:42:42+0800",
+  "machine_hours_planned": 3.0,
+  "mode": "full",
+  "manifest": {"path": "/public/home/**********/core/test/manifest.perf3.tsv", "sha256": "944ff5a449b55d02391cf9bfb07f271ea99f884bf00ecb9724aad543672c0454", "rows": "3"},
+  "regression_delta": "0",
+  "criteria": [
+    {"name": "nm_exec_vdot", "expected": "nm 命中 exec_vdot >= 1 行", "actual": "命中 2 行", "status": "达标"},
+    {"name": "vec_reg_compare", "expected": "生成的 difftest-state.h 含 CONFIG_DIFFTEST_ARCHVECREGSTATE", "actual": "/public/home/**********/core/src/XiangShan/build/generated-src/difftest-state.h", "status": "达标"},
+    {"name": "cases_all_ran", "expected": "选中用例全部执行", "actual": "3/3", "status": "达标"},
+    {"name": "cases_pass", "expected": "全部选中用例通过（full）", "actual": "3/3", "status": "达标"},
+    {"name": "reg_size_match", "expected": "日志不含 'is configured with different states than DUT'", "actual": "0 次（1400 B 口径）", "status": "达标"},
+    {"name": "no_empty_green", "expected": "正例带自检通过串，且 G0 反例被同一判据判负", "actual": "清单缺 g0 反例（自检串 3/3 命中，但防护未被证伪过）", "status": "未运行"},
+    {"name": "metrics_three", "expected": "三口径 L_vdot/T_steady/T_kernel 均出现", "actual": "齐备", "status": "达标"},
+    {"name": "t5_delta_latency", "expected": "T5 ΔL：L_vmacc==L_vdot 且 L_vmacc-L_vadd==1", "actual": "L_vadd=3 L_vmacc=4 L_vdot=4 (ΔL_mv=1)", "status": "达标"},
+    {"name": "regression_delta", "expected": "新增失败数 == 0", "actual": "0", "status": "达标"}
+  ],
+  "cases": [
+    {"case_id": "perf_vadd", "class": "perf", "status": "通过", "good_trap": "1", "abort": "0", "log": "/public/home/**********/core/results/difftest/cases/perf_vadd.20261103T033328.log"},
+    {"case_id": "perf_vmacc", "class": "perf", "status": "通过", "good_trap": "1", "abort": "0", "log": "/public/home/**********/core/results/difftest/cases/perf_vmacc.20261103T033328.log"},
+    {"case_id": "perf_vdot", "class": "perf", "status": "通过", "good_trap": "1", "abort": "0", "log": "/public/home/**********/core/results/difftest/cases/perf_vdot.20261103T033328.log"}
+  ],
+  "metrics": [
+    {"name": "L_vadd", "value": "3", "case_id": "perf_vadd"},
+    {"name": "L_vadd_mean", "value": "3", "case_id": "perf_vadd"},
+    {"name": "L_vadd_loop", "value": "5", "case_id": "perf_vadd"},
+    {"name": "L_vmacc", "value": "4", "case_id": "perf_vmacc"},
+    {"name": "L_vmacc_mean", "value": "4", "case_id": "perf_vmacc"},
+    {"name": "L_vmacc_loop", "value": "6", "case_id": "perf_vmacc"},
+    {"name": "L_vdot", "value": "4", "case_id": "perf_vdot"},
+    {"name": "L_vdot_mean", "value": "4", "case_id": "perf_vdot"},
+    {"name": "L_vdot_loop", "value": "6", "case_id": "perf_vdot"},
+    {"name": "T_steady", "value": "1", "case_id": "perf_vdot"},
+    {"name": "T_kernel", "value": "290", "case_id": "perf_vdot"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/difftest/20-full-20261103T033328.log", "/public/home/**********/core/results/difftest/20-full-20261103T033328.cases.tsv"]
+}

@@ -1,0 +1,46 @@
+3.1.2 判据核验（脚本读取 JSON，不重跑仿真）
+时间：2026-11-03（stage3 打包轮）
+规则：cases[].abort 全为 '0'；regression_delta == '0'；criteria[reg_size_match].status == '达标'
+
+20-full-20261102T000517.json
+  job=126542079 mode=full status=通过 cases=20
+  aborts=0 
+  regression_delta='0'
+  reg_size_match='达标'
+  cases_pass='达标' no_empty_green='达标'
+
+20-full-20261103T075552.json
+  job=126646321 mode=full status=通过 cases=4
+  aborts=0 
+  regression_delta='0'
+  reg_size_match='达标'
+  cases_pass='达标' no_empty_green='达标'
+
+20-full-20261103T062432.json
+  job=126642005 mode=full status=未运行 cases=6
+  aborts=0 
+  regression_delta='0'
+  reg_size_match='达标'
+  cases_pass='达标' no_empty_green='达标'
+
+20-full-20261103T033328.json
+  job=126631414 mode=full status=未运行 cases=3
+  aborts=0 
+  regression_delta='0'
+  reg_size_match='达标'
+  cases_pass='达标' no_empty_green='未运行'
+
+20-smoke-20261103T032337.json
+  job=126630806 mode=smoke status=失败 cases=5
+  aborts=0 
+  regression_delta='未运行'
+  reg_size_match='达标'
+  cases_pass='达标' no_empty_green='未运行'
+
+20-smoke-20261103T032017.json
+  job=126630485 mode=smoke status=未运行 cases=1
+  aborts=0 
+  regression_delta='未运行'
+  reg_size_match='达标'
+  cases_pass='达标' no_empty_green='未运行'
+

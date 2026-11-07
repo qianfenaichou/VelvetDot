@@ -1,0 +1,95 @@
+From a9dca53bcd795c4c3320011a51968c924a559f21 Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH] N1/N2/N3: vdot.vv reference model (decode entry, EHelper,
+ enum)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- N1 vopmvv table: "001110 1 ????? ????? ??? ????? ????? ??" with the vm bit fixed.
+- N2 def_EHelper(vdot): require_vector(true) (mstatus.VS=OFF, vill) then vm/SEW/LMUL
+  then check_vstart_exception (NOT check_vstart_ignore, which would skip the write
+  when vl=0); sums 8 signed int8 lanes of vs2/vs1, writes vd[31:0]=sext32(S) and
+  explicitly zeroes vd[127:32] via set_vreg (no set_vreg_tail: it writes 0xFF);
+  vp_set_dirty() so mstatus.VS becomes Dirty.
+- N3 VECTOR_INSTR_TERNARY gains f(vdot) (otherwise EXEC_ID_vdot does not exist).
+Build check on kunshan login node: make -j4 rc=0, nm | grep -cw exec_vdot → 2.
+---
+ src/isa/riscv64/include/isa-all-instr.h |  2 +-
+ src/isa/riscv64/instr/rvv/decode.h      |  3 +++
+ src/isa/riscv64/instr/rvv/vcompute.h    | 31 +++++++++++++++++++++++++
+ 3 files changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/src/isa/riscv64/include/isa-all-instr.h b/src/isa/riscv64/include/isa-all-instr.h
+index 2f18ca1..8d38a71 100644
+--- a/src/isa/riscv64/include/isa-all-instr.h
++++ b/src/isa/riscv64/include/isa-all-instr.h
+@@ -174,7 +174,7 @@
+   f(vmand) f(vmor) f(vmxor) f(vmornot) f(vmnand) \
+   f(vmnor) f(vmxnor) f(vdivu) f(vdiv) f(vremu) \
+   f(vrem) f(vmulhu) f(vmul) f(vmulhsu) f(vmulh) \
+-  f(vmadd) f(vnmsub) f(vmacc) f(vnmsac) f(vwaddu) \
++  f(vmadd) f(vnmsub) f(vmacc) f(vnmsac) f(vdot) f(vwaddu) \
+   f(vwadd) f(vwsub) f(vwsubu) f(vwaddu_w) f(vwadd_w) \
+   f(vwsubu_w) f(vwsub_w) f(vwmulu) f(vwmulsu) \
+   f(vwmul) f(vwmaccu) f(vwmacc) f(vwmaccsu) \
+diff --git a/src/isa/riscv64/instr/rvv/decode.h b/src/isa/riscv64/instr/rvv/decode.h
+index ee7618e..d8edacd 100644
+--- a/src/isa/riscv64/instr/rvv/decode.h
++++ b/src/isa/riscv64/instr/rvv/decode.h
+@@ -368,6 +368,9 @@ def_THelper(vopmvv) {
+   def_INSTR_TAB("111100 ? ????? ????? ??? ????? ????? ??", vwmaccu);
+   def_INSTR_TAB("111101 ? ????? ????? ??? ????? ????? ??", vwmacc);
+   def_INSTR_TAB("111111 ? ????? ????? ??? ????? ????? ??", vwmaccsu);
++  // custom (CIE-2026): vdot.vv — funct6=001110, funct3=010(OPMVV), vm bit fixed to 1
++  // (a masked encoding does not match here → illegal, same as the RTL BitPat and the golden model)
++  def_INSTR_TAB("001110 1 ????? ????? ??? ????? ????? ??", vdot);
+ 
+   return EXEC_ID_inv;
+ }
+diff --git a/src/isa/riscv64/instr/rvv/vcompute.h b/src/isa/riscv64/instr/rvv/vcompute.h
+index 2bcb6aa..ccf18de 100644
+--- a/src/isa/riscv64/instr/rvv/vcompute.h
++++ b/src/isa/riscv64/instr/rvv/vcompute.h
+@@ -869,6 +869,37 @@ def_EHelper(vmacc) {
+   ARITH(MACC, SIGNED)
+ }
+ 
++/* vdot.vv (custom, CIE-2026) — SPEC §1.1.
++ * S = sum_{i=0..7} sext8(vs2[i]) * sext8(vs1[i]);  vd[31:0] = sext32(S), vd[127:32] = 0.
++ * Legal only when SEW=8, LMUL=1, vm=1, vstart=0, vill=0 and mstatus.VS != OFF;
++ * each condition is an independent illegal cause. vl does not affect the result:
++ * lanes 0-7 are always computed and the whole register is written. */
++def_EHelper(vdot) {
++  require_vector(true);   // mstatus.VS == OFF 与 vill != 0 都在此判非法
++  if (s->vm == 0 || vtype->vsew != 0 || vtype->vlmul != 0) {
++    longjmp_exception(EX_II);
++  }
++  // 必须用 check_vstart_exception：check_vstart_ignore 在 vstart >= vl（含 vl=0）时会跳过写回
++  check_vstart_exception(s);
++
++  int64_t sum = 0;
++  for (int i = 0; i < 8; i++) {
++    // 低 64 位 lane 0-7，8-bit 有符号；高 64 位不参与
++    get_vreg(id_src2->reg, i, s0, 0, vtype->vlmul, 1, 0);
++    get_vreg(id_src1->reg, i, s1, 0, vtype->vlmul, 1, 0);
++    sum += (int32_t)(*s0) * (int32_t)(*s1);
++  }
++
++  // 全写语义：vd[31:0] = sext32(S)，其余 96 位手写显式清零（禁止 set_vreg_tail，它写 0xFF）
++  uint32_t result = (uint32_t)(int32_t)sum;
++  for (int w = 0; w < 4; w++) {
++    set_vreg(id_dest->reg, w, (w == 0) ? result : 0, 2, vtype->vlmul, 0);
++  }
++
++  vstart->val = 0;
++  vp_set_dirty();
++}
++
+ def_EHelper(vnmsac) {
+   ARITH(NMSAC, SIGNED)
+ }
+-- 
+2.43.0
+

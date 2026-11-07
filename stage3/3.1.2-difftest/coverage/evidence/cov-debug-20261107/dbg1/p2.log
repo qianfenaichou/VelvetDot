@@ -1,0 +1,62 @@
+# [trimmed evidence] original=dbg1/p2.log size=4754657B (PERF dump omitted; head 30 + tail 30)
+emu compiled at Nov  7 2026, 06:12:56
+[INFO] init for constantin: loaded from init.
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutFullData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutFullData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutPartialData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutPartialData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_ArithmeticData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_ArithmeticData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_LogicalData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_LogicalData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Get_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Get_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Hint_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Hint_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquireBlock_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquireBlock_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquirePerm_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquirePerm_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_CBOClean_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_CBOClean_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_CBOFlush_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_CBOFlush_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_CBOInval_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_CBOInval_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_D_channel_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_D_channel_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_D_channel_AccessAck_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_D_channel_AccessAck_stall,                    0
+... [middle omitted] ...
+Core  0's Commit SHA is: a4eeaabb4c, dirty: 1
+Using simulated 8386560MB RAM
+The image is /public/home/**********/core/test/bin/microbench.bin
+Core 0: [33mEXCEEDING CYCLE/INSTR LIMIT at pc = 0x626263f2a6d1
+[0m[35mCore-0 instrCnt = 0, cycleCnt = 100, IPC = 0.000000
+[0m[34mSeed=0 Guest cycle spent: 106 (this will be different from cycleCnt if emu loads a snapshot)
+[0m[34mHost time spent: 1,416ms
+[0m05] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0

@@ -1,0 +1,60 @@
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib64/libthread_db.so.1".
+warning: File "/public/software/compiler/gcc-13.3.0/lib64/libstdc++.so.6.0.32-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load:/usr/share/gdb/auto-load".
+To enable execution of this file add
+	add-auto-load-safe-path /public/software/compiler/gcc-13.3.0/lib64/libstdc++.so.6.0.32-gdb.py
+line to your configuration file "/public/home/**********/.gdbinit".
+To completely disable this security protection add
+	set auto-load safe-path /
+line to your configuration file "/public/home/**********/.gdbinit".
+For more information about this security protection see the
+"Auto-loading safe path" section in the GDB manual.  E.g., run from the shell:
+	info "(gdb)Auto-loading safe path"
+[New Thread 0x2aaaba6da700 (LWP 27479)]
+[New Thread 0x2aaaba8db700 (LWP 27480)]
+[New Thread 0x2aaabaadc700 (LWP 27481)]
+[New Thread 0x2aaabacdd700 (LWP 27482)]
+[New Thread 0x2aaabaede700 (LWP 27483)]
+[New Thread 0x2aaabb0df700 (LWP 27484)]
+[New Thread 0x2aaabb2e0700 (LWP 27485)]
+[New Thread 0x2aaabb4e1700 (LWP 27486)]
+[New Thread 0x2aaabb6e2700 (LWP 27487)]
+[New Thread 0x2aaabb8e3700 (LWP 27488)]
+[New Thread 0x2aaabbae4700 (LWP 27489)]
+[New Thread 0x2aaabbce5700 (LWP 27490)]
+[New Thread 0x2aaabbee6700 (LWP 27491)]
+[New Thread 0x2aaabc0e7700 (LWP 27492)]
+[New Thread 0x2aaabc2e8700 (LWP 27493)]
+[New Thread 0x2aaabc4e9700 (LWP 27495)]
+[New Thread 0x2aaabc6ea700 (LWP 27496)]
+[New Thread 0x2aaabc8eb700 (LWP 27497)]
+[New Thread 0x2aaabcaec700 (LWP 27498)]
+[New Thread 0x2aaabcced700 (LWP 27499)]
+[New Thread 0x2aaabceee700 (LWP 27500)]
+[New Thread 0x2aaabd0ef700 (LWP 27501)]
+[New Thread 0x2aaabd2f0700 (LWP 27502)]
+[New Thread 0x2aaabd4f1700 (LWP 27503)]
+[New Thread 0x2aaabd6f2700 (LWP 27504)]
+[New Thread 0x2aaabd8f3700 (LWP 27505)]
+[New Thread 0x2aaabdaf4700 (LWP 27506)]
+[New Thread 0x2aaabdcf5700 (LWP 27507)]
+[New Thread 0x2aaabdef6700 (LWP 27508)]
+[New Thread 0x2aaabe0f7700 (LWP 27509)]
+[New Thread 0x2aaabe2f8700 (LWP 27510)]
+emu compiled at Nov  7 2026, 06:12:56
+[INFO] init for constantin: loaded from init.
+Detaching after fork from child process 29980.
+CASE vdot_pos1: result=0x00000024 expect=0x00000024 hi=[0x00000000 0x00000000 0x00000000]
+CASE vdot_pos1: MATCH
+
+Thread 1 "emu" received signal SIGSEGV, Segmentation fault.
+std::_Rb_tree_insert_and_rebalance (__insert_left=<optimized out>, __x=0x2c749a910, __p=<optimized out>, __header=...) at ../../../.././libstdc++-v3/src/c++98/tree.cc:237
+237		if (__x->_M_parent == __xpp->_M_left)
+#0  std::_Rb_tree_insert_and_rebalance (__insert_left=<optimized out>, __x=0x2c749a910, __p=<optimized out>, __header=...) at ../../../.././libstdc++-v3/src/c++98/tree.cc:237
+#1  0x0000000000460c92 in std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_Auto_node::_M_insert(std::pair<std::_Rb_tree_node_base*, std::_Rb_tree_node_base*>) ()
+#2  0x0000000000460e94 in std::map<int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::operator[](int const&) ()
+#3  0x0000000000461ee0 in VerilatedCovImp::write(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) ()
+#4  0x000000000044636e in Emulator::save_coverage() ()
+#5  0x0000000000446da5 in Emulator::~Emulator() ()
+#6  0x000000000041bab4 in main ()
+rip            0x2aaaab888f50	0x2aaaab888f50 <std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)+176>

@@ -1,0 +1,26 @@
+3.2 基线 B1/B2 指标抽取（脚本读取 JSON）
+JSON: results/difftest/20-full-20261102T000517.json
+job: 126542079  status: 通过  mode: full  started: 2026-11-02T00:05:17+0800
+
+metrics[0] name='L_vdot' value='6' case_id='perf_vdot'
+metrics[1] name='T_steady' value='1' case_id='perf_vdot'
+metrics[2] name='T_kernel' value='289' case_id='perf_vdot'
+metrics[3] name='B1' value='6' case_id='perf_base'
+metrics[4] name='B2' value='9' case_id='perf_base'
+
+perf_base 用例记录：
+  {'case_id': 'perf_base', 'class': 'perf', 'status': '通过', 'good_trap': '1', 'abort': '0', 'log': '/public/home/**********/core/results/difftest/cases/perf_base.20261102T000517.log'}
+
+运行日志中的 metric 行（results/difftest/20-full-20261102T000517.log）：
+  20: [2026-11-02 00:15:39]   case perf_base [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+  21: [2026-11-02 00:15:39]   metric perf_base: B1=6
+  22: [2026-11-02 00:15:39]   metric perf_base: B2=9
+
+用例日志中的程序输出（stage3/3.2-baseline/perf_base.20261102T000517.log，grep ^PERF）：
+  PERF B1: ops=2000 cycles=12007 cycles_per_op=6 result=0xA
+  VDOT_METRIC B1 6
+  PERF B2: ops=2000 cycles=19338 cycles_per_op=9 result=0xA
+  VDOT_METRIC B2 9
+
+旧口径数据可分辨性自检（从 HEAD 源码 buf_a/buf_b 手算）：
+  want_vl8=10 (0x0A)  want_vl4=10 (0x0A)  discriminates=NO  => 旧日志 result=0xA 无法区分 vl=8 与 vl=4

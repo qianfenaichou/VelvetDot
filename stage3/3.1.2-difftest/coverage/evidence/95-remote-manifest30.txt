@@ -1,0 +1,13 @@
+# 30 行冻结清单回传证据（2026-11-06）
+# 本地生成：IMG_DIR=/public/home/**********/core bash design/verify/cases/make_manifest.sh > /tmp/manifest.30.tsv
+# 远端落位：scp /tmp/manifest.30.tsv kunshan:~/core/test/manifest.30.tsv
+# 远端核对输出：
+#   awk '!/^#/ && NF>=3' ~/core/test/manifest.30.tsv | wc -l
+#   30
+#   sha256sum ~/core/test/manifest.30.tsv
+#   e12470e653e64671129d6c093859841f795805bdd78412c1f04965d853cbb61b  /public/home/**********/core/test/manifest.30.tsv
+# 说明：
+#  - 该 sha256 与 stage3/3.1.2-difftest/README.md §4 第 6 条记录的「142246 运行时远端展开版」同值（e12470e6…），
+#    即 30 行冻结清单可原样复现。
+#  - 远端 ~/core/test/manifest.tsv（31 行 / 413b5796…）保持原样，未被本票改动；
+#    coverage 运行必须显式 --manifest ~/core/test/manifest.30.tsv（95-coverage.sh 的 --expect-rows 30 会拦错清单）。

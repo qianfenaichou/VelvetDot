@@ -1,0 +1,13 @@
+[2026-11-03 03:23:07] ===== slurm_script jobs=32 jvm_xmx=40G dry_run=0 =====
+[2026-11-03 03:23:08] 已 source /public/home/**********/tools/env.sh
+[2026-11-03 03:23:09] 版本：XiangShan=a4eeaab yunsuan=9559211 NEMU=a683e0b（锁定值见 design/HANDOFF.md §2）
+[2026-11-03 03:23:10] verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5 EMU_THREADS=8
+[2026-11-03 03:23:10] NOOP_HOME=/public/home/**********/core/src/XiangShan NEMU_HOME=/public/home/**********/core/src/NEMU AM_HOME=/public/home/**********/core/src/nexus-am
+[2026-11-03 03:23:10] == 构建 NEMU ref .so ==
+[2026-11-03 03:23:21] NEMU defconfig: riscv64-xs-kmhv2-ref_defconfig
+[2026-11-03 03:23:39] == 构建 emu：make emu -j32 EMU_THREADS=8 JVM_XMX=40G ==
+[2026-11-03 03:23:47] --image 为 hello 类镜像（hello:hello_identity.bin）：按 1.1 证据处理（hello_evidence=yes）；身份串判据见下（要求团队标识 + 真实 IP）
+[2026-11-03 03:23:47] == 冒烟运行：/public/home/**********/core/test/bin/hello_identity.bin（label=hello:hello_identity.bin）==
+[2026-11-03 03:24:05] 冒烟结果：rc=0 HIT_GOOD_TRAP=1 HIT_BAD_TRAP=0 ABORT=0
+[2026-11-03 03:24:06] 结果 JSON：/public/home/**********/core/results/emu/10-build-20261103T032307.json
+[2026-11-03 03:24:06] 判据：构建与冒烟达标（镜像标签=hello:hello_identity.bin）

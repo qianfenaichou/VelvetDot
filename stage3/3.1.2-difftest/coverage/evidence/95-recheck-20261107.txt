@@ -1,0 +1,171 @@
+95-coverage.sh R6 整改自查记录（2026-11-07）
+==============================================
+范围：R6-2（三处真跑 bug + 头注 + budget_gate CORE_DIR）、R6-4（证据引用）。
+本文件只记本轮实际执行过的命令与输出；未执行项明确标【未运行】。
+
+0) 版本
+--------
+$ sha256sum core-package/scripts/95-coverage.sh
+1f1cc4070c4e8f970f7c62b59f7b0c160fdce3262af71241ada56284aaeed54d  core-package/scripts/95-coverage.sh
+$ wc -l core-package/scripts/95-coverage.sh
+546 core-package/scripts/95-coverage.sh
+远端部署件（只读核对，未回传）：
+f62b15df7765c0f856e1d50896599a72f4f186b41fb67bb4b787a12062056714
+⇒ 本地=修复后，昆山=修复前；实跑迭代一必须先 scp 回传再核对 sha256。
+
+1) bash -n
+----------
+$ bash -n core-package/scripts/95-coverage.sh; echo rc=$?
+rc=0
+
+2) 本地 --dry-run（无预算闸）：30 例全程
+------------------------------------------
+沙箱：CORE_DIR=/tmp/covfix-r6/core（src/XiangShan 空目录、test/bin/microbench.bin、30 行清单；
+清单镜像指向仓内 design/verify/cases/*.bin；未提交任何昆山作业）
+调用（两个 dry-run 之间 sleep 2，避免同秒 RUN_ID 目录互覆盖）：
+$ SLURM_JOB_ID=fake CORE_DIR=/tmp/covfix-r6/core bash core-package/scripts/95-coverage.sh \
+    --dry-run --no-budget-guard --manifest /tmp/covfix-r6/core/test/manifest.30.tsv \
+    --ref-so /tmp/covfix-r6/core/src/NEMU/build/riscv64-nemu-interpreter-so --timeout 2400
+exit=2（dry-run 一律记“未运行”，不是失败也不是通过）
+日志：evidence/95-dryrun-local-20261107.log（run=20261107T004713，guard=0）
+尾行：“dry-run：用例未执行，本份 JSON 只能证明脚本可跑通，不得作为覆盖率证据”
+JSON：evidence/95-dryrun-local-20261107.json
+  status=未运行；cases=30；coverage.modules=[]
+  criteria=[manifest_rows=达标, budget_guard=未运行, build_emu_cov=未运行, coverage_compiled=未运行, cases_pass=未运行]
+cases.tsv：evidence/95-dryrun-local-20261107.cases.tsv
+  $ awk -F'\t' '{print $3}' … | sort | uniq -c
+  30 未运行(dry-run)
+
+3) 本地 --dry-run（带预算闸）：CORE_DIR 传递 + 真拒绝
+------------------------------------------------------
+同一沙箱内放真实 90-budget-log.sh 与 results/budget-log.tsv（本地账本）。
+$ SLURM_JOB_ID=fake CORE_DIR=/tmp/covfix-r6/core bash core-package/scripts/95-coverage.sh \
+    --dry-run --manifest /tmp/covfix-r6/core/test/manifest.30.tsv \
+    --ref-so /tmp/covfix-r6/core/src/NEMU/build/riscv64-nemu-interpreter-so --timeout 2400
+exit=2；日志 run=20261107T004716，guard=1
+  预算闸：90-budget-log.sh summary rc=1（明细 …/20261107T004716/budget-summary.txt）
+  预算闸拒绝：summary rc=1（合计超 10.6 机时 / 单项超支 50% / 缓冲被动用之一）
+  未运行：预算闸拒绝…
+budget-summary.txt 尾行：
+  合计（不含缓冲） 预算  10.6  已用  10.780
+  [超支] 合计（不含缓冲）10.780 > 10.6 机时：停跑、重估
+⇒ 子进程读到了沙箱账本（若 CORE_DIR 未 export，90-budget-log.sh 会退回默认路径并报“无记账文件”rc=2；
+  实际 rc=1 且金额 10.780 与沙箱副本一致，证明 export CORE_DIR 生效）。
+证据：evidence/95-budget-gate-local-20261107.{log,json,budget-summary.txt}
+JSON：status=未运行；criteria=[manifest_rows=达标, budget_guard=未运行, preconditions=未运行]
+
+4) 三处 bug 的片段仿真（不是整脚本执行；dry-run 不经过这三段）
+--------------------------------------------------------------
+A. coverage_modules 4/4 + MODULES_JSON 合法 JSON（合成 AllCoverage 报告）
+  cnt=4/4 MODULES_JSON=["VdotReduce","VIMac64b","VIMacU","VIMacSrcTypeModule"] => 达标
+    JSON parse OK
+  cnt=3/4 MODULES_JSON=["VdotReduce","VIMac64b","VIMacU"] => 未达标
+    JSON parse OK
+  （旧实现：4 个名字用空格拼接 ⇒ `"A" "B"` 非法 JSON；且 `wc -w` 最大 4 与 `-ge 8` 比较恒假。）
+B. g0 判据（GOOD + MISMATCH 且无 MATCH；与 20-run-difftest.sh:267-276 同口径）
+  g0-pass.log（GOOD + MISMATCH）        -> 通过
+  g0-empty-green.log（GOOD + MATCH）    -> 失败(空绿防护失效:GOOD=1 ABORT=0 MISMATCH=0 MATCH=1)
+  g0-crit-only.log（GOOD + CRITICAL）   -> 失败(空绿防护失效:GOOD=1 ABORT=0 MISMATCH=0 MATCH=0)
+  （旧实现要求 HIT CRITICAL ERROR ≥1，真实 g0 日志是 GOOD+MISMATCH，必挂。）
+脚本：/tmp/covfix-r6-sim.sh（仓外临时文件，不随交付）。
+
+5) 代码锚点（改后位置）
+------------------------
+$ grep -n "gmis\|mod_cnt\|MODULES_JSON=\"\$mods\"\|export CORE_DIR" core-package/scripts/95-coverage.sh
+54:export CORE_DIR   # 预算闸与 EXIT trap 都会调 90-budget-log.sh；不导出会退回它自己的默认路径
+265:    local gmatch gmis
+267:    gmis="$(count_hits "$clog" "CASE ${cid}: MISMATCH")"
+268:    if [ "$good" -ge 1 ] && [ "$abort" = "0" ] && [ "$gmis" -ge 1 ] && [ "$gmatch" = "0" ]; then st="通过"
+269:    else st="失败(空绿防护失效:GOOD=$good ABORT=$abort MISMATCH=$gmis MATCH=$gmatch)"; fi
+472:    local mods="" m mod_cnt=0 mod_list="VdotReduce VIMac64b VIMacU VIMacSrcTypeModule"
+475:        mods="${mods:+$mods,}\"$m\""; mod_cnt=$((mod_cnt + 1))
+479:    if [ "$mod_cnt" -eq 4 ]; then
+480:      add_criterion "coverage_modules" "AllCoverage 含 4 个 vdot 模块（4/4）" "$mod_cnt/4：$MODULES_JSON" "达标"
+482:      add_criterion "coverage_modules" "AllCoverage 含 4 个 vdot 模块（4/4）" "$mod_cnt/4：${MODULES_JSON:-无}" "未达标"
+头注状态行（第 6–7 行）已改成“干跑已执行、覆盖作业未提交”。
+附带修正：头注第 21 行清单生成命令由 `IMG_DIR=~/core/test/bin bash make_manifest.sh` 改为
+`bash design/verify/cases/make_manifest.sh ~/core/test/bin`——make_manifest.sh 的默认值会把
+`${IMG_DIR}/test/bin` 再拼一层，env 形式会生成 `~/core/test/bin/test/bin/*.bin`（实测：
+`IMG_DIR=/tmp/x` → `/tmp/x/test/bin/microbench.bin`；位置参数 → `/tmp/y/microbench.bin`）。
+
+6) 机时口径措辞（R6-3）
+------------------------
+$ grep -rc "官方 11\|官方 \*\*11\|11 机时上限\|11 h 上限" \
+    core-package/scripts/95-coverage.sh stage3/3.3/sections/coverage.md \
+    stage3/3.1.2-difftest/coverage/matrix.md tasks/T-coverage-from-zero-20261106.md
+→ 合计 0
+“自设 11.0 机时预算”命中：95-coverage.sh:163、coverage.md:103、matrix.md:237、
+  T-coverage:3、T-coverage:5、T-coverage:43（逐条 grep -n 输出见执行记录）。
+
+7) --bins 路径（R6-4）
+----------------------
+$ grep -n -- "--bins" core-package/scripts/95-coverage.sh stage3/3.3/sections/coverage.md \
+    stage3/3.1.2-difftest/coverage/matrix.md
+95-coverage.sh:492 注释（.bin 与同名 .c 并存；整包同步用 design/verify/cases，否则回退 test/bin）
+95-coverage.sh:497 --bins "$bins_dir"
+coverage.md:142 design/verify/cases
+matrix.md:29  design/verify/cases（30 例复算命令）
+matrix.md:262 design/verify/cases（覆盖跑解析命令）
+远端只读核对：~/core/design/verify/cases 不存在（.bin=0/.c=0）⇒ 95 脚本按回退逻辑用 test/bin；
+文档里的 collect 命令在本地仓执行，design/verify/cases 有 .bin+.c（39 .bin / 38 .c，perf_* 源码在 design/verify/perf）。
+
+8) 预算闸证据引用（R6-4）
+--------------------------
+coverage.md 原先把 `95-dryrun-command-assembly.*`（guard=0）当作“预算闸实测被拒”证据；已改引
+`95-budget-gate-remote.log:2-6`（guard=1、summary rc=1、exit 2），并注明前者不能当预算闸证据。
+95-remote-pathcheck.txt 已补 2026-11-07 只读复核：7 项路径 OK + verilator_coverage 5.053 + 远端 sha。
+
+9) 文档/脚本规模自查
+--------------------
+$ wc -l stage3/3.3/sections/coverage.md stage3/3.1.2-difftest/coverage/matrix.md \
+       tasks/T-coverage-from-zero-20261106.md core-package/scripts/95-coverage.sh
+181 stage3/3.3/sections/coverage.md
+277 stage3/3.1.2-difftest/coverage/matrix.md
+ 53 tasks/T-coverage-from-zero-20261106.md
+546 core-package/scripts/95-coverage.sh
+$ wc -l design/*.md | sort -nr | head -2
+3535 total
+571 design/CODING-STD.md   ← design/*.md 最大 571 行，全部 ≤800
+
+10) Python 自查
+----------------
+$ python3 -m py_compile stage3/3.1.2-difftest/coverage/gen_hits.py; echo rc=$?
+rc=0
+$ python3 -c "import json; json.load(open('…/95-dryrun-local-20261107.json')); json.load(open('…/95-budget-gate-local-20261107.json')); print('both JSON OK')"
+both JSON OK
+$ wc -l stage3/3.1.2-difftest/coverage/hits.tsv
+871
+
+11) R6-5 计数复算（用实跑 cases.tsv，非静态猜测）
+--------------------------------------------------
+$ awk -F'\t' '$1 ~ /vstart/ && $1 !~ /^xp_/{n++} END{print "F02(vstart, excl xp_)="n}' results/difftest/extra/94-extra-20261106T143635.cases.tsv
+F02(vstart, excl xp_)=14
+$ … /vill/ … ⇒ F07(vill, excl xp_)=5
+$ … /lmul/ … ⇒ F19(lmul, excl xp_)=7
+$ … /e16|e32|e64/ … ⇒ F17(e16/e32/e64)=16
+xp_ilv_* 的运行判据：results/difftest/extra/94-extra-20261106T143635.log:71-72,75
+  “-> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)” ⇒ 合法执行，不计 trap 域。
+
+12) 未执行事项（如实标注）
+--------------------------
+- 真实覆盖作业（sbatch）【未运行】：按本轮要求不提交任何昆山作业，归实跑迭代一。
+- 昆山部署件回传【未运行】：95-coverage.sh 修复版仅在本地，远端仍为 f62b15df…。
+- 三处 bug 的整脚本级真实日志验证【未运行】：dry-run 不经过 g0/模块闸/JSON 段；
+  第 4 节的片段仿真只验证表达式，不能替代真实覆盖跑。
+- 三个文档门禁【未运行】：按要求由脚本统一跑，本组不跑。
+13) 终轮自查（2026-11-07 收尾）
+-------------------------------
+$ bash -n core-package/scripts/95-coverage.sh; echo rc=$?
+rc=0
+$ sha256sum core-package/scripts/95-coverage.sh
+1f1cc4070c4e8f970f7c62b59f7b0c160fdce3262af71241ada56284aaeed54d
+$ wc -l …
+546 core-package/scripts/95-coverage.sh
+181 stage3/3.3/sections/coverage.md
+277 stage3/3.1.2-difftest/coverage/matrix.md
+ 53 tasks/T-coverage-from-zero-20261106.md
+$ python3 -m py_compile stage3/3.1.2-difftest/coverage/gen_hits.py → rc=0
+$ wc -l stage3/3.1.2-difftest/coverage/hits.tsv → 871
+$ grep -n "全绿|优于同题|全场唯一|唯一"（4 个 own 文件，剔除「唯一加速比」口径行）→ 无命中（rc=1）
+  （coverage.md:31 的「唯一例外」已改「例外（仅 F28 一项）」，避免与禁用词「唯一」撞词）
+$ grep -n "官方 11|11 机时上限|11 h 上限|官方上限"（4 个 own 文件，剔除「不是/不得写成/非官方」否定式）→ 无命中（rc=1）

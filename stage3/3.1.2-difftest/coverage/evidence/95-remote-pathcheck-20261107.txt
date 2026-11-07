@@ -1,0 +1,13 @@
+OK /public/home/**********/tools/env.sh
+OK /public/home/**********/core/src/XiangShan/difftest/verilator.mk
+OK /public/home/**********/core/src/XiangShan/build/rtl/SimTop.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VdotReduce.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VIMacU.sv
+OK /public/home/**********/core/src/XiangShan/build/rtl/VIMacSrcTypeModule.sv
+OK /public/home/**********/core/test/manifest.30.tsv
+OK /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so
+OK /public/home/**********/core/test/bin/microbench.bin
+verilator_coverage=/public/home/**********/tools/verilator/bin/verilator_coverage
+Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+nproc=64

@@ -1,0 +1,4 @@
+perf_vadd	perf	通过	1	0	0	/public/home/**********/core/results/difftest/cases/perf_vadd.20261103T075552.log
+perf_vmacc	perf	通过	1	0	0	/public/home/**********/core/results/difftest/cases/perf_vmacc.20261103T075552.log
+perf_vdot	perf	通过	1	0	0	/public/home/**********/core/results/difftest/cases/perf_vdot.20261103T075552.log
+vdot_g0_badexp	g0	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_g0_badexp.20261103T075552.log

@@ -1,0 +1,29 @@
+[2026-11-02 00:05:17] ===== slurm_script mode=full max_instr=200000000 timeout=1800s =====
+[2026-11-02 00:05:18] 已 source /public/home/**********/tools/env.sh
+[2026-11-02 00:09:31]   case vadd-microbench [vadd] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:09:51]   case vdot_pos1 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:10:19]   case vdot_pos2 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:10:47]   case vdot_neg1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:11:08]   case vdot_neg2 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:11:38]   case vdot_neg3 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:11:58]   case vdot_bound1 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:12:19]   case vdot_bound2 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:12:36]   case vdot_bound3 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:12:44]   case vdot_ill_sew [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:12:57]   case vdot_ill_lmul [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:13:07]   case vdot_ill_lmul8 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:13:18]   case vdot_ill_vs [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:14:36]   case perf_vdot [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:14:36]   metric perf_vdot: L_vdot=6
+[2026-11-02 00:14:36]   metric perf_vdot: T_steady=1
+[2026-11-02 00:14:36]   metric perf_vdot: T_kernel=289
+[2026-11-02 00:15:39]   case perf_base [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:15:39]   metric perf_base: B1=6
+[2026-11-02 00:15:39]   metric perf_base: B2=9
+[2026-11-02 00:17:53]   case vdot_matrix [vdot-matrix] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:25:48]   case vdot_rand [vdot-rand] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:26:06]   case vdot_g0_badexp [g0] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:26:16]   case vdot_ill_vstart [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:26:28]   case vdot_ill_vill [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-02 00:26:28] 结果 JSON：/public/home/**********/core/results/difftest/20-full-20261102T000517.json
+[2026-11-02 00:26:28] 判据：达标（20/20）

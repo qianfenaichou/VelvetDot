@@ -1,0 +1,8 @@
+bash_n_rc=0
+pycompile_rc=0
+  315 stage3/3.1.2-difftest/coverage/matrix.md
+  184 stage3/3.3/sections/coverage.md
+   99 tasks/T-coverage-structural-20261107.md
+  598 总计
+7a1f98b6f8c4c2bb9d5bab2b5ea201e5c910921d5814acd762824f248d821628  core-package/scripts/95-coverage.sh
+14

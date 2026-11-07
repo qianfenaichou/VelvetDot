@@ -1,0 +1,6 @@
+[2026-11-07 00:47:16] ===== 95-coverage.sh run=20261107T004716 jobs=16 emu_threads=8 timeout=2400s guard=1 =====
+[2026-11-07 00:47:16] [dry-run] 跳过 verilator_coverage 存在性检查（本机无 Verilator 也允许 dry-run 走完全程）
+[2026-11-07 00:47:16] 预算闸：90-budget-log.sh summary rc=1（明细 /tmp/covfix-r6/core/results/coverage/20261107T004716/budget-summary.txt）
+[2026-11-07 00:47:16] 预算闸拒绝：summary rc=1（合计超 10.6 机时 / 单项超支 50% / 缓冲被动用之一）
+[2026-11-07 00:47:16] 结果 JSON：/tmp/covfix-r6/core/results/coverage/20261107T004716/95-coverage.sh-20261107T004716.json
+[2026-11-07 00:47:16] 未运行：预算闸拒绝：先重估预算，或用户显式加预算后用 --no-budget-guard
