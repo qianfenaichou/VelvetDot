@@ -1,0 +1,51 @@
+[2026-11-08 02:03:56] ===== slurm_script job=127196036 host=a08r3n00 partition=kshcnormal =====
+[2026-11-08 02:03:56] emu=/public/home/scnsokdzoq/core/src/XiangShan/build/emu emu_md5=fd65ca4af946bff28a7e2f1ce6c7bd01 max_instr=200000000 timeout_per_case=900s
+[2026-11-08 02:03:56] repeats=4 cases=perf_vdot perf_base perf_vadd perf_vmacc cases_dir=/public/home/scnsokdzoq/core/test/bin out=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.json
+[2026-11-08 02:03:56] versions: xiangshan=a4eeaab yunsuan=9559211
+[2026-11-08 02:03:56] caliber: speedup_per_instr=(L_base_chain/3)/L_vdot; L_base_chain=16（预登记，来源作业 126762127）
+[2026-11-08 02:03:56] image md5: perf_vdot	1d06ab259d960719f32857d66dbc1108 perf_base	b5a4eeff0020e4b2a4cab2a66ad267a5 perf_vadd	05f8c2b704897d5ef12e20195beec18e perf_vmacc	dd78ae5ed3bd679b9ae6ce7b57668d70 
+[2026-11-08 02:08:43] repeat=1 case=perf_vdot rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=5 perf_lines=8 elapsed=287s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r1.20261108T020356.log
+[2026-11-08 02:10:35] repeat=1 case=perf_base rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=2 perf_lines=4 elapsed=112s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r1.20261108T020356.log
+[2026-11-08 02:12:04] repeat=1 case=perf_vadd rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=89s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r1.20261108T020356.log
+[2026-11-08 02:13:46] repeat=1 case=perf_vmacc rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=102s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r1.20261108T020356.log
+[2026-11-08 02:18:04] repeat=2 case=perf_vdot rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=5 perf_lines=8 elapsed=258s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r2.20261108T020356.log
+[2026-11-08 02:19:10] repeat=2 case=perf_base rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=2 perf_lines=4 elapsed=66s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r2.20261108T020356.log
+[2026-11-08 02:21:00] repeat=2 case=perf_vadd rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=110s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r2.20261108T020356.log
+[2026-11-08 02:22:47] repeat=2 case=perf_vmacc rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=107s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r2.20261108T020356.log
+[2026-11-08 02:27:28] repeat=3 case=perf_vdot rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=5 perf_lines=8 elapsed=281s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r3.20261108T020356.log
+[2026-11-08 02:28:33] repeat=3 case=perf_base rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=2 perf_lines=4 elapsed=65s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r3.20261108T020356.log
+[2026-11-08 02:29:44] repeat=3 case=perf_vadd rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=71s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r3.20261108T020356.log
+[2026-11-08 02:31:41] repeat=3 case=perf_vmacc rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=117s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r3.20261108T020356.log
+[2026-11-08 02:35:41] repeat=4 case=perf_vdot rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=5 perf_lines=8 elapsed=240s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r4.20261108T020356.log
+[2026-11-08 02:37:00] repeat=4 case=perf_base rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=2 perf_lines=4 elapsed=79s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r4.20261108T020356.log
+[2026-11-08 02:38:13] repeat=4 case=perf_vadd rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=73s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r4.20261108T020356.log
+[2026-11-08 02:39:43] repeat=4 case=perf_vmacc rc=0 good=1 abort=0 bad=0 verdict_ok=1 metrics=3 perf_lines=5 elapsed=90s log=/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r4.20261108T020356.log
+[summary] 跨重复中位数/极差（values 按重复顺序）
+  perf_vdot  L_vdot         values=4,4,4,4 median=4 range=0
+  perf_vdot  L_vdot_mean    values=4,4,4,4 median=4 range=0
+  perf_vdot  L_vdot_loop    values=6,6,6,6 median=6 range=0
+  perf_vdot  T_steady       values=1,1,1,1 median=1 range=0
+  perf_vdot  T_kernel       values=290,290,290,290 median=290 range=0
+  perf_base  B1             values=6,6,6,6 median=6 range=0
+  perf_base  B2             values=9,9,9,9 median=9 range=0
+  perf_vadd  L_vadd         values=3,3,3,3 median=3 range=0
+  perf_vadd  L_vadd_mean    values=3,3,3,3 median=3 range=0
+  perf_vadd  L_vadd_loop    values=5,5,5,5 median=5 range=0
+  perf_vmacc L_vmacc        values=4,4,4,4 median=4 range=0
+  perf_vmacc L_vmacc_mean   values=4,4,4,4 median=4 range=0
+  perf_vmacc L_vmacc_loop   values=6,6,6,6 median=6 range=0
+[speedup] formula=(L_base_chain/3)/L_vdot; L_base_chain=16; per_repeat=[1.333333, 1.333333, 1.333333, 1.333333]; median=1.333333 range=0
+[speedup] integer_print=5/L_vdot; per_repeat=[1.25, 1.25, 1.25, 1.25]; median=1.25
+[status] 通过
+  [达标] repeat_count: 4 (expected: repeats >= 4)
+  [达标] runs_total: 16 (expected: 16 次 emu 运行（4 用例 × 4 重复）)
+  [达标] emu_rc_zero: 16/16 (expected: 全部 rc == 0)
+  [达标] good_trap: 16/16 (expected: 全部 HIT GOOD TRAP >= 1)
+  [达标] no_abort: 0 次越界 (expected: 全部 ABORT == 0)
+  [达标] no_bad_trap: 0 次越界 (expected: 全部 HIT BAD TRAP == 0)
+  [达标] verdict_all_ok: 16/16 (expected: 每用例 4/4 重复命中各自 ALL_OK 汇总行)
+  [达标] metrics_complete: 缺 0 项 (expected: 每重复的每个用例都含预期 VDOT_METRIC)
+  [达标] l_vdot_matches_report: 4 (expected: L_vdot 跨重复中位数 == report §1 的 4)
+[2026-11-08 02:39:43] 结果 JSON：/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.json
+[2026-11-08 02:39:43] 汇总 TSV：/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.summary.tsv
+[2026-11-08 02:39:43] ===== DONE status=通过 =====

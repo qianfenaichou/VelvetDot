@@ -1,0 +1,14 @@
+case	metric	n	values	median	min	max	range
+perf_vdot	L_vdot	4	4,4,4,4	4	4	4	0
+perf_vdot	L_vdot_mean	4	4,4,4,4	4	4	4	0
+perf_vdot	L_vdot_loop	4	6,6,6,6	6	6	6	0
+perf_vdot	T_steady	4	1,1,1,1	1	1	1	0
+perf_vdot	T_kernel	4	290,290,290,290	290	290	290	0
+perf_base	B1	4	6,6,6,6	6	6	6	0
+perf_base	B2	4	9,9,9,9	9	9	9	0
+perf_vadd	L_vadd	4	3,3,3,3	3	3	3	0
+perf_vadd	L_vadd_mean	4	3,3,3,3	3	3	3	0
+perf_vadd	L_vadd_loop	4	5,5,5,5	5	5	5	0
+perf_vmacc	L_vmacc	4	4,4,4,4	4	4	4	0
+perf_vmacc	L_vmacc_mean	4	4,4,4,4	4	4	4	0
+perf_vmacc	L_vmacc_loop	4	6,6,6,6	6	6	6	0

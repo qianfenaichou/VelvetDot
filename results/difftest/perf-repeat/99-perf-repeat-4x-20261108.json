@@ -1,0 +1,1007 @@
+{
+  "schema": "vdot-perf-repeat/1",
+  "script": "scripts/99-run-perf-repeat.sh",
+  "item": "P3-full",
+  "status": "通过",
+  "note": "四个 perf 用例各跑 repeats 次独立 emu 进程；metrics 来自 ^VDOT_METRIC 行（同 20-run-difftest.sh:311-327）；中位数为跨重复统计，不是用例内单次中位数。",
+  "platform": "kshcnormal",
+  "slurm_job_id": "127196036",
+  "host": "a08r3n00",
+  "started_at": "2026-11-08T02:03:56+0800",
+  "ended_at": "2026-11-08T02:39:43+08:00",
+  "run_id": "20261108T020356",
+  "provenance": {
+    "emu": "/public/home/scnsokdzoq/core/src/XiangShan/build/emu",
+    "emu_md5": "fd65ca4af946bff28a7e2f1ce6c7bd01",
+    "cases_dir": "/public/home/scnsokdzoq/core/test/bin",
+    "img_md5": {
+      "perf_vdot": "1d06ab259d960719f32857d66dbc1108",
+      "perf_base": "b5a4eeff0020e4b2a4cab2a66ad267a5",
+      "perf_vadd": "05f8c2b704897d5ef12e20195beec18e",
+      "perf_vmacc": "dd78ae5ed3bd679b9ae6ce7b57668d70"
+    },
+    "max_instr": "200000000",
+    "versions": {
+      "xiangshan": "a4eeaab",
+      "yunsuan": "9559211"
+    }
+  },
+  "caliber": {
+    "name": "per_instr_normalized_latency",
+    "status": "预登记（本轮数据产生前写定）",
+    "formula": "speedup = (L_base_chain / 3) / L_vdot",
+    "denominator": {
+      "L_base_chain_cyc": 16,
+      "chain_instr": 3,
+      "per_instr_cyc": 5.333333,
+      "source": "作业 126762127（full 尺度 8×2000=16000 合并样本中位数）；results/difftest/b3/91-b3-20261104T115624.log 的 VDOT_METRIC L_base_chain 16；链=vwmul.vv→vwadd.vx→vredsum.vs（3 条串行）"
+    },
+    "numerator": {
+      "metric": "L_vdot",
+      "cross_repeat_median": 4,
+      "values": [
+        4,
+        4,
+        4,
+        4
+      ]
+    },
+    "primary": {
+      "definition": "(L_base_chain/3) / L_vdot",
+      "per_repeat": [
+        1.333333,
+        1.333333,
+        1.333333,
+        1.333333
+      ],
+      "median": 1.333333,
+      "min": 1.333333,
+      "max": 1.333333,
+      "range": 0
+    },
+    "integer_print": {
+      "definition": "print(L_base_chain/3) = 5; 5 / L_vdot",
+      "per_repeat": [
+        1.25,
+        1.25,
+        1.25,
+        1.25
+      ],
+      "median": 1.25,
+      "min": 1.25,
+      "max": 1.25,
+      "range": 0
+    },
+    "not_used": {
+      "name": "kernel_16_over_7",
+      "value": 2.285714,
+      "reason": "report §4.5 明写该数为内核级动态拍数对比，不是延迟加速比、不是官方口径；且含配置/装载/读回，不能回答 docx/02:61,66 的 latency 对比。本轮不采用为官方加速比口径。"
+    },
+    "limitations": [
+      "每指令归一：分母 L_base_chain/3 把 3 条串行指令的链延迟平摊到每条指令；原始 16/4=4.0× 是「3 指令链 vs 单指令」的跨口径比值，不写成 latency 加速比。",
+      "分母 L_base_chain=16 来自另一作业 126762127（同一 VimacCfg、同 VL=8、同计数法、配置外提），不是本轮 16 次运行测得的；本轮只重测分子 L_vdot。",
+      "L_vdot 的 4 次重复中位数仍是 emu 的 rdcycle 模型周期，不是硅片延迟；4 次的极差只说明本批进程间离散，不构成置信区间。",
+      "官方 docx/02:61,66 只要求「用已有向量指令组合实现基线 + latency 加速比分析」，未规定条数/统计口径；L_base_chain 的 3 条链与 16/3 归一是本包内部自设口径。",
+      "报告级 ALGORITHM §3.4 要求「同配置再跑 >=5 次取中位数」；本批是 4 次，未达到该条，属于补充证据而非替代。",
+      "所有用例均以 --no-diff 运行（emu 读 rdcycle，与 NEMU 参照不一致）；功能正确性由各自的 PERF_* verdict 自检承担，不是 difftest。"
+    ]
+  },
+  "criteria": [
+    {
+      "name": "repeat_count",
+      "expected": "repeats >= 4",
+      "actual": "4",
+      "status": "达标"
+    },
+    {
+      "name": "runs_total",
+      "expected": "16 次 emu 运行（4 用例 × 4 重复）",
+      "actual": "16",
+      "status": "达标"
+    },
+    {
+      "name": "emu_rc_zero",
+      "expected": "全部 rc == 0",
+      "actual": "16/16",
+      "status": "达标"
+    },
+    {
+      "name": "good_trap",
+      "expected": "全部 HIT GOOD TRAP >= 1",
+      "actual": "16/16",
+      "status": "达标"
+    },
+    {
+      "name": "no_abort",
+      "expected": "全部 ABORT == 0",
+      "actual": "0 次越界",
+      "status": "达标"
+    },
+    {
+      "name": "no_bad_trap",
+      "expected": "全部 HIT BAD TRAP == 0",
+      "actual": "0 次越界",
+      "status": "达标"
+    },
+    {
+      "name": "verdict_all_ok",
+      "expected": "每用例 4/4 重复命中各自 ALL_OK 汇总行",
+      "actual": "16/16",
+      "status": "达标"
+    },
+    {
+      "name": "metrics_complete",
+      "expected": "每重复的每个用例都含预期 VDOT_METRIC",
+      "actual": "缺 0 项",
+      "status": "达标"
+    },
+    {
+      "name": "l_vdot_matches_report",
+      "expected": "L_vdot 跨重复中位数 == report §1 的 4",
+      "actual": "4",
+      "status": "达标"
+    }
+  ],
+  "summary": {
+    "perf_vdot": {
+      "L_vdot": {
+        "values": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "n": 4,
+        "median": 4,
+        "min": 4,
+        "max": 4,
+        "range": 0
+      },
+      "L_vdot_mean": {
+        "values": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "n": 4,
+        "median": 4,
+        "min": 4,
+        "max": 4,
+        "range": 0
+      },
+      "L_vdot_loop": {
+        "values": [
+          6,
+          6,
+          6,
+          6
+        ],
+        "n": 4,
+        "median": 6,
+        "min": 6,
+        "max": 6,
+        "range": 0
+      },
+      "T_steady": {
+        "values": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "n": 4,
+        "median": 1,
+        "min": 1,
+        "max": 1,
+        "range": 0
+      },
+      "T_kernel": {
+        "values": [
+          290,
+          290,
+          290,
+          290
+        ],
+        "n": 4,
+        "median": 290,
+        "min": 290,
+        "max": 290,
+        "range": 0
+      }
+    },
+    "perf_base": {
+      "B1": {
+        "values": [
+          6,
+          6,
+          6,
+          6
+        ],
+        "n": 4,
+        "median": 6,
+        "min": 6,
+        "max": 6,
+        "range": 0
+      },
+      "B2": {
+        "values": [
+          9,
+          9,
+          9,
+          9
+        ],
+        "n": 4,
+        "median": 9,
+        "min": 9,
+        "max": 9,
+        "range": 0
+      }
+    },
+    "perf_vadd": {
+      "L_vadd": {
+        "values": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "n": 4,
+        "median": 3,
+        "min": 3,
+        "max": 3,
+        "range": 0
+      },
+      "L_vadd_mean": {
+        "values": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "n": 4,
+        "median": 3,
+        "min": 3,
+        "max": 3,
+        "range": 0
+      },
+      "L_vadd_loop": {
+        "values": [
+          5,
+          5,
+          5,
+          5
+        ],
+        "n": 4,
+        "median": 5,
+        "min": 5,
+        "max": 5,
+        "range": 0
+      }
+    },
+    "perf_vmacc": {
+      "L_vmacc": {
+        "values": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "n": 4,
+        "median": 4,
+        "min": 4,
+        "max": 4,
+        "range": 0
+      },
+      "L_vmacc_mean": {
+        "values": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "n": 4,
+        "median": 4,
+        "min": 4,
+        "max": 4,
+        "range": 0
+      },
+      "L_vmacc_loop": {
+        "values": [
+          6,
+          6,
+          6,
+          6
+        ],
+        "n": 4,
+        "median": 6,
+        "min": 6,
+        "max": 6,
+        "range": 0
+      }
+    }
+  },
+  "runs": [
+    {
+      "repeat": 1,
+      "case": "perf_vdot",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 287,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vdot.bin",
+      "img_md5": "1d06ab259d960719f32857d66dbc1108",
+      "metrics": {
+        "L_vdot": 4,
+        "L_vdot_mean": 4,
+        "L_vdot_loop": 6,
+        "T_steady": 1,
+        "T_kernel": 290
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK"
+        },
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vdot",
+          "line": "PERF L_vdot : ops=1984 cycles=8378 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=10 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "L_vdot_alt",
+          "line": "PERF L_vdot_alt : ops=1983 cycles=8404 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xFFFFF7F9 want=0xFFFFF7F9 chain=OK"
+        },
+        {
+          "tag": "L_vdot_loop",
+          "line": "PERF L_vdot_loop : ops=2000 cycles=13957 mean=6 cycles_per_op=6 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "T_steady",
+          "line": "PERF T_steady: ops=4000 cycles=4234 mean=1 cycles_per_op=1 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "T_kernel",
+          "line": "PERF T_kernel: cycles=290 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "VDOT",
+          "line": "PERF_VDOT verdict=ALL_OK enc=OK vl=OK raw=OK alt=OK alt_differs=yes loop=OK steady=OK kernel=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r1.20261108T020356.log"
+    },
+    {
+      "repeat": 1,
+      "case": "perf_base",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 112,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_base.bin",
+      "img_md5": "b5a4eeff0020e4b2a4cab2a66ad267a5",
+      "metrics": {
+        "B1": 6,
+        "B2": 9
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "base",
+          "line": "PERF base: want_vl8=0x00000008 want_vl4=0x00000012 discriminates=yes"
+        },
+        {
+          "tag": "B1",
+          "line": "PERF B1: ops=2000 cycles=12002 cycles_per_op=6 result=0x00000008 want=0x00000008 match=OK"
+        },
+        {
+          "tag": "B2",
+          "line": "PERF B2: ops=2000 cycles=19335 cycles_per_op=9 result=0x00000008 want=0x00000008 not_vl4=yes match=OK"
+        },
+        {
+          "tag": "BASE",
+          "line": "PERF_BASE verdict=ALL_OK B1=OK B2=OK b2_not_vl4=yes discriminates=yes want=0x00000008 want_vl4=0x00000012"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r1.20261108T020356.log"
+    },
+    {
+      "repeat": 1,
+      "case": "perf_vadd",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 89,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vadd.bin",
+      "img_md5": "05f8c2b704897d5ef12e20195beec18e",
+      "metrics": {
+        "L_vadd": 3,
+        "L_vadd_mean": 3,
+        "L_vadd_loop": 5
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vadd",
+          "line": "PERF vadd: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vadd",
+          "line": "PERF L_vadd : ops=1984 cycles=6558 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=42 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "L_vadd_alt",
+          "line": "PERF L_vadd_alt : ops=1983 cycles=6569 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=33 result=0x8E want=0x8E chain=OK"
+        },
+        {
+          "tag": "L_vadd_loop",
+          "line": "PERF L_vadd_loop : ops=2000 cycles=11899 mean=5 cycles_per_op=5 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "VADD",
+          "line": "PERF_VADD verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r1.20261108T020356.log"
+    },
+    {
+      "repeat": 1,
+      "case": "perf_vmacc",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 102,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vmacc.bin",
+      "img_md5": "dd78ae5ed3bd679b9ae6ce7b57668d70",
+      "metrics": {
+        "L_vmacc": 4,
+        "L_vmacc_mean": 4,
+        "L_vmacc_loop": 6
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vmacc",
+          "line": "PERF vmacc: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vmacc",
+          "line": "PERF L_vmacc : ops=1984 cycles=8509 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "L_vmacc_alt",
+          "line": "PERF L_vmacc_alt : ops=1983 cycles=8416 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xDB want=0xDB chain=OK"
+        },
+        {
+          "tag": "L_vmacc_loop",
+          "line": "PERF L_vmacc_loop : ops=2000 cycles=13946 mean=6 cycles_per_op=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "VMACC",
+          "line": "PERF_VMACC verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r1.20261108T020356.log"
+    },
+    {
+      "repeat": 2,
+      "case": "perf_vdot",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 258,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vdot.bin",
+      "img_md5": "1d06ab259d960719f32857d66dbc1108",
+      "metrics": {
+        "L_vdot": 4,
+        "L_vdot_mean": 4,
+        "L_vdot_loop": 6,
+        "T_steady": 1,
+        "T_kernel": 290
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK"
+        },
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vdot",
+          "line": "PERF L_vdot : ops=1984 cycles=8378 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=10 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "L_vdot_alt",
+          "line": "PERF L_vdot_alt : ops=1983 cycles=8404 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xFFFFF7F9 want=0xFFFFF7F9 chain=OK"
+        },
+        {
+          "tag": "L_vdot_loop",
+          "line": "PERF L_vdot_loop : ops=2000 cycles=13957 mean=6 cycles_per_op=6 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "T_steady",
+          "line": "PERF T_steady: ops=4000 cycles=4234 mean=1 cycles_per_op=1 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "T_kernel",
+          "line": "PERF T_kernel: cycles=290 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "VDOT",
+          "line": "PERF_VDOT verdict=ALL_OK enc=OK vl=OK raw=OK alt=OK alt_differs=yes loop=OK steady=OK kernel=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r2.20261108T020356.log"
+    },
+    {
+      "repeat": 2,
+      "case": "perf_base",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 66,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_base.bin",
+      "img_md5": "b5a4eeff0020e4b2a4cab2a66ad267a5",
+      "metrics": {
+        "B1": 6,
+        "B2": 9
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "base",
+          "line": "PERF base: want_vl8=0x00000008 want_vl4=0x00000012 discriminates=yes"
+        },
+        {
+          "tag": "B1",
+          "line": "PERF B1: ops=2000 cycles=12002 cycles_per_op=6 result=0x00000008 want=0x00000008 match=OK"
+        },
+        {
+          "tag": "B2",
+          "line": "PERF B2: ops=2000 cycles=19335 cycles_per_op=9 result=0x00000008 want=0x00000008 not_vl4=yes match=OK"
+        },
+        {
+          "tag": "BASE",
+          "line": "PERF_BASE verdict=ALL_OK B1=OK B2=OK b2_not_vl4=yes discriminates=yes want=0x00000008 want_vl4=0x00000012"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r2.20261108T020356.log"
+    },
+    {
+      "repeat": 2,
+      "case": "perf_vadd",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 110,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vadd.bin",
+      "img_md5": "05f8c2b704897d5ef12e20195beec18e",
+      "metrics": {
+        "L_vadd": 3,
+        "L_vadd_mean": 3,
+        "L_vadd_loop": 5
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vadd",
+          "line": "PERF vadd: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vadd",
+          "line": "PERF L_vadd : ops=1984 cycles=6558 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=42 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "L_vadd_alt",
+          "line": "PERF L_vadd_alt : ops=1983 cycles=6569 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=33 result=0x8E want=0x8E chain=OK"
+        },
+        {
+          "tag": "L_vadd_loop",
+          "line": "PERF L_vadd_loop : ops=2000 cycles=11899 mean=5 cycles_per_op=5 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "VADD",
+          "line": "PERF_VADD verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r2.20261108T020356.log"
+    },
+    {
+      "repeat": 2,
+      "case": "perf_vmacc",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 107,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vmacc.bin",
+      "img_md5": "dd78ae5ed3bd679b9ae6ce7b57668d70",
+      "metrics": {
+        "L_vmacc": 4,
+        "L_vmacc_mean": 4,
+        "L_vmacc_loop": 6
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vmacc",
+          "line": "PERF vmacc: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vmacc",
+          "line": "PERF L_vmacc : ops=1984 cycles=8509 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "L_vmacc_alt",
+          "line": "PERF L_vmacc_alt : ops=1983 cycles=8416 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xDB want=0xDB chain=OK"
+        },
+        {
+          "tag": "L_vmacc_loop",
+          "line": "PERF L_vmacc_loop : ops=2000 cycles=13946 mean=6 cycles_per_op=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "VMACC",
+          "line": "PERF_VMACC verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r2.20261108T020356.log"
+    },
+    {
+      "repeat": 3,
+      "case": "perf_vdot",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 281,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vdot.bin",
+      "img_md5": "1d06ab259d960719f32857d66dbc1108",
+      "metrics": {
+        "L_vdot": 4,
+        "L_vdot_mean": 4,
+        "L_vdot_loop": 6,
+        "T_steady": 1,
+        "T_kernel": 290
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK"
+        },
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vdot",
+          "line": "PERF L_vdot : ops=1984 cycles=8378 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=10 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "L_vdot_alt",
+          "line": "PERF L_vdot_alt : ops=1983 cycles=8404 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xFFFFF7F9 want=0xFFFFF7F9 chain=OK"
+        },
+        {
+          "tag": "L_vdot_loop",
+          "line": "PERF L_vdot_loop : ops=2000 cycles=13957 mean=6 cycles_per_op=6 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "T_steady",
+          "line": "PERF T_steady: ops=4000 cycles=4234 mean=1 cycles_per_op=1 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "T_kernel",
+          "line": "PERF T_kernel: cycles=290 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "VDOT",
+          "line": "PERF_VDOT verdict=ALL_OK enc=OK vl=OK raw=OK alt=OK alt_differs=yes loop=OK steady=OK kernel=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r3.20261108T020356.log"
+    },
+    {
+      "repeat": 3,
+      "case": "perf_base",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 65,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_base.bin",
+      "img_md5": "b5a4eeff0020e4b2a4cab2a66ad267a5",
+      "metrics": {
+        "B1": 6,
+        "B2": 9
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "base",
+          "line": "PERF base: want_vl8=0x00000008 want_vl4=0x00000012 discriminates=yes"
+        },
+        {
+          "tag": "B1",
+          "line": "PERF B1: ops=2000 cycles=12002 cycles_per_op=6 result=0x00000008 want=0x00000008 match=OK"
+        },
+        {
+          "tag": "B2",
+          "line": "PERF B2: ops=2000 cycles=19335 cycles_per_op=9 result=0x00000008 want=0x00000008 not_vl4=yes match=OK"
+        },
+        {
+          "tag": "BASE",
+          "line": "PERF_BASE verdict=ALL_OK B1=OK B2=OK b2_not_vl4=yes discriminates=yes want=0x00000008 want_vl4=0x00000012"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r3.20261108T020356.log"
+    },
+    {
+      "repeat": 3,
+      "case": "perf_vadd",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 71,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vadd.bin",
+      "img_md5": "05f8c2b704897d5ef12e20195beec18e",
+      "metrics": {
+        "L_vadd": 3,
+        "L_vadd_mean": 3,
+        "L_vadd_loop": 5
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vadd",
+          "line": "PERF vadd: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vadd",
+          "line": "PERF L_vadd : ops=1984 cycles=6558 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=42 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "L_vadd_alt",
+          "line": "PERF L_vadd_alt : ops=1983 cycles=6569 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=33 result=0x8E want=0x8E chain=OK"
+        },
+        {
+          "tag": "L_vadd_loop",
+          "line": "PERF L_vadd_loop : ops=2000 cycles=11899 mean=5 cycles_per_op=5 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "VADD",
+          "line": "PERF_VADD verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r3.20261108T020356.log"
+    },
+    {
+      "repeat": 3,
+      "case": "perf_vmacc",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 117,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vmacc.bin",
+      "img_md5": "dd78ae5ed3bd679b9ae6ce7b57668d70",
+      "metrics": {
+        "L_vmacc": 4,
+        "L_vmacc_mean": 4,
+        "L_vmacc_loop": 6
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vmacc",
+          "line": "PERF vmacc: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vmacc",
+          "line": "PERF L_vmacc : ops=1984 cycles=8509 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "L_vmacc_alt",
+          "line": "PERF L_vmacc_alt : ops=1983 cycles=8416 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xDB want=0xDB chain=OK"
+        },
+        {
+          "tag": "L_vmacc_loop",
+          "line": "PERF L_vmacc_loop : ops=2000 cycles=13946 mean=6 cycles_per_op=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "VMACC",
+          "line": "PERF_VMACC verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r3.20261108T020356.log"
+    },
+    {
+      "repeat": 4,
+      "case": "perf_vdot",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 240,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vdot.bin",
+      "img_md5": "1d06ab259d960719f32857d66dbc1108",
+      "metrics": {
+        "L_vdot": 4,
+        "L_vdot_mean": 4,
+        "L_vdot_loop": 6,
+        "T_steady": 1,
+        "T_kernel": 290
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK"
+        },
+        {
+          "tag": "vdot",
+          "line": "PERF vdot: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vdot",
+          "line": "PERF L_vdot : ops=1984 cycles=8378 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=10 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "L_vdot_alt",
+          "line": "PERF L_vdot_alt : ops=1983 cycles=8404 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xFFFFF7F9 want=0xFFFFF7F9 chain=OK"
+        },
+        {
+          "tag": "L_vdot_loop",
+          "line": "PERF L_vdot_loop : ops=2000 cycles=13957 mean=6 cycles_per_op=6 result=0xFFFFFF79 want=0xFFFFFF79 chain=OK"
+        },
+        {
+          "tag": "T_steady",
+          "line": "PERF T_steady: ops=4000 cycles=4234 mean=1 cycles_per_op=1 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "T_kernel",
+          "line": "PERF T_kernel: cycles=290 result=0x00000008 want=0x00000008 chain=OK"
+        },
+        {
+          "tag": "VDOT",
+          "line": "PERF_VDOT verdict=ALL_OK enc=OK vl=OK raw=OK alt=OK alt_differs=yes loop=OK steady=OK kernel=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vdot.r4.20261108T020356.log"
+    },
+    {
+      "repeat": 4,
+      "case": "perf_base",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 79,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_base.bin",
+      "img_md5": "b5a4eeff0020e4b2a4cab2a66ad267a5",
+      "metrics": {
+        "B1": 6,
+        "B2": 9
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "base",
+          "line": "PERF base: want_vl8=0x00000008 want_vl4=0x00000012 discriminates=yes"
+        },
+        {
+          "tag": "B1",
+          "line": "PERF B1: ops=2000 cycles=12002 cycles_per_op=6 result=0x00000008 want=0x00000008 match=OK"
+        },
+        {
+          "tag": "B2",
+          "line": "PERF B2: ops=2000 cycles=19335 cycles_per_op=9 result=0x00000008 want=0x00000008 not_vl4=yes match=OK"
+        },
+        {
+          "tag": "BASE",
+          "line": "PERF_BASE verdict=ALL_OK B1=OK B2=OK b2_not_vl4=yes discriminates=yes want=0x00000008 want_vl4=0x00000012"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_base.r4.20261108T020356.log"
+    },
+    {
+      "repeat": 4,
+      "case": "perf_vadd",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 73,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vadd.bin",
+      "img_md5": "05f8c2b704897d5ef12e20195beec18e",
+      "metrics": {
+        "L_vadd": 3,
+        "L_vadd_mean": 3,
+        "L_vadd_loop": 5
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vadd",
+          "line": "PERF vadd: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vadd",
+          "line": "PERF L_vadd : ops=1984 cycles=6558 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=42 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "L_vadd_alt",
+          "line": "PERF L_vadd_alt : ops=1983 cycles=6569 mean=3 median=3 cycles_per_op=3 min=2 max=18446744073709551614 over=33 result=0x8E want=0x8E chain=OK"
+        },
+        {
+          "tag": "L_vadd_loop",
+          "line": "PERF L_vadd_loop : ops=2000 cycles=11899 mean=5 cycles_per_op=5 result=0xA0 want=0xA0 chain=OK"
+        },
+        {
+          "tag": "VADD",
+          "line": "PERF_VADD verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vadd.r4.20261108T020356.log"
+    },
+    {
+      "repeat": 4,
+      "case": "perf_vmacc",
+      "rc": 0,
+      "good_trap": 1,
+      "abort": 0,
+      "bad_trap": 0,
+      "verdict_all_ok": true,
+      "elapsed_s": 90,
+      "img": "/public/home/scnsokdzoq/core/test/bin/perf_vmacc.bin",
+      "img_md5": "dd78ae5ed3bd679b9ae6ce7b57668d70",
+      "metrics": {
+        "L_vmacc": 4,
+        "L_vmacc_mean": 4,
+        "L_vmacc_loop": 6
+      },
+      "raw_perf_lines": [
+        {
+          "tag": "vmacc",
+          "line": "PERF vmacc: vl=8 expect=8 OK"
+        },
+        {
+          "tag": "L_vmacc",
+          "line": "PERF L_vmacc : ops=1984 cycles=8509 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "L_vmacc_alt",
+          "line": "PERF L_vmacc_alt : ops=1983 cycles=8416 mean=4 median=4 cycles_per_op=4 min=2 max=18446744073709551614 over=5 result=0xDB want=0xDB chain=OK"
+        },
+        {
+          "tag": "L_vmacc_loop",
+          "line": "PERF L_vmacc_loop : ops=2000 cycles=13946 mean=6 cycles_per_op=6 result=0x41 want=0x41 chain=OK"
+        },
+        {
+          "tag": "VMACC",
+          "line": "PERF_VMACC verdict=ALL_OK vl=OK chain=OK chain_alt=OK alt_differs=yes chain_loop=OK"
+        }
+      ],
+      "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases/perf_vmacc.r4.20261108T020356.log"
+    }
+  ],
+  "artifacts": {
+    "log": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.log",
+    "case_logs_dir": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.cases",
+    "summary_tsv": "/public/home/scnsokdzoq/core/results/difftest/perf-repeat/99-perf-repeat-4x-20261108.summary.tsv"
+  }
+}
