@@ -16,7 +16,10 @@ vdot.vv 编码冲突检查（离线可复现）
 
 退出码语义（必须区分，否则「没跑出冲突」会被读成「没有冲突」）：
   0  PASS                工作区全部快照 0 重叠，且全部阳性对照命中，且与 SPEC/金模型一致
-  1  CONFLICT            检出与冻结三元组重叠的编码（禁止锁码/禁止宣称冻结）
+  1  CONFLICT            检出与冻结三元组重叠、且不属于 SELF 清单的编码
+                         （真外部撞码/我方编码漂移；禁止锁码/禁止宣称冻结）
+  SELF 清单：本任务新增的三条实现侧条目（rocket-chip BitPat、NEMU vopmvv 表项、
+  VecDecoder 表项）逐项精确登记；输出逐条打印 [SELF]/[CONFLICT] 归属。
   2  SELFTEST_FAILED     阳性对照未命中 => 校验本身失效，本次结论不可信（先修正校验）
   3  INPUT_MISSING       快照文件缺失或解析到 0 条编码 => 无法判定（不等于通过）
   4  UPSTREAM_NOT_COVERED 工作区维度已过，但未提供 riscv-opcodes 本地快照，
@@ -45,6 +48,40 @@ MACHINE_CODE = 0x3A20A1D7   # vdot.vv v3, v2, v1（SPEC.md §0/:19、§2.2/:95�
 # 阳性对照用的「已知撞车」编码（历史上真实发生过，本校验必须能检出）
 OLD_C_ENC1 = (OPCODE, FUNCT3, 0b001100, 0b1)   # 被 Zvbc vclmul.vv 占用
 OLD_C_ENC1_WORD = 0x3220A1D7                   # 旧机器码（SPEC 修订前）
+
+# ---------------------------------------------------------------- 我方新增（SELF）
+# 本任务为 vdot.vv 在实现侧新增的编码条目。它们与冻结三元组按设计重叠，属于
+# 「我方占用」，不是外部撞码；但每一条都必须与清单逐项精确匹配（文件 + 条目名
+# + 32 位模式 + mask/val + funct6，缺一不可）。同文件里的任何其他重叠条目（外部
+# 新增，或我方条目被改名/改编码）都不会匹配，仍按 CONFLICT 报出。
+# 清单只登记**已存在的三条改动**，不是通配白名单；新增条目须先改这里并留痕。
+SELF_ENTRIES = [
+    {
+        "kind": "scala-bitpat",
+        "file": "repos/XiangShan/rocket-chip/src/main/scala/rocket/Instructions.scala",
+        "name": "VDOT_VV",
+        "pattern": "0011101??????????010?????1010111",
+        "mask": 0xFE00707F,
+        "val": 0x3A002057,
+        "why": "我方新增：rocket-chip 译码 BitPat（提交 c4d7616，Instructions.scala:458-459）",
+    },
+    {
+        "kind": "nemu-decode",
+        "file": "repos/NEMU/src/isa/riscv64/instr/rvv/decode.h",
+        "name": "vdot",
+        "pattern": "0011101?????????????????????????",
+        "funct6": FUNCT6,
+        "why": "我方新增：NEMU vopmvv 表项 vdot（提交 a9dca53，decode.h:371-373）",
+    },
+    {
+        "kind": "vecdecoder",
+        "file": "repos/XiangShan/src/main/scala/xiangshan/backend/decode/VecDecoder.scala",
+        "name": "VDOT_VV",
+        "funct6": FUNCT6,
+        "why": "我方新增：VecDecoder.opmvv 表项 VDOT_VV（提交 8f1aeb3，VecDecoder.scala:385）",
+    },
+]
+SELF_KEYS = ("name", "pattern", "mask", "val", "funct6")
 
 WS = os.getcwd()
 SRC = {
@@ -87,10 +124,27 @@ def same_triple(m, v):
     return True
 
 
+def self_match(kind, **fields):
+    """精确匹配 SELF 清单；缺字段/多字段/任一值不符都返回 None（调用方判 CONFLICT）。
+
+    只对清单里登记过的同一文件、同一条目名、同一编码模式生效，因此不会把
+    外部新增（哪怕同文件、同 funct6）误归类成我方占用。
+    """
+    for e in SELF_ENTRIES:
+        if e["kind"] != kind or e["file"] != fields.get("file"):
+            continue
+        if any(k in e and fields.get(k) != e[k] for k in SELF_KEYS):
+            continue
+        return e
+    return None
+
+
 class Report:
     def __init__(self):
         self.lines = []
         self.conflicts = []
+        self.self_hits = []     # (tag, desc, why) 归属为 SELF 的我方新增
+        self.self_seen = set()  # 已认领的清单条目；重复出现不再豁免
         self.controls = []      # (name, ok)
         self.fatal = []         # 直接决定退出码的失败
 
@@ -98,13 +152,31 @@ class Report:
         self.lines.append(s)
         print(s)
 
+    def claim_self(self, entry, tag, desc):
+        """登记一条 SELF 归属；同一清单条目第二次出现返回 False（继续按冲突上报）。
+
+        这样「把我方定义复制一份」不会被当成两条合法占用而漏报。
+        """
+        if entry is None:
+            return False
+        key = (entry["kind"], entry["file"], entry.get("name"), entry.get("pattern"))
+        if key in self.self_seen:
+            return False
+        self.self_seen.add(key)
+        self.self_hits.append((tag, desc, entry["why"]))
+        return True
+
 
 # ---------------------------------------------------------------- 解析器
 def parse_bitpat(text):
-    """BitPat("b001110??????????010?????1010111") -> (mask, val)。返回 32 位条目。"""
+    """[def NAME =] BitPat("b...") -> (name|None, pattern, mask, val)，仅 32 位。
+
+    name 只在 BitPat 直接跟在 `def NAME =` 后时给出；内联 BitPat 仍参与扫描，
+    但 name=None（SELF 清单按名字精确匹配，不会误豁免内联模式）。
+    """
     out = []
-    for m in re.finditer(r'BitPat\("b([01?x_]+)"\)', text):
-        s = m.group(1).replace("_", "")
+    for m in re.finditer(r'(?:def\s+(\w+)\s*=\s*)?BitPat\("b([01?x_]+)"\)', text):
+        name, s = m.group(1), m.group(2).replace("_", "")
         if len(s) != 32:
             continue
         mask = val = 0
@@ -115,7 +187,7 @@ def parse_bitpat(text):
                 val |= 1 << bit
             elif ch == "0":
                 mask |= 1 << bit
-        out.append((s, mask, val))
+        out.append((name, s, mask, val))
     return out
 
 
@@ -300,19 +372,29 @@ def scan_scala_bitpats(r, verbose):
                     continue
                 rel = os.path.relpath(p, WS)
                 per_file[rel] = len(entries)
-                for pat, mask, val in entries:
+                for name, pat, mask, val in entries:
                     if (mask & 0x7F) != 0x7F:
                         skipped += 1          # opcode 未完全固定：不是指令匹配模式
                         continue
                     total += 1
                     if overlap(OURS_MASK, OURS_VAL, mask, val) or same_triple(mask, val):
-                        hits.append((pat, rel, mask, val))
+                        hits.append((name, pat, rel, mask, val))
     r.say("[B] Scala BitPat 扫描: 文件 %d 个 / 指令级 32 位模式 %d 条（另有 opcode 未固定的 %d 条，不参与判定）"
           " -> 与冻结三元组重叠 %d 条" % (len(per_file), total, skipped, len(hits)))
     if total == 0:
         r.fatal.append(("INPUT_MISSING", "Scala BitPat 解析到 0 条指令级模式，扫描管线可能失效"))
-    for pat, f, mask, val in hits:
-        r.conflicts.append(("SCALA-BITPAT", "%s: %s" % (f, pat), "mask=0x%08X val=0x%08X" % (mask, val)))
+    n_self = 0
+    for name, pat, f, mask, val in hits:
+        e = self_match("scala-bitpat", file=f, name=name, pattern=pat, mask=mask, val=val)
+        if r.claim_self(e, "SCALA-BITPAT", "%s (%s: %s)" % (name, f, pat)):
+            n_self += 1
+            r.say("[B]   重叠归属: [SELF] %s (%s) pattern=%s <- %s" % (name, f, pat, e["why"]))
+        else:
+            r.conflicts.append(("SCALA-BITPAT", "%s: %s" % (f, pat),
+                                "mask=0x%08X val=0x%08X name=%s" % (mask, val, name or "<inline>")))
+            r.say("[B]   重叠归属: [CONFLICT] %s (%s) mask=0x%08X val=0x%08X（不在 SELF 清单或重复出现）"
+                  % (name or "<inline>", f, mask, val))
+    r.say("[B]   归属汇总: SELF %d 条 / CONFLICT %d 条" % (n_self, len(hits) - n_self))
     if verbose:
         for f, n in sorted(per_file.items()):
             r.say("        %-72s %d 条" % (f, n))
@@ -363,12 +445,22 @@ def scan_nemu_decode_h(r, verbose):
     free = [x for x in range(64) if x not in used]
     r.say("[D] NEMU decode.h vopmvv: 已占 funct6 %d 个 / 空闲 %d 个" % (len(used), len(free)))
     r.say("[D]   空闲列表: " + " ".join(format(x, '06b') for x in free))
+    n_self = 0
     if FUNCT6 in used:
         for name, pat in used[FUNCT6]:
-            r.conflicts.append(("NEMU-DECODE-H", "vopmvv 表项 %s (pattern %s)" % (name, pat), ""))
+            e = self_match("nemu-decode", file=SRC["nemu-decode.h"], name=name,
+                           pattern=pat, funct6=FUNCT6)
+            if r.claim_self(e, "NEMU-DECODE-H", "vopmvv 表项 %s (pattern %s)" % (name, pat)):
+                n_self += 1
+                r.say("[D]   重叠归属: [SELF] vopmvv 表项 %s (pattern %s) <- %s" % (name, pat, e["why"]))
+            else:
+                r.conflicts.append(("NEMU-DECODE-H", "vopmvv 表项 %s (pattern %s)" % (name, pat), ""))
+                r.say("[D]   重叠归属: [CONFLICT] vopmvv 表项 %s (pattern %s)（不在 SELF 清单或重复出现）" % (name, pat))
     # 上游占用但 NEMU 未占的槽位（这些不能当回退候选直接用）
     r.say("[D]   冻结 funct6 %s 在 NEMU 译码表: %s"
-          % (format(FUNCT6, '06b'), "已占（冲突）" if FUNCT6 in used else "空闲"))
+          % (format(FUNCT6, '06b'),
+             ("已占，归属 SELF %d / CONFLICT %d" % (n_self, len(used[FUNCT6]) - n_self))
+             if FUNCT6 in used else "空闲"))
 
 
 def scan_vecdecoder_opmvv(r, verbose):
@@ -397,7 +489,13 @@ def scan_vecdecoder_opmvv(r, verbose):
           % (len(entries), len(used), len(free)))
     if FUNCT6 in used:
         for name in used[FUNCT6]:
-            r.conflicts.append(("VECDECODER", "opmvv 表项 %s" % name, ""))
+            e = self_match("vecdecoder", file=SRC["VecDecoder.scala"], name=name, funct6=FUNCT6)
+            if r.claim_self(e, "VECDECODER", "opmvv 表项 %s" % name):
+                r.say("[E]   重叠归属: [SELF] opmvv 表项 %s（rocket BitPat %s）<- %s"
+                      % (name, ipat.get(name, "?"), e["why"]))
+            else:
+                r.conflicts.append(("VECDECODER", "opmvv 表项 %s" % name, ""))
+                r.say("[E]   重叠归属: [CONFLICT] opmvv 表项 %s（不在 SELF 清单或重复出现）" % name)
     if len(entries) == 0:
         r.fatal.append(("INPUT_MISSING", "VecDecoder opmvv 表解析到 0 条"))
     if verbose:
@@ -449,7 +547,7 @@ def positive_controls(r):
     q = os.path.join(WS, SRC["rocket-Instructions.scala"])
     ok2 = False
     if os.path.isfile(q):
-        for _pat, m, v in parse_bitpat(open(q, encoding="utf-8", errors="replace").read()):
+        for _name, _pat, m, v in parse_bitpat(open(q, encoding="utf-8", errors="replace").read()):
             if (m >> 26 & 0x3F) == 0x3F and (v >> 26 & 0x3F) == 0b111111 and (v >> 12 & 7) == 0b010:
                 ok2 = True
     r.say("[P2] 阳性对照 · 111111/010 在 rocket-chip Instructions.scala 中被占用（VWMACCSU_VV, :819）-> %s"
@@ -518,6 +616,10 @@ def upstream_scan(r, snapshot, verbose):
 
 def emit(r, covered_upstream):
     print("")
+    if r.self_hits:
+        print("SELF 归属 %d 条（我方新增，按清单精确匹配，不计外部占用）:" % len(r.self_hits))
+        for tag, who, why in r.self_hits:
+            print("    [%s] %s <- %s" % (tag, who, why))
     if r.conflicts:
         print("!!! 检出冲突/漂移 %d 条:" % len(r.conflicts))
         for tag, who, detail in r.conflicts:
