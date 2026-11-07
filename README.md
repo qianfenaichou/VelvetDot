@@ -1,5 +1,7 @@
 # vdot.vv · 香山昆明湖 V2 的 K=8 int8 点积向量指令
 
+<p align="center"><img src="assets/velvetdot-keyvisual.png" alt="VelvetDot key visual" width="720"></p>
+
 `vdot.vv` 是一条 RISC-V 向量扩展（RVV）自定义指令：单条指令完成 **8 个 int8 元素的点积**（SEW=8、LMUL=1、K=8 单结果），把 19 位内部累加结果符号扩展后写回向量寄存器 `vd` 的低 32 位，`vd` 的高 96 位恒为零。本仓库包含该指令的规格、Chisel RTL 实现、NEMU 参考模型、Python 金模型、协同仿真用例，以及三阶段的测试与性能分析材料。
 
 目标场景是 INT8 量化推理中的点积密集算子。`design/verify/cases/perf_llm_attn.c:1-30` 按 llama.cpp `ggml_vec_dot_q8_0_q8_0` 的 block 内层点积同形构造 attention QK 基准：QK=32 的 block 由 4 个 K=8 子块组成，head_dim=64 时为 8 个子块。
@@ -157,6 +159,12 @@ sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difft
 | 基线组合每点开销 | `B1 = 6`、`B2 = 9` cyc/dot（内部自设的测量定义） | 同上；定义见 `stage3/3.3/report.md` §1 |
 
 性能数字的测量定义互不可替代：`L_*` 是依赖链延迟，`T_steady` 与 `B1`/`B2` 是每点周期，两类不可混用；基线为"用已有向量指令组合实现同等功能"的自设序列（`vwmul.vv + vwredsum.vs` 与 `vwmul.vv + vwadd.vx + vredsum.vs`），非官方规定的测量定义。
+
+## 项目海报
+
+<p align="center"><img src="assets/velvetdot-poster.png" alt="VelvetDot poster" width="600"></p>
+
+原图见 [`assets/velvetdot-poster.png`](assets/velvetdot-poster.png)。
 
 ## 材料索引
 
