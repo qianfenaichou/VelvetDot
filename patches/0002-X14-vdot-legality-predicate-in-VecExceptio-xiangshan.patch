@@ -1,0 +1,52 @@
+From 19e252613abae8e00a13aee12d3456b421622246 Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH 2/4] X14: vdot legality predicate in VecExceptionGen
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+isVdot && (SEW =/= 0.U || LMUL =/= 4.U) → illegal, per design/SPEC.md §1.3
+(vsew=0 ↔ SEW=8, LMUL field 4 ↔ LMUL=1; writing vlmul==="b001" would be LMUL=2).
+vill / vstart / mstatus.VS stay as the existing independent terms; dontTouch added
+for observability. Compile check: mill -i xiangshan.compile rc=0.
+---
+ .../scala/xiangshan/backend/decode/VecExceptionGen.scala  | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/scala/xiangshan/backend/decode/VecExceptionGen.scala b/src/main/scala/xiangshan/backend/decode/VecExceptionGen.scala
+index b885c68..dc6b3d5 100644
+--- a/src/main/scala/xiangshan/backend/decode/VecExceptionGen.scala
++++ b/src/main/scala/xiangshan/backend/decode/VecExceptionGen.scala
+@@ -271,6 +271,11 @@ class VecExceptionGen(implicit p: Parameters) extends XSModule{
+   private val notAllowOverlapInst = lsIndexInst && inst.NF =/= 0.U || Seq(VMSBF_M, VMSIF_M, VMSOF_M, VIOTA_M, 
+                                     VSLIDEUP_VX, VSLIDEUP_VI, VSLIDE1UP_VX, VFSLIDE1UP_VF, VRGATHER_VV, VRGATHEREI16_VV, VRGATHER_VX, VRGATHER_VI, VCOMPRESS_VM).map(_ === inst.ALL).reduce(_ || _)
+ 
++  // custom vdot.vv: only legal with SEW=8 (vsew=0) and LMUL=1 (vlmul=000 ⇒ LMUL=4 in this encoding)
++  // NOTE: do NOT write vlmul === "b001" here — that is LMUL=2.
++  private val isVdot = VDOT_VV === inst.ALL
++  private val vdotIllegal = isVdot && ((SEW =/= 0.U) || (LMUL =/= 4.U))
++
+   // 8. vstart Illegal
+   private val vstartIllegal = isVArith && (io.vstart =/= 0.U)
+ 
+@@ -291,13 +296,14 @@ class VecExceptionGen(implicit p: Parameters) extends XSModule{
+ 
+   private val regOverlapIllegal = v0Overlap || vs1vdOverlap || vs2vdOverlap
+ 
+-  io.illegalInst := instIllegal || villIllegal || eewIllegal || emulIllegal || regNumIllegal || regOverlapIllegal || vstartIllegal
++  io.illegalInst := instIllegal || villIllegal || eewIllegal || emulIllegal || regNumIllegal || regOverlapIllegal || vstartIllegal || vdotIllegal
+   dontTouch(instIllegal)
+   dontTouch(villIllegal)
+   dontTouch(eewIllegal)
+   dontTouch(emulIllegal)
+   dontTouch(regNumIllegal)
+   dontTouch(regOverlapIllegal)
++  dontTouch(vdotIllegal)
+   dontTouch(notDependVtypeInst)
+   dontTouch(vstartIllegal)
+ }
+\ No newline at end of file
+-- 
+2.43.0
+

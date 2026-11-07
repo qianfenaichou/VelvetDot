@@ -1,0 +1,41 @@
+From 3c9a91a9480a45e032178fe879b9c2011184912a Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH 1/3] X6/X7: VimacOpcode.vdot = 3'b111 and VimacType.vdot =
+ 9'h067
+
+opcode slot 111 is the last free one; vdot is deliberately NOT in isMacc/isFixP
+so the accumulator path and vxsat stay untouched (vd is not read, vxsat is never
+modified). Verified by: mill -i xiangshan.compile rc=0 (kunshan login node).
+---
+ src/main/scala/yunsuan/encoding/Opcode/VimacOpcode.scala | 1 +
+ src/main/scala/yunsuan/package.scala                     | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/main/scala/yunsuan/encoding/Opcode/VimacOpcode.scala b/src/main/scala/yunsuan/encoding/Opcode/VimacOpcode.scala
+index d188aa4..3eed1fc 100644
+--- a/src/main/scala/yunsuan/encoding/Opcode/VimacOpcode.scala
++++ b/src/main/scala/yunsuan/encoding/Opcode/VimacOpcode.scala
+@@ -11,6 +11,7 @@ object VimacOpcode {
+   def vmadd   = "b100".U(width.W)
+   def vnmsub  = "b101".U(width.W)
+   def vsmul   = "b110".U(width.W)
++  def vdot    = "b111".U(width.W)  // custom: 8x int8 dot-product, K=8 single result
+ 
+   def highHalf(opcode: UInt) = Seq(vmulh).map(_ === opcode).reduce(_ || _)
+ 
+diff --git a/src/main/scala/yunsuan/package.scala b/src/main/scala/yunsuan/package.scala
+index ef6d1e1..ae768c7 100644
+--- a/src/main/scala/yunsuan/package.scala
++++ b/src/main/scala/yunsuan/package.scala
+@@ -397,6 +397,7 @@ package object yunsuan {
+     def vmadd              = LiteralCat(0.U(2.W), INT.S, INT.S, INT.S, FMT.VVV, VimacOpcode.vmadd)  // "b00_111_0_100".U(OpTypeWidth.W) // vmadd   vmadd.vv/vmadd.vx
+     def vnmsub             = LiteralCat(0.U(2.W), INT.S, INT.S, INT.S, FMT.VVV, VimacOpcode.vnmsub) // "b00_111_0_101".U(OpTypeWidth.W) // vnmsub  vnmsub.vv/vnmsub.vx
+     def vsmul              = LiteralCat(0.U(2.W), INT.S, INT.S, INT.X, FMT.VVV, VimacOpcode.vsmul)  // "b00_110_0_110".U(OpTypeWidth.W) // vsmul   vsmul.vv/vsmul.vx
++    def vdot               = LiteralCat(0.U(2.W), INT.S, INT.S, INT.X, FMT.VVV, VimacOpcode.vdot)   // "b00_110_0_111".U(OpTypeWidth.W) // vdot    vdot.vv (custom, K=8 → 32-bit in vd[31:0])
+ 
+     def getOpcode(fuOpType: UInt) : UInt = fuOpType(2, 0)
+     def getFormat(fuOpType: UInt) : UInt = fuOpType(3)
+-- 
+2.43.0
+
