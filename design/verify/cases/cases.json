@@ -1,0 +1,103 @@
+{
+  "machine_code": "0x3a20a1d7",
+  "note": "期望值由算法 B（int64 累加）计算；负例无期望（必须陷入非法）",
+  "cases": [
+    {
+      "name": "vdot_pos1",
+      "cls": "vdot-pos",
+      "expect": 36
+    },
+    {
+      "name": "vdot_pos2",
+      "cls": "vdot-pos",
+      "expect": 4294967292
+    },
+    {
+      "name": "vdot_pos3",
+      "cls": "vdot-pos",
+      "expect": 4294967295
+    },
+    {
+      "name": "vdot_neg1",
+      "cls": "vdot-neg",
+      "expect": 4294967260
+    },
+    {
+      "name": "vdot_neg_odd1",
+      "cls": "vdot-neg",
+      "expect": 84
+    },
+    {
+      "name": "vdot_neg_odd3",
+      "cls": "vdot-neg",
+      "expect": 12
+    },
+    {
+      "name": "vdot_neg_odd5",
+      "cls": "vdot-neg",
+      "expect": 4294967236
+    },
+    {
+      "name": "vdot_neg_odd7",
+      "cls": "vdot-neg",
+      "expect": 4294967164
+    },
+    {
+      "name": "vdot_bound1",
+      "cls": "vdot-bound",
+      "expect": 131072
+    },
+    {
+      "name": "vdot_bound2",
+      "cls": "vdot-bound",
+      "expect": 4294837248
+    },
+    {
+      "name": "vdot_bound3",
+      "cls": "vdot-bound",
+      "expect": 0
+    },
+    {
+      "name": "vdot_bound4",
+      "cls": "vdot-bound",
+      "expect": 129032
+    },
+    {
+      "name": "vdot_bound5",
+      "cls": "vdot-bound",
+      "expect": 1
+    },
+    {
+      "name": "vdot_ill_sew",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_lmul2",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_lmul4",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_lmul8",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_vm0",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_vstart",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_vill",
+      "cls": "negative"
+    },
+    {
+      "name": "vdot_ill_vs",
+      "cls": "negative"
+    }
+  ]
+}

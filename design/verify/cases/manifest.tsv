@@ -1,0 +1,31 @@
+# cid	cls	image(占位符 @IMG_DIR@ 用 make_manifest.sh 替换为绝对路径)	extra
+vadd-microbench	vadd	@IMG_DIR@/microbench.bin	
+vdot_pos1	vdot-pos	@IMG_DIR@/vdot_pos1.bin	
+vdot_pos2	vdot-pos	@IMG_DIR@/vdot_pos2.bin	
+vdot_pos3	vdot-pos	@IMG_DIR@/vdot_pos3.bin	
+vdot_neg1	vdot-neg	@IMG_DIR@/vdot_neg1.bin	
+vdot_neg_odd1	vdot-neg	@IMG_DIR@/vdot_neg_odd1.bin	
+vdot_neg_odd3	vdot-neg	@IMG_DIR@/vdot_neg_odd3.bin	
+vdot_neg_odd5	vdot-neg	@IMG_DIR@/vdot_neg_odd5.bin	
+vdot_neg_odd7	vdot-neg	@IMG_DIR@/vdot_neg_odd7.bin	
+vdot_bound1	vdot-bound	@IMG_DIR@/vdot_bound1.bin	
+vdot_bound2	vdot-bound	@IMG_DIR@/vdot_bound2.bin	
+vdot_bound3	vdot-bound	@IMG_DIR@/vdot_bound3.bin	
+vdot_bound4	vdot-bound	@IMG_DIR@/vdot_bound4.bin	
+vdot_bound5	vdot-bound	@IMG_DIR@/vdot_bound5.bin	
+vdot_rand	vdot-rand	@IMG_DIR@/vdot_rand.bin	
+vdot_matrix	vdot-matrix	@IMG_DIR@/vdot_matrix.bin	
+vdot_g0_badexp	g0	@IMG_DIR@/vdot_g0_badexp.bin	
+vdot_ill_sew	negative	@IMG_DIR@/vdot_ill_sew.bin	
+vdot_ill_lmul2	negative	@IMG_DIR@/vdot_ill_lmul2.bin	
+vdot_ill_lmul4	negative	@IMG_DIR@/vdot_ill_lmul4.bin	
+vdot_ill_lmul8	negative	@IMG_DIR@/vdot_ill_lmul8.bin	
+vdot_ill_vm0	negative	@IMG_DIR@/vdot_ill_vm0.bin	
+vdot_ill_vstart	negative	@IMG_DIR@/vdot_ill_vstart.bin	
+vdot_ill_vill	negative	@IMG_DIR@/vdot_ill_vill.bin	
+vdot_ill_vs	negative	@IMG_DIR@/vdot_ill_vs.bin	
+perf_vdot	perf	@IMG_DIR@/perf_vdot.bin	--no-diff
+perf_base	perf	@IMG_DIR@/perf_base.bin	--no-diff
+perf_vadd	perf	@IMG_DIR@/perf_vadd.bin	--no-diff
+perf_vmacc	perf	@IMG_DIR@/perf_vmacc.bin	--no-diff
+vdot_mix	vdot-mix	@IMG_DIR@/vdot_mix.bin	

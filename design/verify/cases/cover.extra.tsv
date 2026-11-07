@@ -1,0 +1,130 @@
+# cid	cls	family	anchor	note
+xb_pos_lanehi	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	正数点积 + lane8..15 极值干扰必须不参与
+xb_neg_all	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	全负积（符号扩展）
+xb_bound_max	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	上边界 S=8*127*127=129032
+xb_bound_min	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	下边界 S=8*(-128)*(-128)=131072（19 位累加器上界）
+xb_vl_sweep	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	vl=0..8 全扫：结果与 vl 无关且全写 vd（SPEC §1.1 有意偏离）
+xb_vta_vma	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	vta/vma 四组合（0x00/0x40/0x80/0xC0）结果不变
+xb_oldvd	vdot-base	base	SPEC §1.1/§1.2 语义与写回；§3.2 边界值	旧 vd 预填 0x5A 后执行：旧值不是语义输入
+xo_vs2_pos	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 pos
+xo_vs2_neg	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 neg
+xo_vs2_mixodd	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 mixodd
+xo_vs2_bmax	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 bmax
+xo_vs2_bmin	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 bmin
+xo_vs2_zero	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 zero
+xo_vs2_ext	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 ext
+xo_vs2_asym	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 asym
+xo_vs2_lanehi	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 lanehi
+xo_vs2_rand	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 rand
+xo_vs1_pos	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 pos
+xo_vs1_neg	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 neg
+xo_vs1_mixodd	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 mixodd
+xo_vs1_bmax	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 bmax
+xo_vs1_bmin	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 bmin
+xo_vs1_zero	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 zero
+xo_vs1_ext	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 ext
+xo_vs1_asym	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 asym
+xo_vs1_lanehi	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 lanehi
+xo_vs1_rand	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 rand
+xo_v12_pos	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 pos
+xo_v12_neg	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 neg
+xo_v12_mixodd	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 mixodd
+xo_v12_bmax	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 bmax
+xo_v12_bmin	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 bmin
+xo_v12_zero	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 zero
+xo_v12_ext	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 ext
+xo_v12_asym	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 asym
+xo_v12_lanehi	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 lanehi
+xo_v12_rand	vdot-ov	overlap	vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)	重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 rand
+xp_bb2	vdot-pl	back2back	ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）	2 条背靠背独立 vdot（0 bubble，不同 vd）
+xp_bb3	vdot-pl	back2back	ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）	3 条背靠背独立 vdot（0 bubble，不同 vd）
+xp_bb4	vdot-pl	back2back	ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）	4 条背靠背独立 vdot（0 bubble，不同 vd）
+xp_bb6	vdot-pl	back2back	ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）	6 条背靠背独立 vdot（0 bubble，不同 vd）
+xp_bb8	vdot-pl	back2back	ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）	8 条背靠背独立 vdot（0 bubble，不同 vd）
+xp_bub1	vdot-pl	bubble	ARCHITECTURE §8:192（含 bubble 变体）	同 vd 两条 vdot 之间插 1 个 nop（终值必须是后者）
+xp_bub2	vdot-pl	bubble	ARCHITECTURE §8:192（含 bubble 变体）	同 vd 两条 vdot 之间插 2 个 nop（终值必须是后者）
+xp_bub3	vdot-pl	bubble	ARCHITECTURE §8:192（含 bubble 变体）	同 vd 两条 vdot 之间插 3 个 nop（终值必须是后者）
+xp_bub5	vdot-pl	bubble	ARCHITECTURE §8:192（含 bubble 变体）	同 vd 两条 vdot 之间插 5 个 nop（终值必须是后者）
+xp_bub7	vdot-pl	bubble	ARCHITECTURE §8:192（含 bubble 变体）	同 vd 两条 vdot 之间插 7 个 nop（终值必须是后者）
+xp_chain2	vdot-pl	raw-chain	SPEC §1.1 旧 vd 非语义输入；写后读依赖	同 vd RAW 依赖链长度 2（后一条读前一条的 vd）
+xp_chain3	vdot-pl	raw-chain	SPEC §1.1 旧 vd 非语义输入；写后读依赖	同 vd RAW 依赖链长度 3（后一条读前一条的 vd）
+xp_chain4	vdot-pl	raw-chain	SPEC §1.1 旧 vd 非语义输入；写后读依赖	同 vd RAW 依赖链长度 4（后一条读前一条的 vd）
+xp_chain6	vdot-pl	raw-chain	SPEC §1.1 旧 vd 非语义输入；写后读依赖	同 vd RAW 依赖链长度 6（后一条读前一条的 vd）
+xp_chain8	vdot-pl	raw-chain	SPEC §1.1 旧 vd 非语义输入；写后读依赖	同 vd RAW 依赖链长度 8（后一条读前一条的 vd）
+xp_wbp2	vdot-pl	wb-port	ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）	2 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）
+xp_wbp3	vdot-pl	wb-port	ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）	3 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）
+xp_wbp4	vdot-pl	wb-port	ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）	4 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）
+xp_wbp6	vdot-pl	wb-port	ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）	6 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）
+xp_cxl2	vdot-pl	cancel	CODING-STD §3.4 fire/fireS1 纪律；控制流重定向	2 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）
+xp_cxl3	vdot-pl	cancel	CODING-STD §3.4 fire/fireS1 纪律；控制流重定向	3 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）
+xp_cxl4	vdot-pl	cancel	CODING-STD §3.4 fire/fireS1 纪律；控制流重定向	4 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）
+xp_cxl8	vdot-pl	cancel	CODING-STD §3.4 fire/fireS1 纪律；控制流重定向	8 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）
+xp_ilv_vstart	vdot-pl	illegal-interleave	SPEC §1.1 六条必要条件（构造-清除不残留）	vstart=1 后清 0，再执行 vdot
+xp_ilv_vill	vdot-pl	illegal-interleave	SPEC §1.1 六条必要条件（构造-清除不残留）	非法 vtype 造出 vill=1，再用合法 vsetvli 清除，再 vdot
+xp_ilv_vs	vdot-pl	illegal-interleave	SPEC §1.1 六条必要条件（构造-清除不残留）	mstatus.VS 关掉再打开，再 vdot
+xp_ilv_sew_back	vdot-pl	illegal-interleave	SPEC §1.1 六条必要条件（构造-清除不残留）	vtype 切到 e16 再切回 e8，再 vdot
+xp_ilv_lmul_back	vdot-pl	illegal-interleave	SPEC §1.1 六条必要条件（构造-清除不残留）	vtype 切到 m4 再切回 m1，再 vdot
+xp_ilv_all	vdot-pl	illegal-interleave	SPEC §1.1 六条必要条件（构造-清除不残留）	vstart/vill/VS/SEW/LMUL 五类非法状态依次构造并清除后 vdot
+xp_mix2	vdot-pl	mix-issue	ARCHITECTURE §2.2 发射/写回竞争	2 组 vdot↔vadd 交替发射
+xp_mix3	vdot-pl	mix-issue	ARCHITECTURE §2.2 发射/写回竞争	3 组 vdot↔vadd 交替发射
+xp_mix4	vdot-pl	mix-issue	ARCHITECTURE §2.2 发射/写回竞争	4 组 vdot↔vadd 交替发射
+xp_mix6	vdot-pl	mix-issue	ARCHITECTURE §2.2 发射/写回竞争	6 组 vdot↔vadd 交替发射
+xp_hi2	vdot-pl	hi96	SPEC §1.2 第 2 条（vd[127:32] 恒零）	2 条背靠背 vdot 逐条断言 vd[127:32]=0
+xp_hi4	vdot-pl	hi96	SPEC §1.2 第 2 条（vd[127:32] 恒零）	4 条背靠背 vdot 逐条断言 vd[127:32]=0
+xp_hi8	vdot-pl	hi96	SPEC §1.2 第 2 条（vd[127:32] 恒零）	8 条背靠背 vdot 逐条断言 vd[127:32]=0
+xp_oldvd1	vdot-pl	old-vd	SPEC §1.1 旧 vd 不读不累加	旧 vd 预填 0x00 后紧跟 vdot（不读旧值）
+xp_oldvd2	vdot-pl	old-vd	SPEC §1.1 旧 vd 不读不累加	旧 vd 预填 0x01 后紧跟 vdot（不读旧值）
+xp_oldvd3	vdot-pl	old-vd	SPEC §1.1 旧 vd 不读不累加	旧 vd 预填 0x7F 后紧跟 vdot（不读旧值）
+xp_oldvd4	vdot-pl	old-vd	SPEC §1.1 旧 vd 不读不累加	旧 vd 预填 0x80 后紧跟 vdot（不读旧值）
+xp_bbbub2	vdot-pl	bb+bubble	ARCHITECTURE §8:192 + R13	2 条背靠背 vdot，各自后跟递增 nop，再补一条覆盖 vd3 的 vdot
+xp_bbbub3	vdot-pl	bb+bubble	ARCHITECTURE §8:192 + R13	3 条背靠背 vdot，各自后跟递增 nop，再补一条覆盖 vd3 的 vdot
+xp_wbpv2	vdot-pl	wb-port-vdot	ARCHITECTURE §2 写回级同一写回口	2 条 vdot 连续抢同一写回口（不同 vd）
+xp_wbpv4	vdot-pl	wb-port-vdot	ARCHITECTURE §2 写回级同一写回口	4 条 vdot 连续抢同一写回口（不同 vd）
+xg0_overlap	g0	g0	ALGORITHM §3.1 G0 反例（期望值故意错 1 bit）	重叠用例的期望值故意错 1 bit（用于证明自检非空转）
+xg0_pipeline	g0	g0	ALGORITHM §3.1 G0 反例（期望值故意错 1 bit）	背靠背用例的期望值故意错 1 bit（用于证明自检非空转）
+xp_loop2	vdot-pl	loop	控制流回边（循环内重复执行）	循环 2 次，每次 vdot 结果累加，终值与 2*S 比对
+xp_loop4	vdot-pl	loop	控制流回边（循环内重复执行）	循环 4 次
+xp_loop8	vdot-pl	loop	控制流回边（循环内重复执行）	循环 8 次
+xp_loop16	vdot-pl	loop	控制流回边（循环内重复执行）	循环 16 次
+xn_sew_e16	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e16（vdot 要求 SEW=8）
+xn_sew_e32	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e32（vdot 要求 SEW=8）
+xn_sew_e64	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e64（vdot 要求 SEW=8）
+xn_lmul_m2	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=m2（vdot 要求 LMUL=1，寄存器组按 m2 对齐）
+xn_lmul_m4	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=m4（vdot 要求 LMUL=1，寄存器组按 m4 对齐）
+xn_lmul_m8	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=m8（vdot 要求 LMUL=1，寄存器组按 m8 对齐）
+xn_lmul_mf8	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=mf8（分数 LMUL，vdot 只支持 LMUL=1）
+xn_lmul_mf4	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=mf4（分数 LMUL，vdot 只支持 LMUL=1）
+xn_lmul_mf2	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=mf2（分数 LMUL，vdot 只支持 LMUL=1）
+xn_vm0	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vm=0（0x3820A1D7：清 bit25 后不命中 vdot 解码）
+xn_vstart1	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=1（vdot 要求 vstart=0）
+xn_vstart2	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=2（vdot 要求 vstart=0）
+xn_vstart3	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=3（vdot 要求 vstart=0）
+xn_vstart4	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=4（vdot 要求 vstart=0）
+xn_vstart7	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=7（vdot 要求 vstart=0）
+xn_vstart15	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=15（vdot 要求 vstart=0）
+xn_vill_38	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vill=1（非法 vtype 0x38 的 vsetvl 后立即 vdot）
+xn_vill_20	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vill=1（非法 vtype 0x20 的 vsetvl 后立即 vdot）
+xn_vill_3a	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vill=1（非法 vtype 0x3A 的 vsetvl 后立即 vdot）
+xn_vill_24	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vill=1（非法 vtype 0x24 的 vsetvl 后立即 vdot）
+xn_vs_off	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	mstatus.VS=OFF（先开 VS 再关，唯一变量是 VS）
+xn_e16_m2	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e16 且 LMUL=m2（两个谓词同时不满足）
+xn_e16_m4	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e16 且 LMUL=m4（两个谓词同时不满足）
+xn_e16_m8	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e16 且 LMUL=m8（两个谓词同时不满足）
+xn_e32_m2	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e32 且 LMUL=m2（两个谓词同时不满足）
+xn_e32_m4	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e32 且 LMUL=m4（两个谓词同时不满足）
+xn_e32_m8	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e32 且 LMUL=m8（两个谓词同时不满足）
+xn_e64_m2	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e64 且 LMUL=m2（两个谓词同时不满足）
+xn_e64_m4	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e64 且 LMUL=m4（两个谓词同时不满足）
+xn_e64_m8	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e64 且 LMUL=m8（两个谓词同时不满足）
+xn_vstart1_e16	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=1 且 SEW=e16
+xn_vstart1_e32	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=1 且 SEW=e32
+xn_vstart8_e16	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=8 且 SEW=e16
+xn_vstart8_e32	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=8 且 SEW=e32
+xn_lmulm8_vstart1	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	LMUL=m8 且 vstart=1（两谓词同时不满足，寄存器组按 m8 对齐）
+xn_vs_off_vstart1	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	mstatus.VS=OFF 且 vstart=1
+xn_vill_vstart1	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vill=1 且 vstart=1
+xn_vm0_sew16	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vm=0 且 SEW=e16
+xn_sew16_vl0	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	SEW=e16 且 vl=0（非法判定优先于 vl=0 全写，SPEC §1.1）
+xn_vs_off_vl0	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	mstatus.VS=OFF 且 vl=0（非法优先于 vl=0 全写）
+xn_vstart1_vl0	negative	illegal	SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」	vstart=1 且 vl=0（非法优先于 vl=0 全写）
+vdot_rand10k	vdot-rand10k	rand10k	ALGORITHM §3.2 随机类（固定种子，金模型 + 算法 B 双算）	随机 10000 组（固定种子 20261106），期望由金模型生成、C 侧算法 B 独立复算

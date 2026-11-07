@@ -1,0 +1,924 @@
+{
+  "generator": "design/verify/cases/gen_extra.py",
+  "model": "design/verify/vdot_model.py",
+  "rows": 129,
+  "counts": {
+    "vdot-base": 7,
+    "vdot-ov": 30,
+    "vdot-pl": 48,
+    "g0": 2,
+    "negative": 41,
+    "vdot-rand10k": 1
+  },
+  "quota": {
+    "vdot-ov": 24,
+    "vdot-pl": 40,
+    "negative": 32
+  },
+  "min_rows": 96,
+  "cases": [
+    {
+      "cid": "xb_pos_lanehi",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "正数点积 + lane8..15 极值干扰必须不参与"
+    },
+    {
+      "cid": "xb_neg_all",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "全负积（符号扩展）"
+    },
+    {
+      "cid": "xb_bound_max",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "上边界 S=8*127*127=129032"
+    },
+    {
+      "cid": "xb_bound_min",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "下边界 S=8*(-128)*(-128)=131072（19 位累加器上界）"
+    },
+    {
+      "cid": "xb_vl_sweep",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "vl=0..8 全扫：结果与 vl 无关且全写 vd（SPEC §1.1 有意偏离）"
+    },
+    {
+      "cid": "xb_vta_vma",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "vta/vma 四组合（0x00/0x40/0x80/0xC0）结果不变"
+    },
+    {
+      "cid": "xb_oldvd",
+      "cls": "vdot-base",
+      "family": "base",
+      "anchor": "SPEC §1.1/§1.2 语义与写回；§3.2 边界值",
+      "note": "旧 vd 预填 0x5A 后执行：旧值不是语义输入"
+    },
+    {
+      "cid": "xo_vs2_pos",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 pos"
+    },
+    {
+      "cid": "xo_vs2_neg",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 neg"
+    },
+    {
+      "cid": "xo_vs2_mixodd",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 mixodd"
+    },
+    {
+      "cid": "xo_vs2_bmax",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 bmax"
+    },
+    {
+      "cid": "xo_vs2_bmin",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 bmin"
+    },
+    {
+      "cid": "xo_vs2_zero",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 zero"
+    },
+    {
+      "cid": "xo_vs2_ext",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 ext"
+    },
+    {
+      "cid": "xo_vs2_asym",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 asym"
+    },
+    {
+      "cid": "xo_vs2_lanehi",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 lanehi"
+    },
+    {
+      "cid": "xo_vs2_rand",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs2=vd（vd 同时是源 vs2；操作数 B 先装入 vd） / 数据模式 rand"
+    },
+    {
+      "cid": "xo_vs1_pos",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 pos"
+    },
+    {
+      "cid": "xo_vs1_neg",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 neg"
+    },
+    {
+      "cid": "xo_vs1_mixodd",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 mixodd"
+    },
+    {
+      "cid": "xo_vs1_bmax",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 bmax"
+    },
+    {
+      "cid": "xo_vs1_bmin",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 bmin"
+    },
+    {
+      "cid": "xo_vs1_zero",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 zero"
+    },
+    {
+      "cid": "xo_vs1_ext",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 ext"
+    },
+    {
+      "cid": "xo_vs1_asym",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 asym"
+    },
+    {
+      "cid": "xo_vs1_lanehi",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 lanehi"
+    },
+    {
+      "cid": "xo_vs1_rand",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vd（vd 同时是源 vs1；操作数 A 先装入 vd） / 数据模式 rand"
+    },
+    {
+      "cid": "xo_v12_pos",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 pos"
+    },
+    {
+      "cid": "xo_v12_neg",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 neg"
+    },
+    {
+      "cid": "xo_v12_mixodd",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 mixodd"
+    },
+    {
+      "cid": "xo_v12_bmax",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 bmax"
+    },
+    {
+      "cid": "xo_v12_bmin",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 bmin"
+    },
+    {
+      "cid": "xo_v12_zero",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 zero"
+    },
+    {
+      "cid": "xo_v12_ext",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 ext"
+    },
+    {
+      "cid": "xo_v12_asym",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 asym"
+    },
+    {
+      "cid": "xo_v12_lanehi",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 lanehi"
+    },
+    {
+      "cid": "xo_v12_rand",
+      "cls": "vdot-ov",
+      "family": "overlap",
+      "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
+      "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 rand"
+    },
+    {
+      "cid": "xp_bb2",
+      "cls": "vdot-pl",
+      "family": "back2back",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）",
+      "note": "2 条背靠背独立 vdot（0 bubble，不同 vd）"
+    },
+    {
+      "cid": "xp_bb3",
+      "cls": "vdot-pl",
+      "family": "back2back",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）",
+      "note": "3 条背靠背独立 vdot（0 bubble，不同 vd）"
+    },
+    {
+      "cid": "xp_bb4",
+      "cls": "vdot-pl",
+      "family": "back2back",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）",
+      "note": "4 条背靠背独立 vdot（0 bubble，不同 vd）"
+    },
+    {
+      "cid": "xp_bb6",
+      "cls": "vdot-pl",
+      "family": "back2back",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）",
+      "note": "6 条背靠背独立 vdot（0 bubble，不同 vd）"
+    },
+    {
+      "cid": "xp_bb8",
+      "cls": "vdot-pl",
+      "family": "back2back",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）",
+      "note": "8 条背靠背独立 vdot（0 bubble，不同 vd）"
+    },
+    {
+      "cid": "xp_bub1",
+      "cls": "vdot-pl",
+      "family": "bubble",
+      "anchor": "ARCHITECTURE §8:192（含 bubble 变体）",
+      "note": "同 vd 两条 vdot 之间插 1 个 nop（终值必须是后者）"
+    },
+    {
+      "cid": "xp_bub2",
+      "cls": "vdot-pl",
+      "family": "bubble",
+      "anchor": "ARCHITECTURE §8:192（含 bubble 变体）",
+      "note": "同 vd 两条 vdot 之间插 2 个 nop（终值必须是后者）"
+    },
+    {
+      "cid": "xp_bub3",
+      "cls": "vdot-pl",
+      "family": "bubble",
+      "anchor": "ARCHITECTURE §8:192（含 bubble 变体）",
+      "note": "同 vd 两条 vdot 之间插 3 个 nop（终值必须是后者）"
+    },
+    {
+      "cid": "xp_bub5",
+      "cls": "vdot-pl",
+      "family": "bubble",
+      "anchor": "ARCHITECTURE §8:192（含 bubble 变体）",
+      "note": "同 vd 两条 vdot 之间插 5 个 nop（终值必须是后者）"
+    },
+    {
+      "cid": "xp_bub7",
+      "cls": "vdot-pl",
+      "family": "bubble",
+      "anchor": "ARCHITECTURE §8:192（含 bubble 变体）",
+      "note": "同 vd 两条 vdot 之间插 7 个 nop（终值必须是后者）"
+    },
+    {
+      "cid": "xp_chain2",
+      "cls": "vdot-pl",
+      "family": "raw-chain",
+      "anchor": "SPEC §1.1 旧 vd 非语义输入；写后读依赖",
+      "note": "同 vd RAW 依赖链长度 2（后一条读前一条的 vd）"
+    },
+    {
+      "cid": "xp_chain3",
+      "cls": "vdot-pl",
+      "family": "raw-chain",
+      "anchor": "SPEC §1.1 旧 vd 非语义输入；写后读依赖",
+      "note": "同 vd RAW 依赖链长度 3（后一条读前一条的 vd）"
+    },
+    {
+      "cid": "xp_chain4",
+      "cls": "vdot-pl",
+      "family": "raw-chain",
+      "anchor": "SPEC §1.1 旧 vd 非语义输入；写后读依赖",
+      "note": "同 vd RAW 依赖链长度 4（后一条读前一条的 vd）"
+    },
+    {
+      "cid": "xp_chain6",
+      "cls": "vdot-pl",
+      "family": "raw-chain",
+      "anchor": "SPEC §1.1 旧 vd 非语义输入；写后读依赖",
+      "note": "同 vd RAW 依赖链长度 6（后一条读前一条的 vd）"
+    },
+    {
+      "cid": "xp_chain8",
+      "cls": "vdot-pl",
+      "family": "raw-chain",
+      "anchor": "SPEC §1.1 旧 vd 非语义输入；写后读依赖",
+      "note": "同 vd RAW 依赖链长度 8（后一条读前一条的 vd）"
+    },
+    {
+      "cid": "xp_wbp2",
+      "cls": "vdot-pl",
+      "family": "wb-port",
+      "anchor": "ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）",
+      "note": "2 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）"
+    },
+    {
+      "cid": "xp_wbp3",
+      "cls": "vdot-pl",
+      "family": "wb-port",
+      "anchor": "ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）",
+      "note": "3 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）"
+    },
+    {
+      "cid": "xp_wbp4",
+      "cls": "vdot-pl",
+      "family": "wb-port",
+      "anchor": "ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）",
+      "note": "4 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）"
+    },
+    {
+      "cid": "xp_wbp6",
+      "cls": "vdot-pl",
+      "family": "wb-port",
+      "anchor": "ARCHITECTURE §2 写回级 Mux(outIsVdot)（wrapper/VIMacU.scala:158-160）",
+      "note": "6 组 vdot↔vmacc 交替写不同 vd（写回端口竞争；vmacc 结果由 difftest 兜底）"
+    },
+    {
+      "cid": "xp_cxl2",
+      "cls": "vdot-pl",
+      "family": "cancel",
+      "anchor": "CODING-STD §3.4 fire/fireS1 纪律；控制流重定向",
+      "note": "2 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）"
+    },
+    {
+      "cid": "xp_cxl3",
+      "cls": "vdot-pl",
+      "family": "cancel",
+      "anchor": "CODING-STD §3.4 fire/fireS1 纪律；控制流重定向",
+      "note": "3 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）"
+    },
+    {
+      "cid": "xp_cxl4",
+      "cls": "vdot-pl",
+      "family": "cancel",
+      "anchor": "CODING-STD §3.4 fire/fireS1 纪律；控制流重定向",
+      "note": "4 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）"
+    },
+    {
+      "cid": "xp_cxl8",
+      "cls": "vdot-pl",
+      "family": "cancel",
+      "anchor": "CODING-STD §3.4 fire/fireS1 纪律；控制流重定向",
+      "note": "8 轮 vdot→taken jal 跳过下一条 vdot（控制流重定向；被跳过者不得写回，vd20 必须仍是预填 0x5A）"
+    },
+    {
+      "cid": "xp_ilv_vstart",
+      "cls": "vdot-pl",
+      "family": "illegal-interleave",
+      "anchor": "SPEC §1.1 六条必要条件（构造-清除不残留）",
+      "note": "vstart=1 后清 0，再执行 vdot"
+    },
+    {
+      "cid": "xp_ilv_vill",
+      "cls": "vdot-pl",
+      "family": "illegal-interleave",
+      "anchor": "SPEC §1.1 六条必要条件（构造-清除不残留）",
+      "note": "非法 vtype 造出 vill=1，再用合法 vsetvli 清除，再 vdot"
+    },
+    {
+      "cid": "xp_ilv_vs",
+      "cls": "vdot-pl",
+      "family": "illegal-interleave",
+      "anchor": "SPEC §1.1 六条必要条件（构造-清除不残留）",
+      "note": "mstatus.VS 关掉再打开，再 vdot"
+    },
+    {
+      "cid": "xp_ilv_sew_back",
+      "cls": "vdot-pl",
+      "family": "illegal-interleave",
+      "anchor": "SPEC §1.1 六条必要条件（构造-清除不残留）",
+      "note": "vtype 切到 e16 再切回 e8，再 vdot"
+    },
+    {
+      "cid": "xp_ilv_lmul_back",
+      "cls": "vdot-pl",
+      "family": "illegal-interleave",
+      "anchor": "SPEC §1.1 六条必要条件（构造-清除不残留）",
+      "note": "vtype 切到 m4 再切回 m1，再 vdot"
+    },
+    {
+      "cid": "xp_ilv_all",
+      "cls": "vdot-pl",
+      "family": "illegal-interleave",
+      "anchor": "SPEC §1.1 六条必要条件（构造-清除不残留）",
+      "note": "vstart/vill/VS/SEW/LMUL 五类非法状态依次构造并清除后 vdot"
+    },
+    {
+      "cid": "xp_mix2",
+      "cls": "vdot-pl",
+      "family": "mix-issue",
+      "anchor": "ARCHITECTURE §2.2 发射/写回竞争",
+      "note": "2 组 vdot↔vadd 交替发射"
+    },
+    {
+      "cid": "xp_mix3",
+      "cls": "vdot-pl",
+      "family": "mix-issue",
+      "anchor": "ARCHITECTURE §2.2 发射/写回竞争",
+      "note": "3 组 vdot↔vadd 交替发射"
+    },
+    {
+      "cid": "xp_mix4",
+      "cls": "vdot-pl",
+      "family": "mix-issue",
+      "anchor": "ARCHITECTURE §2.2 发射/写回竞争",
+      "note": "4 组 vdot↔vadd 交替发射"
+    },
+    {
+      "cid": "xp_mix6",
+      "cls": "vdot-pl",
+      "family": "mix-issue",
+      "anchor": "ARCHITECTURE §2.2 发射/写回竞争",
+      "note": "6 组 vdot↔vadd 交替发射"
+    },
+    {
+      "cid": "xp_hi2",
+      "cls": "vdot-pl",
+      "family": "hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）",
+      "note": "2 条背靠背 vdot 逐条断言 vd[127:32]=0"
+    },
+    {
+      "cid": "xp_hi4",
+      "cls": "vdot-pl",
+      "family": "hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）",
+      "note": "4 条背靠背 vdot 逐条断言 vd[127:32]=0"
+    },
+    {
+      "cid": "xp_hi8",
+      "cls": "vdot-pl",
+      "family": "hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）",
+      "note": "8 条背靠背 vdot 逐条断言 vd[127:32]=0"
+    },
+    {
+      "cid": "xp_oldvd1",
+      "cls": "vdot-pl",
+      "family": "old-vd",
+      "anchor": "SPEC §1.1 旧 vd 不读不累加",
+      "note": "旧 vd 预填 0x00 后紧跟 vdot（不读旧值）"
+    },
+    {
+      "cid": "xp_oldvd2",
+      "cls": "vdot-pl",
+      "family": "old-vd",
+      "anchor": "SPEC §1.1 旧 vd 不读不累加",
+      "note": "旧 vd 预填 0x01 后紧跟 vdot（不读旧值）"
+    },
+    {
+      "cid": "xp_oldvd3",
+      "cls": "vdot-pl",
+      "family": "old-vd",
+      "anchor": "SPEC §1.1 旧 vd 不读不累加",
+      "note": "旧 vd 预填 0x7F 后紧跟 vdot（不读旧值）"
+    },
+    {
+      "cid": "xp_oldvd4",
+      "cls": "vdot-pl",
+      "family": "old-vd",
+      "anchor": "SPEC §1.1 旧 vd 不读不累加",
+      "note": "旧 vd 预填 0x80 后紧跟 vdot（不读旧值）"
+    },
+    {
+      "cid": "xp_bbbub2",
+      "cls": "vdot-pl",
+      "family": "bb+bubble",
+      "anchor": "ARCHITECTURE §8:192 + R13",
+      "note": "2 条背靠背 vdot，各自后跟递增 nop，再补一条覆盖 vd3 的 vdot"
+    },
+    {
+      "cid": "xp_bbbub3",
+      "cls": "vdot-pl",
+      "family": "bb+bubble",
+      "anchor": "ARCHITECTURE §8:192 + R13",
+      "note": "3 条背靠背 vdot，各自后跟递增 nop，再补一条覆盖 vd3 的 vdot"
+    },
+    {
+      "cid": "xp_wbpv2",
+      "cls": "vdot-pl",
+      "family": "wb-port-vdot",
+      "anchor": "ARCHITECTURE §2 写回级同一写回口",
+      "note": "2 条 vdot 连续抢同一写回口（不同 vd）"
+    },
+    {
+      "cid": "xp_wbpv4",
+      "cls": "vdot-pl",
+      "family": "wb-port-vdot",
+      "anchor": "ARCHITECTURE §2 写回级同一写回口",
+      "note": "4 条 vdot 连续抢同一写回口（不同 vd）"
+    },
+    {
+      "cid": "xg0_overlap",
+      "cls": "g0",
+      "family": "g0",
+      "anchor": "ALGORITHM §3.1 G0 反例（期望值故意错 1 bit）",
+      "note": "重叠用例的期望值故意错 1 bit（用于证明自检非空转）"
+    },
+    {
+      "cid": "xg0_pipeline",
+      "cls": "g0",
+      "family": "g0",
+      "anchor": "ALGORITHM §3.1 G0 反例（期望值故意错 1 bit）",
+      "note": "背靠背用例的期望值故意错 1 bit（用于证明自检非空转）"
+    },
+    {
+      "cid": "xp_loop2",
+      "cls": "vdot-pl",
+      "family": "loop",
+      "anchor": "控制流回边（循环内重复执行）",
+      "note": "循环 2 次，每次 vdot 结果累加，终值与 2*S 比对"
+    },
+    {
+      "cid": "xp_loop4",
+      "cls": "vdot-pl",
+      "family": "loop",
+      "anchor": "控制流回边（循环内重复执行）",
+      "note": "循环 4 次"
+    },
+    {
+      "cid": "xp_loop8",
+      "cls": "vdot-pl",
+      "family": "loop",
+      "anchor": "控制流回边（循环内重复执行）",
+      "note": "循环 8 次"
+    },
+    {
+      "cid": "xp_loop16",
+      "cls": "vdot-pl",
+      "family": "loop",
+      "anchor": "控制流回边（循环内重复执行）",
+      "note": "循环 16 次"
+    },
+    {
+      "cid": "xn_sew_e16",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16（vdot 要求 SEW=8）"
+    },
+    {
+      "cid": "xn_sew_e32",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e32（vdot 要求 SEW=8）"
+    },
+    {
+      "cid": "xn_sew_e64",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e64（vdot 要求 SEW=8）"
+    },
+    {
+      "cid": "xn_lmul_m2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m2（vdot 要求 LMUL=1，寄存器组按 m2 对齐）"
+    },
+    {
+      "cid": "xn_lmul_m4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m4（vdot 要求 LMUL=1，寄存器组按 m4 对齐）"
+    },
+    {
+      "cid": "xn_lmul_m8",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m8（vdot 要求 LMUL=1，寄存器组按 m8 对齐）"
+    },
+    {
+      "cid": "xn_lmul_mf8",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=mf8（分数 LMUL，vdot 只支持 LMUL=1）"
+    },
+    {
+      "cid": "xn_lmul_mf4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=mf4（分数 LMUL，vdot 只支持 LMUL=1）"
+    },
+    {
+      "cid": "xn_lmul_mf2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=mf2（分数 LMUL，vdot 只支持 LMUL=1）"
+    },
+    {
+      "cid": "xn_vm0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vm=0（0x3820A1D7：清 bit25 后不命中 vdot 解码）"
+    },
+    {
+      "cid": "xn_vstart1",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=1（vdot 要求 vstart=0）"
+    },
+    {
+      "cid": "xn_vstart2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=2（vdot 要求 vstart=0）"
+    },
+    {
+      "cid": "xn_vstart3",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=3（vdot 要求 vstart=0）"
+    },
+    {
+      "cid": "xn_vstart4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=4（vdot 要求 vstart=0）"
+    },
+    {
+      "cid": "xn_vstart7",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=7（vdot 要求 vstart=0）"
+    },
+    {
+      "cid": "xn_vstart15",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=15（vdot 要求 vstart=0）"
+    },
+    {
+      "cid": "xn_vill_38",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vill=1（非法 vtype 0x38 的 vsetvl 后立即 vdot）"
+    },
+    {
+      "cid": "xn_vill_20",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vill=1（非法 vtype 0x20 的 vsetvl 后立即 vdot）"
+    },
+    {
+      "cid": "xn_vill_3a",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vill=1（非法 vtype 0x3A 的 vsetvl 后立即 vdot）"
+    },
+    {
+      "cid": "xn_vill_24",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vill=1（非法 vtype 0x24 的 vsetvl 后立即 vdot）"
+    },
+    {
+      "cid": "xn_vs_off",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "mstatus.VS=OFF（先开 VS 再关，唯一变量是 VS）"
+    },
+    {
+      "cid": "xn_e16_m2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 LMUL=m2（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e16_m4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 LMUL=m4（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e16_m8",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 LMUL=m8（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e32_m2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e32 且 LMUL=m2（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e32_m4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e32 且 LMUL=m4（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e32_m8",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e32 且 LMUL=m8（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e64_m2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e64 且 LMUL=m2（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e64_m4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e64 且 LMUL=m4（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_e64_m8",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e64 且 LMUL=m8（两个谓词同时不满足）"
+    },
+    {
+      "cid": "xn_vstart1_e16",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=1 且 SEW=e16"
+    },
+    {
+      "cid": "xn_vstart1_e32",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=1 且 SEW=e32"
+    },
+    {
+      "cid": "xn_vstart8_e16",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=8 且 SEW=e16"
+    },
+    {
+      "cid": "xn_vstart8_e32",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=8 且 SEW=e32"
+    },
+    {
+      "cid": "xn_lmulm8_vstart1",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m8 且 vstart=1（两谓词同时不满足，寄存器组按 m8 对齐）"
+    },
+    {
+      "cid": "xn_vs_off_vstart1",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "mstatus.VS=OFF 且 vstart=1"
+    },
+    {
+      "cid": "xn_vill_vstart1",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vill=1 且 vstart=1"
+    },
+    {
+      "cid": "xn_vm0_sew16",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vm=0 且 SEW=e16"
+    },
+    {
+      "cid": "xn_sew16_vl0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 vl=0（非法判定优先于 vl=0 全写，SPEC §1.1）"
+    },
+    {
+      "cid": "xn_vs_off_vl0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "mstatus.VS=OFF 且 vl=0（非法优先于 vl=0 全写）"
+    },
+    {
+      "cid": "xn_vstart1_vl0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=1 且 vl=0（非法优先于 vl=0 全写）"
+    },
+    {
+      "cid": "vdot_rand10k",
+      "cls": "vdot-rand10k",
+      "family": "rand10k",
+      "anchor": "ALGORITHM §3.2 随机类（固定种子，金模型 + 算法 B 双算）",
+      "note": "随机 10000 组（固定种子 20261106），期望由金模型生成、C 侧算法 B 独立复算"
+    }
+  ]
+}
