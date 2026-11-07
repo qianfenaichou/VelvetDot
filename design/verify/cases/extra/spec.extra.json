@@ -1,13 +1,14 @@
 {
   "generator": "design/verify/cases/gen_extra.py",
   "model": "design/verify/vdot_model.py",
-  "rows": 129,
+  "rows": 224,
   "counts": {
     "vdot-base": 7,
-    "vdot-ov": 30,
-    "vdot-pl": 48,
+    "vdot-ov": 56,
+    "vdot-pl": 98,
+    "negative-legal": 3,
     "g0": 2,
-    "negative": 41,
+    "negative": 57,
     "vdot-rand10k": 1
   },
   "quota": {
@@ -275,6 +276,188 @@
       "family": "overlap",
       "anchor": "vector-common.adoc norm:vreg_overlap_rsv(:1037-1038) + norm:vreg_overlap_legal(:1013-1028)",
       "note": "重叠 vs1=vs2（同一源寄存器既是 vs1 又是 vs2；vd 独立，旧 vd 预填） / 数据模式 rand"
+    },
+    {
+      "cid": "xo3_tri_v5",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "三同址 vd=vs1=vs2=v5：S 退化为平方和 1104；就地更新不得把新值再当源读"
+    },
+    {
+      "cid": "xo3_tri_v0",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "三同址落在 v0：v0 必须作普通寄存器参与运算与写回；A_min 全 -128 使 S=131072（19 位累加器上界）"
+    },
+    {
+      "cid": "xo3_tri_v31",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "三同址落在 v31：最高索引的读/写口译码边界；A_rand 平方和 43285 为奇数，抓高位泄漏/部分写"
+    },
+    {
+      "cid": "xo3_p_vdvs1_v0",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "{vd,vs1}=v0、vs2=v31：写口/vs1 读口同址落在边界寄存器，S 为负值同时钉住 sext32 写回"
+    },
+    {
+      "cid": "xo3_p_vdvs2_v0",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "{vd,vs2}=v0、vs1=v31：写口/vs2 读口同址；若 vs2 读到写回后的 vd 会得到另一个值"
+    },
+    {
+      "cid": "xo3_p_src_v0",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "{vs1,vs2}=v0 两读口同址、vd=v31 旧值预填 0xCD：源同址 + 旧 vd 非语义输入 + v0/v31 双边界"
+    },
+    {
+      "cid": "xo3_p_vdvs1_v31",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "{vd,vs1}=v31、vs2=v0：vd==vs1 的最高寄存器配对，S 为负值小量"
+    },
+    {
+      "cid": "xo3_p_vdvs2_v31",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "{vd,vs2}=v31、vs1=v0：A_ext×B_ext2 使 S=-130048（19 位累加器最坏负值）落在最高寄存器上"
+    },
+    {
+      "cid": "xo3_p_src_v31",
+      "cls": "vdot-ov",
+      "family": "alias3",
+      "anchor": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+      "note": "{vs1,vs2}=v31 两读口同址、vd=v0 旧值预填 0x5A：源同址下旧 vd 不参与，写口落在下边界"
+    },
+    {
+      "cid": "xo3_hi_ff_tri",
+      "cls": "vdot-ov",
+      "family": "alias-hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）；SPEC §1.1 旧 vd 非语义输入",
+      "note": "v9 的 128 位全 1（vmv 0xFF 覆盖 16 lane）后三同址：两个源都是 -1，S=8，写回后 bits[127:32] 必须全 0（全 1 旧值不得残留）"
+    },
+    {
+      "cid": "xo3_hi_ff_vs2",
+      "cls": "vdot-ov",
+      "family": "alias-hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）；SPEC §1.1 旧 vd 非语义输入",
+      "note": "vd==vs2=v7 预置全 1（vs2 每 lane=-1）、vs1=v1=A_lanehi：S=-8；保留旧高 96 位会得 0xFFFF…FFF8，误取 lane8..15 会得 0x3F8"
+    },
+    {
+      "cid": "xo3_hi_ff_vs1",
+      "cls": "vdot-ov",
+      "family": "alias-hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）；SPEC §1.1 旧 vd 非语义输入",
+      "note": "镜像到 vs1 读口：vd==vs1=v8 全 1（vs1 每 lane=-1）、vs2=v2=B_lanehi：S=-16；单侧 vs1 通路的高 96 位污染与清零必须独立正确"
+    },
+    {
+      "cid": "xo3_hi_ff_src",
+      "cls": "vdot-ov",
+      "family": "alias-hi96",
+      "anchor": "SPEC §1.2 第 2 条（vd[127:32] 恒零）；SPEC §1.1 旧 vd 非语义输入",
+      "note": "两源同址 v0 且全 1（vs1==vs2==v0）、vd=v31 预填 0xEE：S=8；同时钉住「源 lane8..15 全 1 不进累加器」与「目的旧高半必须被覆盖」"
+    },
+    {
+      "cid": "xo3_lane_tri_ovf",
+      "cls": "vdot-ov",
+      "family": "alias-lanehi",
+      "anchor": "SPEC §1.1 lane 8..15 不参与；§1.4 19 位累加范围",
+      "note": "三同址 v5 且 A_lanehi 高 lane 全 -128：正确 S=8；误用 lane8..15 得 131080，超过 19 位有符号上界 131071，任何低位截断都无法偶然对齐"
+    },
+    {
+      "cid": "xo3_lane_v0_vs2",
+      "cls": "vdot-ov",
+      "family": "alias-lanehi",
+      "anchor": "SPEC §1.1 lane 8..15 不参与；§1.4 19 位累加范围",
+      "note": "v0 装 B_lanehi 且 vd==vs2=v0：正确 S=16，误用高 lane 得 -130032（偏差 -130048）"
+    },
+    {
+      "cid": "xo3_lane_v31_vs1",
+      "cls": "vdot-ov",
+      "family": "alias-lanehi",
+      "anchor": "SPEC §1.1 lane 8..15 不参与；§1.4 19 位累加范围",
+      "note": "v31 装 B_lanehi 且 vd==vs1=v31、vs2=v30=A_ext：正确 S=-8，误用高 lane 得 18788"
+    },
+    {
+      "cid": "xo3_lane_src_pair",
+      "cls": "vdot-ov",
+      "family": "alias-lanehi",
+      "anchor": "SPEC §1.1 lane 8..15 不参与；§1.4 19 位累加范围",
+      "note": "两源同址 v4=B_lanehi、vd=v5 预填 0xAB：正确 S=32，误用高 lane 得 129064（仍在 19 位内 ⇒ 排除「溢出截断恰好掩盖高位误用」）"
+    },
+    {
+      "cid": "xo3_wb2_vdvs2",
+      "cls": "vdot-ov",
+      "family": "alias-wb",
+      "anchor": "SPEC §1.1 全写 + 写后读就地更新（同一 vd 连续写回）",
+      "note": "两次写同一 vd 且 vd==vs2：第二条必须把第一条结果当 vs2；缺失第二条或读到写前旧值时终值不同"
+    },
+    {
+      "cid": "xo3_wb3_rotate",
+      "cls": "vdot-ov",
+      "family": "alias-wb",
+      "anchor": "SPEC §1.1 全写 + 写后读就地更新（同一 vd 连续写回）",
+      "note": "三次写同一 vd=v3，v3 依次以 vs1、vs2、vs1 身份被读：别名角色轮换下的写后读"
+    },
+    {
+      "cid": "xo3_wb2_v0",
+      "cls": "vdot-ov",
+      "family": "alias-wb",
+      "anchor": "SPEC §1.1 全写 + 写后读就地更新（同一 vd 连续写回）",
+      "note": "v0 边界 + 两次写回 vd==vs2=v0：边界寄存器上的第二次写回同样必须看到第一次结果"
+    },
+    {
+      "cid": "xo3_wb2_v31",
+      "cls": "vdot-ov",
+      "family": "alias-wb",
+      "anchor": "SPEC §1.1 全写 + 写后读就地更新（同一 vd 连续写回）",
+      "note": "v31 边界 + 两次写回且别名角色互换（先 vd==vs1、后 vd==vs2）：第二次必须读到第一次结果"
+    },
+    {
+      "cid": "xo3_wb4_pingpong",
+      "cls": "vdot-ov",
+      "family": "alias-wb",
+      "anchor": "SPEC §1.1 全写 + 写后读就地更新（同一 vd 连续写回）",
+      "note": "v5/v6 乒乓：4 条 vdot 交替写回且互为源，终值两条都要读回（跨寄存器写回顺序）"
+    },
+    {
+      "cid": "xo3_vl0",
+      "cls": "vdot-ov",
+      "family": "alias-vl",
+      "anchor": "SPEC §1.1 vl 不影响结果；非法判定优先于 vl=0 全写",
+      "note": "vl=0 时的 vd==vs2 重叠：仍算 lane0..7 并全写 vd（含高 96 位清零），按 RVV 跳过写回会读到旧 vs2 低字"
+    },
+    {
+      "cid": "xo3_vl1",
+      "cls": "vdot-ov",
+      "family": "alias-vl",
+      "anchor": "SPEC §1.1 vl 不影响结果；非法判定优先于 vl=0 全写",
+      "note": "vl=1 下的 vd==vs2：只激活 1 个元素也必须算满 8 lane，结果与 vl=16 逐位相同"
+    },
+    {
+      "cid": "xo3_vl4_tri",
+      "cls": "vdot-ov",
+      "family": "alias-vl",
+      "anchor": "SPEC §1.1 vl 不影响结果；非法判定优先于 vl=0 全写",
+      "note": "vl=4 下的三同址 v5：S=130052，必须与 vl=16 的同形态结果逐位一致（全写语义）"
+    },
+    {
+      "cid": "xo3_vl_sweep",
+      "cls": "vdot-ov",
+      "family": "alias-vl",
+      "anchor": "SPEC §1.1 vl 不影响结果；非法判定优先于 vl=0 全写",
+      "note": "同一 vd==vs2 别名形态在 vl=0/1/7/8/15 各执行一次，五次读回必须全相同（7 不足 8 lane、8 恰好 8 lane、15 越过 8 lane）"
     },
     {
       "cid": "xp_bb2",
@@ -583,6 +766,377 @@
       "family": "wb-port-vdot",
       "anchor": "ARCHITECTURE §2 写回级同一写回口",
       "note": "4 条 vdot 连续抢同一写回口（不同 vd）"
+    },
+    {
+      "cid": "xp_bd2",
+      "cls": "vdot-pl",
+      "family": "bb-distinct",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）；vd 索引逐位正确",
+      "note": "2 条背靠背 vdot，每条一组独立数据 ⇒ 2 个期望值两两互异（结果与 vd 错位/相邻互换即刻失配）"
+    },
+    {
+      "cid": "xp_bd4",
+      "cls": "vdot-pl",
+      "family": "bb-distinct",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）；vd 索引逐位正确",
+      "note": "4 条背靠背 vdot，每条一组独立数据 ⇒ 4 个期望值两两互异（结果与 vd 错位/相邻互换即刻失配）"
+    },
+    {
+      "cid": "xp_bd6",
+      "cls": "vdot-pl",
+      "family": "bb-distinct",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）；vd 索引逐位正确",
+      "note": "6 条背靠背 vdot，每条一组独立数据 ⇒ 6 个期望值两两互异（结果与 vd 错位/相邻互换即刻失配）"
+    },
+    {
+      "cid": "xp_bd8",
+      "cls": "vdot-pl",
+      "family": "bb-distinct",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）；vd 索引逐位正确",
+      "note": "8 条背靠背 vdot，每条一组独立数据 ⇒ 8 个期望值两两互异（结果与 vd 错位/相邻互换即刻失配）"
+    },
+    {
+      "cid": "xp_bdrev",
+      "cls": "vdot-pl",
+      "family": "bb-distinct",
+      "anchor": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）；vd 索引逐位正确",
+      "note": "4 条背靠背按 vd=27,26,25,24 递减写回，操作数顺序与 vd 顺序反相关（防止「顺带递增」掩盖 vd 索引位互换）"
+    },
+    {
+      "cid": "xp_reuse0",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 0 条独立 vdot（共 2 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_reuse1",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 1 条独立 vdot（共 3 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_reuse2",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 2 条独立 vdot（共 4 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_reuse3",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 3 条独立 vdot（共 5 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_reuse4",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 4 条独立 vdot（共 6 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_reuse6",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 6 条独立 vdot（共 8 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_reuse8",
+      "cls": "vdot-pl",
+      "family": "vd-reuse",
+      "anchor": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+      "note": "同 vd 两次写之间夹 8 条独立 vdot（共 10 次写回在飞）：终值必须是后写"
+    },
+    {
+      "cid": "xp_rwmid",
+      "cls": "vdot-pl",
+      "family": "raw-mid",
+      "anchor": "SPEC §1.1 写后读依赖；读回序列不破坏后续写后读",
+      "note": "RAW 链中途读回（读回序列本身会改 vl 到 4 再改回），不破坏后续写后读"
+    },
+    {
+      "cid": "xp_rwpar",
+      "cls": "vdot-pl",
+      "family": "raw-mid",
+      "anchor": "SPEC §1.1 写后读依赖；读回序列不破坏后续写后读",
+      "note": "两条独立 RAW 链交错在飞（v3 链与 v4 链各 2 跳），两条终值互不串数据"
+    },
+    {
+      "cid": "xp_rwsq",
+      "cls": "vdot-pl",
+      "family": "raw-mid",
+      "anchor": "SPEC §1.1 写后读依赖；读回序列不破坏后续写后读",
+      "note": "自平方链：vd 同时占 vs1 与 vs2 两个读口（同一个寄存器），连续两跳"
+    },
+    {
+      "cid": "xp_rwswap",
+      "cls": "vdot-pl",
+      "family": "raw-mid",
+      "anchor": "SPEC §1.1 写后读依赖；读回序列不破坏后续写后读",
+      "note": "链中让 vd 落在 vs2 读口（vdot v3←(v1,v3)）：vd 作 vs2 时写后读通路不破坏；点积对 vs1/vs2 可交换，故本用例只证「vd 在 vs2 读口时链成立」"
+    },
+    {
+      "cid": "xp_rwvmacc",
+      "cls": "vdot-pl",
+      "family": "raw-cross",
+      "anchor": "ARCHITECTURE §2.2 发射/写回；跨指令类（VIMac↔Mgu）旁路",
+      "note": "vdot→vmacc 同 vd 累积链：两条 vmacc 各自读上一跳结果并回写同一 vd（hi96 非零，只断言 lo32）"
+    },
+    {
+      "cid": "xp_rwvadd",
+      "cls": "vdot-pl",
+      "family": "raw-cross",
+      "anchor": "ARCHITECTURE §2.2 发射/写回；跨指令类（VIMac↔Mgu）旁路",
+      "note": "vdot→vadd→vdot 三跳依赖：v3=vdot(A_pos,B_pos)，v10=vadd(v3,A_ext)，v4=vdot(v10,B_pos)，三跳结果全部断言（v10 只断言 lo32）"
+    },
+    {
+      "cid": "xp_war_vadd",
+      "cls": "vdot-pl",
+      "family": "war",
+      "anchor": "SPEC §1.1 源寄存器在飞读取；WAR 冒险（vadd/vmacc/vle8.v 覆写源）",
+      "note": "WAR：vdot v3←(v1,v2) 后 vadd 覆写 v1，第二条 vdot 必须用新 v1；旧 v1 与新 v1 两侧结果不同，任一读口时序错都有一侧失配"
+    },
+    {
+      "cid": "xp_war_vmacc",
+      "cls": "vdot-pl",
+      "family": "war",
+      "anchor": "SPEC §1.1 源寄存器在飞读取；WAR 冒险（vadd/vmacc/vle8.v 覆写源）",
+      "note": "WAR 的覆写者是 vmacc（与 vdot 同处 VIMac 写回路径）：v1+=v6*v7 后第二条 vdot 必须读到新 v1"
+    },
+    {
+      "cid": "xp_war_vs2",
+      "cls": "vdot-pl",
+      "family": "war",
+      "anchor": "SPEC §1.1 源寄存器在飞读取；WAR 冒险（vadd/vmacc/vle8.v 覆写源）",
+      "note": "WAR 落在 vs2 读口：vadd 覆写 v2，第二条 vdot 必须用新 v2（用旧 v2 会得另一个值）"
+    },
+    {
+      "cid": "xp_war_load",
+      "cls": "vdot-pl",
+      "family": "war",
+      "anchor": "SPEC §1.1 源寄存器在飞读取；WAR 冒险（vadd/vmacc/vle8.v 覆写源）",
+      "note": "WAR 的覆写来自向量装载（装载单元 vs 已在飞的乘法单元）：vle8.v 覆写 v1 后第二条 vdot 用新 v1"
+    },
+    {
+      "cid": "xp_war_deep",
+      "cls": "vdot-pl",
+      "family": "war",
+      "anchor": "SPEC §1.1 源寄存器在飞读取；WAR 冒险（vadd/vmacc/vle8.v 覆写源）",
+      "note": "WAR 窗口深度 4：4 条在飞 vdot 全读 v1，vadd 覆写 v1，再发第 5 条；前 4 条必须都是旧 v1 的结果，第 5 条是新 v1 的结果"
+    },
+    {
+      "cid": "xp_wawx_vdlast",
+      "cls": "vdot-pl",
+      "family": "waw-x",
+      "anchor": "跨指令类 WAW：Mgu 与 VIMac 两个写回源的排序",
+      "note": "vadd 先写 v3、vdot 后写 v3：vdot 必须胜出，且不读旧 vd、不被在飞的上一条非 vdot 写遮挡"
+    },
+    {
+      "cid": "xp_wawx_valast",
+      "cls": "vdot-pl",
+      "family": "waw-x",
+      "anchor": "跨指令类 WAW：Mgu 与 VIMac 两个写回源的排序",
+      "note": "vdot 先写 v3、vadd 后写 v3：vadd 必须胜出（vdot 的写不得被错序排到 vadd 之后）"
+    },
+    {
+      "cid": "xp_wawx_vmlast",
+      "cls": "vdot-pl",
+      "family": "waw-x",
+      "anchor": "跨指令类 WAW：Mgu 与 VIMac 两个写回源的排序",
+      "note": "vmacc 读 vdot 结果再回写同一 vd（RAW+WAW 同 vd）：vmacc 必须拿到 vdot 刚写的结果"
+    },
+    {
+      "cid": "xp_wawx_triple",
+      "cls": "vdot-pl",
+      "family": "waw-x",
+      "anchor": "跨指令类 WAW：Mgu 与 VIMac 两个写回源的排序",
+      "note": "三连写同 vd 跨两类运算 vdot→vadd→vdot：中间 vadd 的写不得压过最后一次 vdot"
+    },
+    {
+      "cid": "xp_wawx_mix",
+      "cls": "vdot-pl",
+      "family": "waw-x",
+      "anchor": "跨指令类 WAW：Mgu 与 VIMac 两个写回源的排序",
+      "note": "标量广播 + vdot + vadd 三写同 vd：终值必须是 vadd 的，0x5A 预填与 vdot 的写都被覆盖"
+    },
+    {
+      "cid": "xp_vl0bb",
+      "cls": "vdot-pl",
+      "family": "vl-imm",
+      "anchor": "SPEC §1.1 vl 不影响语义且全写 vd",
+      "note": "vl=0 下 4 条背靠背 vdot 全部全写 128 位：任何「vl=0 不写回/半写」实现 4 个读回点全失败"
+    },
+    {
+      "cid": "xp_vl0mid",
+      "cls": "vdot-pl",
+      "family": "vl-imm",
+      "anchor": "SPEC §1.1 vl 不影响语义且全写 vd",
+      "note": "vl 在 3 条互不依赖的背靠背 vdot 之间切换 16→0→16：三个结果与 vl 无关且互不串"
+    },
+    {
+      "cid": "xp_vlswap",
+      "cls": "vdot-pl",
+      "family": "vl-imm",
+      "anchor": "SPEC §1.1 vl 不影响语义且全写 vd",
+      "note": "vl=1/4/7/16 四档逐条切换，4 条 vdot 各用不同操作数（vl=16 档也在内），结果与 vl 全部无关"
+    },
+    {
+      "cid": "xp_vlchain",
+      "cls": "vdot-pl",
+      "family": "vl-imm",
+      "anchor": "SPEC §1.1 vl 不影响语义且全写 vd",
+      "note": "RAW 链内部 vl 连变 2→0→16：vl=0 那一跳若被抑制写回，整条链立即断开"
+    },
+    {
+      "cid": "xp_vlhi",
+      "cls": "vdot-pl",
+      "family": "vl-imm",
+      "anchor": "SPEC §1.1 vl 不影响语义且全写 vd",
+      "note": "vl=3 与 vl=0（都 <8 lane，tail 区域非空）下读回：hi96 必须仍恒零（最易被 Mgu tail 路径污染）"
+    },
+    {
+      "cid": "xp_vtbb4",
+      "cls": "vdot-pl",
+      "family": "vtype-imm",
+      "anchor": "SPEC §1.1 vta/vma 不影响结果；vdot 旁路 Mgu 的 tail/agnostic 路径",
+      "note": "4 条背靠背 vdot 前逐条切换 vta/vma（0x00/0x40/0x80/0xC0）；数据与 xp_bd4 相同 ⇒ 期望常量逐项相同即「vta/vma 不影响结果」的直接证据"
+    },
+    {
+      "cid": "xp_vtchain",
+      "cls": "vdot-pl",
+      "family": "vtype-imm",
+      "anchor": "SPEC §1.1 vta/vma 不影响结果；vdot 旁路 Mgu 的 tail/agnostic 路径",
+      "note": "vta/vma 在 RAW 链内部变化（ta,ma→vta=1→vta=1,vma=1）：链值与 xp_vlchain 同数据同终值"
+    },
+    {
+      "cid": "xp_vtta1",
+      "cls": "vdot-pl",
+      "family": "vtype-imm",
+      "anchor": "SPEC §1.1 vta/vma 不影响结果；vdot 旁路 Mgu 的 tail/agnostic 路径",
+      "note": "vta=1 且旧 vd 预填 0x5A：高 96 位既不得是 agnostic 的 0xFF、也不得保留 0x5A，必须为 0"
+    },
+    {
+      "cid": "xp_vtvl0",
+      "cls": "vdot-pl",
+      "family": "vtype-imm",
+      "anchor": "SPEC §1.1 vta/vma 不影响结果；vdot 旁路 Mgu 的 tail/agnostic 路径",
+      "note": "vl=0 且 vta=1（tail 覆盖全部 16 lane）时仍全写 128 位：旧 vd 0x5A 被完全覆盖、高 96 位为 0，证明 vdot 完全旁路 Mgu 的 tail/agnostic 路径"
+    },
+    {
+      "cid": "xp_vtmix",
+      "cls": "vdot-pl",
+      "family": "vtype-imm",
+      "anchor": "SPEC §1.1 vta/vma 不影响结果；vdot 旁路 Mgu 的 tail/agnostic 路径",
+      "note": "vta/vma 在 vdot 与 vmacc 交错之间切换（vdot 走旁路、vmacc 走 Mgu）：两个 vdot 结果与 vtype 无关"
+    },
+    {
+      "cid": "xp_rot3",
+      "cls": "vdot-pl",
+      "family": "rotate",
+      "anchor": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+      "note": "9 条 vdot 的三元组 (vd,vs1,vs2) 三向轮转，每个 vd 被写 3 次且终值互异"
+    },
+    {
+      "cid": "xp_rot4",
+      "cls": "vdot-pl",
+      "family": "rotate",
+      "anchor": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+      "note": "12 行 4×4 拉丁方：4 个 vd × 4 个 vs1 × 4 个 vs2，行行组合不同，4 个终值互异"
+    },
+    {
+      "cid": "xp_rotwrap",
+      "cls": "vdot-pl",
+      "family": "rotate",
+      "anchor": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+      "note": "轮转回绕：vd 3→4→5→3→4→5 两轮，第二轮对同一 vd 的写（间隔 3 条）必须胜出第一轮"
+    },
+    {
+      "cid": "xp_rot8",
+      "cls": "vdot-pl",
+      "family": "rotate",
+      "anchor": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+      "note": "8 个不同 vd(20..27) 同时在飞（覆盖 vd 索引全部有效位），8 个结果两两互异；写回目的地解码不是 3 位截断或相邻别名"
+    },
+    {
+      "cid": "xp_rotread",
+      "cls": "vdot-pl",
+      "family": "rotate",
+      "anchor": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+      "note": "读写交替轮转：每条 vdot 后立刻读回，4 个读回值互异且 vd 复用跨读回 ⇒ 证明读回恰好发生在写回之后"
+    },
+    {
+      "cid": "xp_rotmix",
+      "cls": "vdot-pl",
+      "family": "rotate",
+      "anchor": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+      "note": "轮转 + vdot→vadd 短依赖：每次 vadd 读前一条 vdot 的结果，vdot 的轮转写与 vadd 的写交叠"
+    },
+    {
+      "cid": "xp_ilvd_3way",
+      "cls": "vdot-pl",
+      "family": "cross-class",
+      "anchor": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+      "note": "四跳全依赖链横跨三类指令 vdot→vadd→vmacc→vdot，三类轮流占用同一 VIMac 流水与写回口"
+    },
+    {
+      "cid": "xp_ilvd_alt8",
+      "cls": "vdot-pl",
+      "family": "cross-class",
+      "anchor": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+      "note": "8 条 vdot/vadd 交替，每条 vadd 与相邻 vdot 共享同一源对（读端口被两类指令连续抢占）；4 个 vdot 结果按奇偶交替，奇偶错位即失配"
+    },
+    {
+      "cid": "xp_ilvd_vmacc4",
+      "cls": "vdot-pl",
+      "family": "cross-class",
+      "anchor": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+      "note": "4 组 vdot→vmacc 短链交错：每个 vmacc 读上一条 vdot 的结果并写自己的 vd，8 次写回交替占用写回口"
+    },
+    {
+      "cid": "xp_ilvd_double",
+      "cls": "vdot-pl",
+      "family": "cross-class",
+      "anchor": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+      "note": "同一 vs1 被 vdot/vadd/vdot 三连读（读端口 3 连占用），中间 vadd 的结果又被第二条 vdot 消费"
+    },
+    {
+      "cid": "xp_ilvd_burst",
+      "cls": "vdot-pl",
+      "family": "cross-class",
+      "anchor": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+      "note": "vadd 插在背靠背组中间并消费组内第一条 vdot 的结果（跨一条在飞 vdot 的旁路），其余 vdot 仍必须背靠背正确"
+    },
+    {
+      "cid": "xp_ilvd_2src",
+      "cls": "vdot-pl",
+      "family": "cross-class",
+      "anchor": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+      "note": "3 条背靠背 vdot 共享同一 vs2、vs1 逐条不同：一个读口连占、另一个读口逐条换，不串源"
+    },
+    {
+      "cid": "xn_ctrl_vl0_legal",
+      "cls": "negative-legal",
+      "family": "negative-control",
+      "anchor": "SPEC §1.1 六条必要条件为「与」：合法侧反证（must-not-trap）",
+      "note": "合法对照：六条必要条件全满足且 vl=0，vdot 必须执行并按全写语义写 vd[31:0]/清零高 96 位；用于证明 3 条「非法优先于 vl=0」负例不是因为「所有 vl=0 都陷入」而通过"
+    },
+    {
+      "cid": "xn_ctrl_vs_initial",
+      "cls": "negative-legal",
+      "family": "negative-control",
+      "anchor": "SPEC §1.1 六条必要条件为「与」：合法侧反证（must-not-trap）",
+      "note": "合法对照：mstatus.VS=Initial(01) 不是非法态（只有 VS=OFF 才非法），vdot 必须执行并全写；若实现写成「VS 必须为 Dirty」，现有正例全绿而误陷入只在本组暴露"
+    },
+    {
+      "cid": "xn_ctrl_vstart_reset",
+      "cls": "negative-legal",
+      "family": "negative-control",
+      "anchor": "SPEC §1.1 六条必要条件为「与」：合法侧反证（must-not-trap）",
+      "note": "合法对照：vstart=1 之后执行合法 vsetvli，架构上 vstart 被清 0，vdot 必须正常执行；把「vsetvli 清 vstart」变成可失败断言（上面 3 条 _ord 负例依赖这条规则）"
     },
     {
       "cid": "xg0_overlap",
@@ -912,6 +1466,118 @@
       "family": "illegal",
       "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
       "note": "vstart=1 且 vl=0（非法优先于 vl=0 全写）"
+    },
+    {
+      "cid": "xn_vstart64_vl0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vstart=64（2^6，需 vstart 的 bit6）且 vl=0：非法判定必须用完整 7 位 vstart 字段，且优先于 vl=0 全写（≤6 位截断会把 64 读成 0 而漏判）"
+    },
+    {
+      "cid": "xn_vstart1_e16_ord",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 vstart=1，csrw vstart 放在最后一次 vsetvli 之后（vsetvl 会把 vstart 清 0，写在前面的旧用例在 vdot 处其实 vstart=0）"
+    },
+    {
+      "cid": "xn_vstart1_mf2_ord",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=mf2（vlmul=111）且 vstart=1，csrw 在 vsetvli 之后：分数 LMUL 与 vstart≠0 独立成立"
+    },
+    {
+      "cid": "xn_vstart1_m2_ord",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m2 且 vstart=1，操作数按 m2 对齐（vd=4,vs1=2,vs2=0），csrw 在 vsetvli 之后：陷入不得来自寄存器对齐非法"
+    },
+    {
+      "cid": "xn_vtype_rsvd8",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vtype 保留位 bit8=1（rs2=0x100，紧邻 vma）：vsetvl 后 vill=1、vl=0，vdot 必须陷入；漏判保留位会留下 e8,m1 的合法状态而静默执行"
+    },
+    {
+      "cid": "xn_vtype_rsvd62",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vtype 保留位 bit62=1（rs2=2^62，保留字段最高位）：vsetvl 后 vill=1、vl=0；该位可捕获 rs2 被截成 32 位、reserved.orR 只接低位、只查 bit[11:8] 等实现"
+    },
+    {
+      "cid": "xn_vlmul_rsvd100",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vlmul=0b100 保留编码配 vsew=e8：vsetvl 后 vill=1（Vsetu 的 lmulIllegal 路径），vdot 必须陷入；现有 0x24 同时含保留 vsew，无法区分是哪个字段触发"
+    },
+    {
+      "cid": "xn_vill_keepl_vlmax",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "keep-vl（rd=x0,rs1=x0）把 VLMAX 从 32(m2) 改成 16(m1)：vsetvl 必须判非法，vill=1、vl=0"
+    },
+    {
+      "cid": "xn_vs_off_e16",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 VS=OFF：译码级 VS 门（DecodeUnit）与 vdot 的 SEW 谓词（VecExceptionGen）是两个独立非法源，组合可抓「只修好一处」的回归"
+    },
+    {
+      "cid": "xn_vs_off_m2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m2 且 VS=OFF，操作数按 m2 对齐：陷入不得来自寄存器对齐非法，而是 VS 门或 LMUL 谓词"
+    },
+    {
+      "cid": "xn_vs_off_vill",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vill=1 且 VS=OFF：vill 门（isVArithMem）与 VS 门（DecodeUnit）分属两个模块，两道门交叉从未同时出现"
+    },
+    {
+      "cid": "xn_lmul_m2_vl0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "LMUL=m2 且 vl=0：非法判定优先于 vl=0 全写（m2 对齐操作数排除对齐非法）"
+    },
+    {
+      "cid": "xn_vm0_vl0",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "vm=0 且 vl=0：25 位匹配失败（解码不命中）不得被 vl=0 的提前返回吞掉"
+    },
+    {
+      "cid": "xn_e16_mf4",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 LMUL=mf4：vsetvl 合法（16 <= 64*0.25），vdot 因两个谓词同时不满足而陷入"
+    },
+    {
+      "cid": "xn_e16_mf2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e16 且 LMUL=mf2：vsetvl 合法（16 <= 64*0.5），mf2 与 mf4 是不同 vlmul 位型"
+    },
+    {
+      "cid": "xn_e32_mf2",
+      "cls": "negative",
+      "family": "illegal",
+      "anchor": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+      "note": "SEW=e32 且 LMUL=mf2：vsetvl 合法边界（32 = 64*0.5），vsew 与 vlmul 两个字段同时不满足"
     },
     {
       "cid": "vdot_rand10k",

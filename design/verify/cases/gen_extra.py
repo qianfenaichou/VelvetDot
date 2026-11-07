@@ -12,7 +12,9 @@
      没有任何手写的点积结果、也没有第二套点积实现（`vadd`/`vmacc` 只用来占写回端口，
      它们的结果**不被本用例断言**，正确性由 difftest 逐指令比对兜底）。
   2. 三类配额：重叠 `vdot-ov` ≥24、流水 `vdot-pl` ≥40、异常 `negative` ≥32；见 `CLASS_QUOTA`，
-     生成结束自检并打印实测行数。
+     生成结束自检并打印实测行数。另有 `negative-legal`（合法对照，must-not-trap）3 例：
+     它**不计入** negative 配额，判据是 HIT GOOD TRAP + 值断言（反向证明负例不是靠
+     「一律陷入」通过的）；94-run-extra.sh 的 negative 判据只认 cls=="negative"，故另立一类。
   3. G0 反例不可省：`g0` 类用例的期望值**故意错 1 bit**，靠自检串 `CASE <cid>: MISMATCH`
      被同一套自检判为失败（防止虚假通过，ALGORITHM §3.1）。
 
@@ -191,6 +193,17 @@ def SETVT(n):
     return {"op": "vtype", "n": n}
 
 
+def SETVLA(n, ta=0, ma=0):
+    """vsetvli 同时给 vl 与 vta/vma（e8,m1）：`vl=0 且 vta=1` 这类组合的唯一表达方式。
+
+    为什么不用 `csrw vtype`：vtype（0xC21）在 RVV 里是**只读 CSR**，写它会先触发一条
+    与 vdot 无关的非法指令，测不到 vdot 是否旁路 Mgu 的 tail/agnostic 路径。这里改用
+    vsetvli 的 tu/ta、mu/ma 后缀正交地构造 vtype 的 bit6/bit7（SPEC §1.1 的 vta/vma），
+    AVL 直接给 n，因此 `SETVLA(0, ta=1)` 得到 vtype=0x40 且 vl=0。
+    """
+    return {"op": "vl_vt", "n": n, "ta": ta, "ma": ma}
+
+
 def RSV(n):
     return {"op": "rs_vstart", "n": n}
 
@@ -205,6 +218,11 @@ def VSOFF():
 
 def VSON():
     return {"op": "vs_on"}
+
+
+def VSINIT():
+    """mstatus.VS=Initial(01)：先清 0x600（bit10:9）再置 0x200，得到 01 而不是 11。"""
+    return {"op": "vs_initial"}
 
 
 def JAL():
@@ -270,6 +288,121 @@ for _suf, _desc, _vd, _vs1, _vs2 in OV_FORMS:
         _ops += [VD(_vd, _vs1, _vs2), RD(_vd)]
         add("xo_%s_%s" % (_suf, _pat), "vdot-ov", "overlap",
             "重叠 %s / 数据模式 %s" % (_desc, _pat), _ops)
+
+# ---------------------------------------------------------------------------
+# ②-bis 扩展重叠 vdot-ov +26 例：把别名形态推到上面 30 例够不到的角落。
+#   上面 30 例的形态是「vd==vs2 / vd==vs1 / vs1==vs2」三选一，且操作数固定 v1/v2/v3、
+#   旧值固定 0xAB、全程 vl=16。本组补五类缺口：
+#     alias3      三同址 vd==vs1==vs2（含 v0/v31 边界与 19 位累加器上下界）
+#     alias-hi96  128 位全 1 的旧值 + 别名（高 96 位清零 + 旧值不得残留）
+#     alias-lanehi lane8..15 干扰 + 别名（误用高位时给可判别的偏差）
+#     alias-wb    同一 vd 的连续写回且该 vd 就是源（写后读就地更新）
+#     alias-vl    vl=0/1/4/扫掠 与别名交叉（vl 与语义解耦）
+#   期望值仍逐条由 M.vdot_vv() 算出（本文件不写任何点积常量）。
+# ---------------------------------------------------------------------------
+# 2b.1 三同址：同一寄存器索引同时占满写口与两个读口——源必须全在写之前取完
+add("xo3_tri_v5", "vdot-ov", "alias3",
+    "三同址 vd=vs1=vs2=v5：S 退化为平方和 1104；就地更新不得把新值再当源读",
+    [L(5, "A_pos"), VD(5, 5, 5), RD(5)])
+add("xo3_tri_v0", "vdot-ov", "alias3",
+    "三同址落在 v0：v0 必须作普通寄存器参与运算与写回；A_min 全 -128 使 S=131072（19 位累加器上界）",
+    [L(0, "A_min"), VD(0, 0, 0), RD(0)])
+add("xo3_tri_v31", "vdot-ov", "alias3",
+    "三同址落在 v31：最高索引的读/写口译码边界；A_rand 平方和 43285 为奇数，抓高位泄漏/部分写",
+    [L(31, "A_rand"), VD(31, 31, 31), RD(31)])
+
+# 2b.2 双址 + 边界寄存器：vd 与一侧源同址，另一侧取对侧边界（v0 / v31 配对）
+add("xo3_p_vdvs1_v0", "vdot-ov", "alias3",
+    "{vd,vs1}=v0、vs2=v31：写口/vs1 读口同址落在边界寄存器，S 为负值同时钉住 sext32 写回",
+    [L(0, "A_rand"), L(31, "B_rand"), VD(0, 0, 31), RD(0)])
+add("xo3_p_vdvs2_v0", "vdot-ov", "alias3",
+    "{vd,vs2}=v0、vs1=v31：写口/vs2 读口同址；若 vs2 读到写回后的 vd 会得到另一个值",
+    [L(0, "B_pos"), L(31, "A_pos"), VD(0, 31, 0), RD(0)])
+add("xo3_p_src_v0", "vdot-ov", "alias3",
+    "{vs1,vs2}=v0 两读口同址、vd=v31 旧值预填 0xCD：源同址 + 旧 vd 非语义输入 + v0/v31 双边界",
+    [VMV(31, 0xCD), L(0, "A_mix"), VD(31, 0, 0), RD(31)])
+add("xo3_p_vdvs1_v31", "vdot-ov", "alias3",
+    "{vd,vs1}=v31、vs2=v0：vd==vs1 的最高寄存器配对，S 为负值小量",
+    [L(31, "A_asym"), L(0, "B_asym"), VD(31, 31, 0), RD(31)])
+add("xo3_p_vdvs2_v31", "vdot-ov", "alias3",
+    "{vd,vs2}=v31、vs1=v0：A_ext×B_ext2 使 S=-130048（19 位累加器最坏负值）落在最高寄存器上",
+    [L(31, "B_ext2"), L(0, "A_ext"), VD(31, 0, 31), RD(31)])
+add("xo3_p_src_v31", "vdot-ov", "alias3",
+    "{vs1,vs2}=v31 两读口同址、vd=v0 旧值预填 0x5A：源同址下旧 vd 不参与，写口落在下边界",
+    [VMV(0, 0x5A), L(31, "A_neg"), VD(0, 31, 31), RD(0)])
+
+# 2b.3 128 位全 1 旧值 + 别名：vta/vma 与旧值都不得让 bits[127:32] 残留
+add("xo3_hi_ff_tri", "vdot-ov", "alias-hi96",
+    "v9 的 128 位全 1（vmv 0xFF 覆盖 16 lane）后三同址：两个源都是 -1，S=8，"
+    "写回后 bits[127:32] 必须全 0（全 1 旧值不得残留）",
+    [VMV(9, 0xFF), VD(9, 9, 9), RD(9)])
+add("xo3_hi_ff_vs2", "vdot-ov", "alias-hi96",
+    "vd==vs2=v7 预置全 1（vs2 每 lane=-1）、vs1=v1=A_lanehi：S=-8；"
+    "保留旧高 96 位会得 0xFFFF…FFF8，误取 lane8..15 会得 0x3F8",
+    [VMV(7, 0xFF), L(1, "A_lanehi"), VD(7, 1, 7), RD(7)])
+add("xo3_hi_ff_vs1", "vdot-ov", "alias-hi96",
+    "镜像到 vs1 读口：vd==vs1=v8 全 1（vs1 每 lane=-1）、vs2=v2=B_lanehi：S=-16；"
+    "单侧 vs1 通路的高 96 位污染与清零必须独立正确",
+    [VMV(8, 0xFF), L(2, "B_lanehi"), VD(8, 8, 2), RD(8)])
+add("xo3_hi_ff_src", "vdot-ov", "alias-hi96",
+    "两源同址 v0 且全 1（vs1==vs2==v0）、vd=v31 预填 0xEE：S=8；"
+    "同时钉住「源 lane8..15 全 1 不进累加器」与「目的旧高半必须被覆盖」",
+    [VMV(0, 0xFF), VMV(31, 0xEE), VD(31, 0, 0), RD(31)])
+
+# 2b.4 lane8..15 干扰 + 别名：误用高 lane 时的偏差是可判别常量
+add("xo3_lane_tri_ovf", "vdot-ov", "alias-lanehi",
+    "三同址 v5 且 A_lanehi 高 lane 全 -128：正确 S=8；误用 lane8..15 得 131080，"
+    "超过 19 位有符号上界 131071，任何低位截断都无法偶然对齐",
+    [L(5, "A_lanehi"), VD(5, 5, 5), RD(5)])
+add("xo3_lane_v0_vs2", "vdot-ov", "alias-lanehi",
+    "v0 装 B_lanehi 且 vd==vs2=v0：正确 S=16，误用高 lane 得 -130032（偏差 -130048）",
+    [L(0, "B_lanehi"), L(1, "A_lanehi"), VD(0, 1, 0), RD(0)])
+add("xo3_lane_v31_vs1", "vdot-ov", "alias-lanehi",
+    "v31 装 B_lanehi 且 vd==vs1=v31、vs2=v30=A_ext：正确 S=-8，误用高 lane 得 18788",
+    [L(31, "B_lanehi"), L(30, "A_ext"), VD(31, 31, 30), RD(31)])
+add("xo3_lane_src_pair", "vdot-ov", "alias-lanehi",
+    "两源同址 v4=B_lanehi、vd=v5 预填 0xAB：正确 S=32，误用高 lane 得 129064"
+    "（仍在 19 位内 ⇒ 排除「溢出截断恰好掩盖高位误用」）",
+    [VMV(5, 0xAB), L(4, "B_lanehi"), VD(5, 4, 4), RD(5)])
+
+# 2b.5 连续写回且 vd 就是源：第二次必须看到第一次的结果（写后读就地更新）
+add("xo3_wb2_vdvs2", "vdot-ov", "alias-wb",
+    "两次写同一 vd 且 vd==vs2：第二条必须把第一条结果当 vs2；缺失第二条或读到写前旧值时终值不同",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(2, 1, 2), VD(2, 1, 2), RD(2)])
+add("xo3_wb3_rotate", "vdot-ov", "alias-wb",
+    "三次写同一 vd=v3，v3 依次以 vs1、vs2、vs1 身份被读：别名角色轮换下的写后读",
+    [L(3, "A_ext"), L(1, "A_mix"), L(2, "B_three"),
+     VD(3, 3, 1), VD(3, 2, 3), VD(3, 3, 2), RD(3)])
+add("xo3_wb2_v0", "vdot-ov", "alias-wb",
+    "v0 边界 + 两次写回 vd==vs2=v0：边界寄存器上的第二次写回同样必须看到第一次结果",
+    [L(0, "B_ext"), L(1, "A_ext"), VD(0, 1, 0), VD(0, 1, 0), RD(0)])
+add("xo3_wb2_v31", "vdot-ov", "alias-wb",
+    "v31 边界 + 两次写回且别名角色互换（先 vd==vs1、后 vd==vs2）：第二次必须读到第一次结果",
+    [L(31, "A_asym"), L(30, "B_asym"), VD(31, 31, 30), VD(31, 30, 31), RD(31)])
+add("xo3_wb4_pingpong", "vdot-ov", "alias-wb",
+    "v5/v6 乒乓：4 条 vdot 交替写回且互为源，终值两条都要读回（跨寄存器写回顺序）",
+    [L(5, "A_pos"), L(6, "B_pos"), VD(5, 5, 6), VD(6, 5, 6),
+     VD(5, 6, 5), VD(6, 6, 5), RD(5), RD(6)])
+
+# 2b.6 vl 与别名交叉：vl 只影响 tail 语义，不影响 vdot 的全写
+add("xo3_vl0", "vdot-ov", "alias-vl",
+    "vl=0 时的 vd==vs2 重叠：仍算 lane0..7 并全写 vd（含高 96 位清零），"
+    "按 RVV 跳过写回会读到旧 vs2 低字",
+    [L(1, "A_mix"), L(3, "B_three"), SETVL(0), VD(3, 1, 3), RD(3)])
+add("xo3_vl1", "vdot-ov", "alias-vl",
+    "vl=1 下的 vd==vs2：只激活 1 个元素也必须算满 8 lane，结果与 vl=16 逐位相同",
+    [L(1, "A_mix"), L(3, "B_three"), SETVL(1), VD(3, 1, 3), RD(3)])
+add("xo3_vl4_tri", "vdot-ov", "alias-vl",
+    "vl=4 下的三同址 v5：S=130052，必须与 vl=16 的同形态结果逐位一致（全写语义）",
+    [L(5, "A_ext"), SETVL(4), VD(5, 5, 5), RD(5)])
+
+# vl 扫掠：每次先用 vl=16 重新装载（vle8.v 受当前 vl 约束），再用目标 vl 执行
+_ops_vls = []
+for _v in (0, 1, 7, 8, 15):
+    _ops_vls += [SETVL(16), L(1, "A_mix"), L(3, "B_three"), SETVL(_v), VD(3, 1, 3), RD(3)]
+add("xo3_vl_sweep", "vdot-ov", "alias-vl",
+    "同一 vd==vs2 别名形态在 vl=0/1/7/8/15 各执行一次，五次读回必须全相同"
+    "（7 不足 8 lane、8 恰好 8 lane、15 越过 8 lane）", _ops_vls)
 
 # ---------------------------------------------------------------------------
 # ③ 流水 / 依赖 / 取消 / 端口竞争 vdot-pl（配额 ≥40）
@@ -384,6 +517,277 @@ LOOP_CASES = [
 ]
 
 # ---------------------------------------------------------------------------
+# ③-bis 扩展流水 vdot-pl +50 例：现有 48 例的系统性缺口是「结果值不互异」与
+#   「只在程序序的一个点上观测」。本组按下面 10 个维度补齐，每条都能独立失败：
+#     bb-distinct   背靠背组内每组数据互异（相邻结果互换/错位立刻失配）
+#     vd-reuse      同 vd 两次写之间夹 k 条独立 vdot（k=0..8，参数化）
+#     raw-mid       链中读回、双链交错、自平方、vd 落在 vs2 读口
+#     raw-cross     vdot→vmacc / vdot→vadd→vdot 的跨指令类真依赖
+#     war           vdot 发射后覆写它的源（vadd / vmacc / vle8.v），窗口深度 1..4
+#     waw-x         跨指令类的同 vd 多写（vadd/vmacc 与 vdot 两个写回源）
+#     vl-imm        在背靠背/依赖链内部翻转 vl
+#     vtype-imm     在背靠背/依赖链内部翻转 vta/vma（vdot 不用，vmacc 用）
+#     rotate        vd/vs1/vs2 三者独立轮转（含拉丁方、递减、回绕）
+#     cross-class   vdot/vadd/vmacc 三类指令的依赖链与读口连占
+#   期望值仍逐条由 M.vdot_vv() 算出；vadd/vmacc 只用于制造依赖与占用写回口。
+# ---------------------------------------------------------------------------
+# 3.13 背靠背互异结果组：k 条 vdot 各用一组独立数据（现有 xp_bb/xp_hi 全组同值）
+_BDPAIRS = [
+    ("A_pos", "B_pos"), ("A_neg", "B_one"), ("A_mix", "B_three"), ("A_max", "B_max"),
+    ("A_min", "B_min"), ("A_ext", "B_ext2"), ("A_asym", "B_asym"), ("A_lanehi", "B_lanehi"),
+]
+for _k in (2, 4, 6, 8):
+    _ops = []
+    for _i in range(_k):
+        _ops += [L(2 * _i + 1, _BDPAIRS[_i][0]), L(2 * _i + 2, _BDPAIRS[_i][1])]
+    for _i in range(_k):
+        _ops.append(VD(20 + _i, 2 * _i + 1, 2 * _i + 2))
+    _ops += [RD(20 + _i) for _i in range(_k)]
+    add("xp_bd%d" % _k, "vdot-pl", "bb-distinct",
+        "%d 条背靠背 vdot，每条一组独立数据 ⇒ %d 个期望值两两互异"
+        "（结果与 vd 错位/相邻互换即刻失配）" % (_k, _k), _ops)
+
+# 递减 vd 且操作数顺序与 vd 顺序反相关：递增序列会掩盖 vd 索引位互换
+add("xp_bdrev", "vdot-pl", "bb-distinct",
+    "4 条背靠背按 vd=27,26,25,24 递减写回，操作数顺序与 vd 顺序反相关"
+    "（防止「顺带递增」掩盖 vd 索引位互换）",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_mix"), L(4, "B_three"),
+     L(5, "A_min"), L(6, "B_min"), L(7, "A_ext"), L(8, "B_ext2"),
+     VD(27, 1, 2), VD(26, 3, 4), VD(25, 5, 6), VD(24, 7, 8),
+     RD(24), RD(25), RD(26), RD(27)])
+
+# 3.14 同 vd 复用：两次写 v3 之间夹 k 条独立 vdot（k=0 即真正的 0-bubble WAW）
+for _k in (0, 1, 2, 3, 4, 6, 8):
+    _ops = [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_ext"), L(5, "B_ext2"),
+            L(7, "A_min"), L(8, "B_min"), VD(3, 1, 2)]
+    for _i in range(_k):
+        _ops.append(VD(10 + _i, 1, 2) if _i % 2 == 0 else VD(10 + _i, 4, 5))
+    _ops += [VD(3, 7, 8), RD(3)] + [RD(10 + _i) for _i in range(_k)]
+    add("xp_reuse%d" % _k, "vdot-pl", "vd-reuse",
+        "同 vd 两次写之间夹 %d 条独立 vdot（共 %d 次写回在飞）：终值必须是后写"
+        % (_k, _k + 2), _ops)
+
+# 3.15 RAW 变体：链中读回 / 双链交错 / 自平方 / vd 落在 vs2 读口
+add("xp_rwmid", "vdot-pl", "raw-mid",
+    "RAW 链中途读回（读回序列本身会改 vl 到 4 再改回），不破坏后续写后读",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2), RD(3), VD(4, 3, 2), RD(4)])
+add("xp_rwpar", "vdot-pl", "raw-mid",
+    "两条独立 RAW 链交错在飞（v3 链与 v4 链各 2 跳），两条终值互不串数据",
+    [L(1, "A_pos"), L(2, "B_pos"), L(5, "A_mix"), L(6, "B_three"),
+     VD(3, 1, 2), VD(4, 5, 6), VD(3, 3, 2), VD(4, 4, 6), RD(3), RD(4)])
+add("xp_rwsq", "vdot-pl", "raw-mid",
+    "自平方链：vd 同时占 vs1 与 vs2 两个读口（同一个寄存器），连续两跳",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2), VD(3, 3, 3), VD(3, 3, 3), RD(3)])
+add("xp_rwswap", "vdot-pl", "raw-mid",
+    "链中让 vd 落在 vs2 读口（vdot v3←(v1,v3)）：vd 作 vs2 时写后读通路不破坏；"
+    "点积对 vs1/vs2 可交换，故本用例只证「vd 在 vs2 读口时链成立」",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2), VD(3, 1, 3), RD(3)])
+
+# 3.16 跨指令类真依赖：vdot 结果被 vmacc / vadd 消费，消费结果又被下一条 vdot 消费
+add("xp_rwvmacc", "vdot-pl", "raw-cross",
+    "vdot→vmacc 同 vd 累积链：两条 vmacc 各自读上一跳结果并回写同一 vd（hi96 非零，只断言 lo32）",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2), VM(3, 3, 2), VM(3, 3, 2), RD(3, hi=False)])
+add("xp_rwvadd", "vdot-pl", "raw-cross",
+    "vdot→vadd→vdot 三跳依赖：v3=vdot(A_pos,B_pos)，v10=vadd(v3,A_ext)，v4=vdot(v10,B_pos)，"
+    "三跳结果全部断言（v10 只断言 lo32）",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"),
+     VD(3, 1, 2), VA(10, 3, 6), VD(4, 10, 2), RD(3), RD(4), RD(10, hi=False)])
+
+# 3.17 WAR：vdot 发射后覆写它的源寄存器，第二条 vdot 必须读到新值
+add("xp_war_vadd", "vdot-pl", "war",
+    "WAR：vdot v3←(v1,v2) 后 vadd 覆写 v1，第二条 vdot 必须用新 v1；"
+    "旧 v1 与新 v1 两侧结果不同，任一读口时序错都有一侧失配",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), L(7, "B_ext2"),
+     VD(3, 1, 2), VA(1, 6, 7), VD(4, 1, 2), RD(3), RD(4)])
+add("xp_war_vmacc", "vdot-pl", "war",
+    "WAR 的覆写者是 vmacc（与 vdot 同处 VIMac 写回路径）：v1+=v6*v7 后第二条 vdot 必须读到新 v1",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), L(7, "B_ext2"),
+     VD(3, 1, 2), VM(1, 6, 7), VD(4, 1, 2), RD(3), RD(4)])
+add("xp_war_vs2", "vdot-pl", "war",
+    "WAR 落在 vs2 读口：vadd 覆写 v2，第二条 vdot 必须用新 v2（用旧 v2 会得另一个值）",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), L(7, "B_ext2"),
+     VD(3, 1, 2), VA(2, 6, 7), VD(4, 1, 2), RD(3), RD(4)])
+add("xp_war_load", "vdot-pl", "war",
+    "WAR 的覆写来自向量装载（装载单元 vs 已在飞的乘法单元）：vle8.v 覆写 v1 后第二条 vdot 用新 v1",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2), L(1, "A_ext"), VD(4, 1, 2), RD(3), RD(4)])
+add("xp_war_deep", "vdot-pl", "war",
+    "WAR 窗口深度 4：4 条在飞 vdot 全读 v1，vadd 覆写 v1，再发第 5 条；"
+    "前 4 条必须都是旧 v1 的结果，第 5 条是新 v1 的结果",
+    [L(1, "A_pos"), L(2, "B_pos"), L(7, "A_ext"), L(8, "B_ext2"),
+     VD(3, 1, 2), VD(4, 1, 2), VD(5, 1, 2), VD(6, 1, 2),
+     VA(1, 7, 8), VD(10, 1, 2), RD(3), RD(4), RD(5), RD(6), RD(10)])
+
+# 3.18 跨指令类 WAW：同一 vd 被 vadd/vmacc/vmv 与 vdot 连续写（两个写回源）
+add("xp_wawx_vdlast", "vdot-pl", "waw-x",
+    "vadd 先写 v3、vdot 后写 v3：vdot 必须胜出，且不读旧 vd、不被在飞的上一条非 vdot 写遮挡",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), L(7, "B_ext2"),
+     VA(3, 6, 7), VD(3, 1, 2), RD(3)])
+add("xp_wawx_valast", "vdot-pl", "waw-x",
+    "vdot 先写 v3、vadd 后写 v3：vadd 必须胜出（vdot 的写不得被错序排到 vadd 之后）",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), L(7, "B_ext2"),
+     VD(3, 1, 2), VA(3, 6, 7), RD(3, hi=False)])
+add("xp_wawx_vmlast", "vdot-pl", "waw-x",
+    "vmacc 读 vdot 结果再回写同一 vd（RAW+WAW 同 vd）：vmacc 必须拿到 vdot 刚写的结果",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2), VM(3, 3, 2), RD(3, hi=False)])
+add("xp_wawx_triple", "vdot-pl", "waw-x",
+    "三连写同 vd 跨两类运算 vdot→vadd→vdot：中间 vadd 的写不得压过最后一次 vdot",
+    [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_ext"), L(5, "B_ext2"),
+     L(6, "A_ext"), L(7, "B_ext2"), VD(3, 1, 2), VA(3, 6, 7), VD(3, 4, 5), RD(3)])
+add("xp_wawx_mix", "vdot-pl", "waw-x",
+    "标量广播 + vdot + vadd 三写同 vd：终值必须是 vadd 的，0x5A 预填与 vdot 的写都被覆盖",
+    [VMV(3, 0x5A), L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), L(7, "B_ext2"),
+     VD(3, 1, 2), VA(3, 6, 7), RD(3, hi=False)])
+
+# 3.19 vl 在背靠背/依赖链内部翻转（装载一律先回到 vl=16）
+add("xp_vl0bb", "vdot-pl", "vl-imm",
+    "vl=0 下 4 条背靠背 vdot 全部全写 128 位：任何「vl=0 不写回/半写」实现 4 个读回点全失败",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_neg"), L(4, "B_one"),
+     L(5, "A_mix"), L(6, "B_three"), L(7, "A_max"), L(8, "B_max"), SETVL(0),
+     VD(20, 1, 2), VD(21, 3, 4), VD(22, 5, 6), VD(23, 7, 8),
+     RD(20), RD(21), RD(22), RD(23)])
+add("xp_vl0mid", "vdot-pl", "vl-imm",
+    "vl 在 3 条互不依赖的背靠背 vdot 之间切换 16→0→16：三个结果与 vl 无关且互不串",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_ext"), L(4, "B_ext2"),
+     L(5, "A_min"), L(6, "B_min"),
+     VD(20, 1, 2), SETVL(0), VD(21, 3, 4), SETVL(16), VD(22, 5, 6),
+     RD(20), RD(21), RD(22)])
+add("xp_vlswap", "vdot-pl", "vl-imm",
+    "vl=1/4/7/16 四档逐条切换，4 条 vdot 各用不同操作数（vl=16 档也在内），结果与 vl 全部无关",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_neg"), L(4, "B_one"),
+     L(5, "A_mix"), L(6, "B_three"), L(7, "A_max"), L(8, "B_max"),
+     SETVL(1), VD(3, 1, 2), SETVL(4), VD(4, 3, 4),
+     SETVL(7), VD(5, 5, 6), SETVL(16), VD(6, 7, 8), RD(3), RD(4), RD(5), RD(6)])
+add("xp_vlchain", "vdot-pl", "vl-imm",
+    "RAW 链内部 vl 连变 2→0→16：vl=0 那一跳若被抑制写回，整条链立即断开",
+    [L(1, "A_pos"), L(2, "B_pos"), SETVL(2), VD(3, 1, 2),
+     SETVL(0), VD(3, 3, 2), SETVL(16), VD(3, 3, 2), RD(3)])
+add("xp_vlhi", "vdot-pl", "vl-imm",
+    "vl=3 与 vl=0（都 <8 lane，tail 区域非空）下读回：hi96 必须仍恒零（最易被 Mgu tail 路径污染）",
+    [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_ext"), L(5, "B_ext2"),
+     SETVL(3), VD(3, 1, 2), RD(3), SETVL(0), VD(4, 4, 5), RD(4)])
+
+# 3.20 vta/vma 在背靠背/依赖链内部翻转（vdot 旁路 Mgu，vmacc 依赖 Mgu）
+add("xp_vtbb4", "vdot-pl", "vtype-imm",
+    "4 条背靠背 vdot 前逐条切换 vta/vma（0x00/0x40/0x80/0xC0）；"
+    "数据与 xp_bd4 相同 ⇒ 期望常量逐项相同即「vta/vma 不影响结果」的直接证据",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_neg"), L(4, "B_one"),
+     L(5, "A_mix"), L(6, "B_three"), L(7, "A_max"), L(8, "B_max"),
+     SETVT(0x00), VD(20, 1, 2), SETVT(0x40), VD(21, 3, 4),
+     SETVT(0x80), VD(22, 5, 6), SETVT(0xC0), VD(23, 7, 8),
+     RD(20), RD(21), RD(22), RD(23)])
+add("xp_vtchain", "vdot-pl", "vtype-imm",
+    "vta/vma 在 RAW 链内部变化（ta,ma→vta=1→vta=1,vma=1）：链值与 xp_vlchain 同数据同终值",
+    [L(1, "A_pos"), L(2, "B_pos"), VD(3, 1, 2),
+     SETVT(0x40), VD(3, 3, 2), SETVT(0xC0), VD(3, 3, 2), RD(3)])
+add("xp_vtta1", "vdot-pl", "vtype-imm",
+    "vta=1 且旧 vd 预填 0x5A：高 96 位既不得是 agnostic 的 0xFF、也不得保留 0x5A，必须为 0",
+    [VMV(3, 0x5A), L(1, "A_pos"), L(2, "B_pos"), SETVT(0x40), VD(3, 1, 2), RD(3)])
+add("xp_vtvl0", "vdot-pl", "vtype-imm",
+    "vl=0 且 vta=1（tail 覆盖全部 16 lane）时仍全写 128 位：旧 vd 0x5A 被完全覆盖、"
+    "高 96 位为 0，证明 vdot 完全旁路 Mgu 的 tail/agnostic 路径",
+    [VMV(3, 0x5A), L(1, "A_pos"), L(2, "B_pos"), SETVLA(0, ta=1), VD(3, 1, 2), RD(3)])
+add("xp_vtmix", "vdot-pl", "vtype-imm",
+    "vta/vma 在 vdot 与 vmacc 交错之间切换（vdot 走旁路、vmacc 走 Mgu）：两个 vdot 结果与 vtype 无关",
+    [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_ext"), L(5, "B_ext2"),
+     L(6, "A_ext"), L(7, "B_ext2"), VMV(10, 0x11),
+     VD(3, 1, 2), SETVT(0xC0), VM(10, 6, 7), SETVT(0x00), VD(4, 4, 5),
+     RD(3), RD(4)])
+
+# 3.21 轮转：vd / vs1 / vs2 三者独立轮转（固定的端口→寄存器映射会在此暴露）
+_XP_ROT3 = [  # 3×3 拉丁方：vd=20+row, vs1=1+.., vs2=5+..
+    (20, 1, 5), (21, 2, 6), (22, 3, 7),
+    (20, 2, 7), (21, 3, 5), (22, 1, 6),
+    (20, 3, 6), (21, 1, 7), (22, 2, 5),
+]
+_ops = [L(1, "A_pos"), L(2, "A_neg"), L(3, "A_mix"),
+        L(5, "B_pos"), L(6, "B_one"), L(7, "B_three")]
+_ops += [VD(_vd, _s1, _s2) for _vd, _s1, _s2 in _XP_ROT3]
+_ops += [RD(20), RD(21), RD(22)]
+add("xp_rot3", "vdot-pl", "rotate",
+    "9 条 vdot 的三元组 (vd,vs1,vs2) 三向轮转，每个 vd 被写 3 次且终值互异", _ops)
+
+_XP_ROT4 = [  # 4×4 拉丁方：每行 4 个三元组两两不同
+    (20, 1, 5), (21, 2, 6), (22, 3, 7), (23, 4, 8),
+    (20, 2, 7), (21, 3, 8), (22, 4, 5), (23, 1, 6),
+    (20, 3, 6), (21, 4, 7), (22, 1, 8), (23, 2, 5),
+]
+_ops = [L(1, "A_pos"), L(2, "A_neg"), L(3, "A_mix"), L(4, "A_max"),
+        L(5, "B_pos"), L(6, "B_one"), L(7, "B_three"), L(8, "B_max")]
+_ops += [VD(_vd, _s1, _s2) for _vd, _s1, _s2 in _XP_ROT4]
+_ops += [RD(20), RD(21), RD(22), RD(23)]
+add("xp_rot4", "vdot-pl", "rotate",
+    "12 行 4×4 拉丁方：4 个 vd × 4 个 vs1 × 4 个 vs2，行行组合不同，4 个终值互异", _ops)
+
+add("xp_rotwrap", "vdot-pl", "rotate",
+    "轮转回绕：vd 3→4→5→3→4→5 两轮，第二轮对同一 vd 的写（间隔 3 条）必须胜出第一轮",
+    [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_ext"), L(5, "B_ext2"),
+     L(7, "A_min"), L(8, "B_min"),
+     VD(3, 1, 2), VD(4, 4, 5), VD(5, 7, 8), VD(3, 4, 5), VD(4, 7, 8), VD(5, 1, 2),
+     RD(3), RD(4), RD(5)])
+
+_XP_ROT8 = [  # 8 个 vd 同时占用 + 两个源口各自轮转
+    (20, 1, 5), (21, 2, 6), (22, 3, 7), (23, 4, 8),
+    (24, 2, 5), (25, 3, 6), (26, 4, 7), (27, 1, 8),
+]
+_ops = [L(1, "A_pos"), L(2, "A_neg"), L(3, "A_mix"), L(4, "A_max"),
+        L(5, "B_pos"), L(6, "B_one"), L(7, "B_three"), L(8, "B_max")]
+_ops += [VD(_vd, _s1, _s2) for _vd, _s1, _s2 in _XP_ROT8]
+_ops += [RD(20 + _i) for _i in range(8)]
+add("xp_rot8", "vdot-pl", "rotate",
+    "8 个不同 vd(20..27) 同时在飞（覆盖 vd 索引全部有效位），8 个结果两两互异；"
+    "写回目的地解码不是 3 位截断或相邻别名", _ops)
+
+add("xp_rotread", "vdot-pl", "rotate",
+    "读写交替轮转：每条 vdot 后立刻读回，4 个读回值互异且 vd 复用跨读回 ⇒ "
+    "证明读回恰好发生在写回之后",
+    [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_ext"), L(5, "B_ext2"),
+     VD(3, 1, 2), RD(3), VD(4, 4, 5), RD(4), VD(3, 4, 5), RD(3), VD(4, 1, 2), RD(4)])
+add("xp_rotmix", "vdot-pl", "rotate",
+    "轮转 + vdot→vadd 短依赖：每次 vadd 读前一条 vdot 的结果，vdot 的轮转写与 vadd 的写交叠",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_mix"), L(5, "A_ext"),
+     VD(20, 1, 2), VA(10, 20, 5), VD(21, 2, 3), VA(11, 21, 5),
+     VD(20, 3, 5), VD(21, 1, 3),
+     RD(20), RD(21), RD(10, hi=False), RD(11, hi=False)])
+
+# 3.22 跨指令类交错：三类指令共享 VIMac 流水/写回口，并制造跨类旁路
+add("xp_ilvd_3way", "vdot-pl", "cross-class",
+    "四跳全依赖链横跨三类指令 vdot→vadd→vmacc→vdot，三类轮流占用同一 VIMac 流水与写回口",
+    [L(1, "A_pos"), L(2, "B_pos"), L(6, "A_ext"), VMV(11, 0x00),
+     VD(3, 1, 2), VA(10, 3, 6), VM(11, 10, 2), VD(12, 11, 2),
+     RD(3), RD(12), RD(10, hi=False)])
+_ops = [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_ext"), L(4, "B_ext2")]
+for _i in range(4):
+    _s1, _s2 = (1, 2) if _i % 2 == 0 else (3, 4)
+    _ops += [VD(20 + _i, _s1, _s2), VA(10 + _i, _s1, _s2)]
+_ops += [RD(20 + _i) for _i in range(4)] + [RD(10 + _i, hi=False) for _i in range(4)]
+add("xp_ilvd_alt8", "vdot-pl", "cross-class",
+    "8 条 vdot/vadd 交替，每条 vadd 与相邻 vdot 共享同一源对（读端口被两类指令连续抢占）；"
+    "4 个 vdot 结果按奇偶交替，奇偶错位即失配", _ops)
+
+_ops = [L(1, "A_pos"), L(2, "B_pos")] + [VMV(10 + _i, 0x11 + _i) for _i in range(4)]
+for _i in range(4):
+    _ops += [VD(3 + _i, 1, 2), VM(10 + _i, 3 + _i, 2)]
+_ops += [RD(3 + _i) for _i in range(4)] + [RD(10 + _i, hi=False) for _i in range(4)]
+add("xp_ilvd_vmacc4", "vdot-pl", "cross-class",
+    "4 组 vdot→vmacc 短链交错：每个 vmacc 读上一条 vdot 的结果并写自己的 vd，"
+    "8 次写回交替占用写回口", _ops)
+add("xp_ilvd_double", "vdot-pl", "cross-class",
+    "同一 vs1 被 vdot/vadd/vdot 三连读（读端口 3 连占用），中间 vadd 的结果又被第二条 vdot 消费",
+    [L(1, "A_pos"), L(2, "B_pos"), L(5, "A_ext"), L(6, "A_ext"),
+     VD(3, 1, 2), VA(10, 1, 6), VD(4, 1, 5), RD(3), RD(4), RD(10, hi=False)])
+add("xp_ilvd_burst", "vdot-pl", "cross-class",
+    "vadd 插在背靠背组中间并消费组内第一条 vdot 的结果（跨一条在飞 vdot 的旁路），"
+    "其余 vdot 仍必须背靠背正确",
+    [L(1, "A_pos"), L(2, "B_pos"), L(4, "A_mix"), L(5, "B_three"),
+     L(6, "A_ext"), L(7, "A_max"), L(8, "B_max"),
+     VD(20, 1, 2), VD(21, 4, 5), VA(10, 20, 6), VD(22, 7, 8),
+     RD(20), RD(21), RD(22), RD(10, hi=False)])
+add("xp_ilvd_2src", "vdot-pl", "cross-class",
+    "3 条背靠背 vdot 共享同一 vs2、vs1 逐条不同：一个读口连占、另一个读口逐条换，不串源",
+    [L(1, "A_pos"), L(2, "B_pos"), L(3, "A_neg"), L(4, "A_mix"),
+     VD(20, 1, 2), VD(21, 3, 2), VD(22, 4, 2), RD(20), RD(21), RD(22)])
+
+# ---------------------------------------------------------------------------
 # ④ 异常参数组合 negative（配额 ≥32）：vill / vstart / SEW / LMUL / mstatus.VS 矩阵
 #    每个负例的「陷阱必须落在 vdot 自身」：先在 e8,m1 下完成合法装载，再构造非法状态。
 # ---------------------------------------------------------------------------
@@ -450,8 +854,97 @@ neg("xn_vs_off_vl0", "mstatus.VS=OFF 且 vl=0（非法优先于 vl=0 全写）",
 neg("xn_vstart1_vl0", "vstart=1 且 vl=0（非法优先于 vl=0 全写）",
     [("vsetvli_vl0", "e8", "m1"), ("vstart", 1)], enc_vdot(3, 1, 2))
 
+# ---------------------------------------------------------------------------
+# ④-bis 扩展负例 +16：上面 41 条的缺口是「维度两两组合」与「状态构造顺序」。
+#   * vstart 只取过 1/2/3/4/7/8/15（bit4~bit6 从未置位）⇒ 加 vstart=64；
+#   * vstart×SEW / vstart×LMUL 的 csrw 写在 vsetvli **之前**，而 vsetvl 会清 vstart
+#     （NEMU vcommon.c:128、RTL Rob.scala resetVstart）⇒ 本组把 csrw 一律放到最后一次
+#     vsetvli 之后，才真正覆盖 vstart≠0 与 SEW/LMUL 同时不满足；
+#   * vtype 保留位 bit[62:8] 与保留 LMUL=0b100 从未单独验证；
+#   * keep-vl（rd=x0,rs1=x0）从未出现过；
+#   * VS=OFF 只与 vstart / vl=0 组合过，未与 SEW/LMUL/vill 组合；
+#   * 非法优先于 vl=0 只有 SEW/VS/vstart 三维，缺 LMUL 与 vm=0。
+# ---------------------------------------------------------------------------
+neg("xn_vstart64_vl0",
+    "vstart=64（2^6，需 vstart 的 bit6）且 vl=0：非法判定必须用完整 7 位 vstart 字段，"
+    "且优先于 vl=0 全写（≤6 位截断会把 64 读成 0 而漏判）",
+    [("vsetvli_vl0", "e8", "m1"), ("vstart", 64)], enc_vdot(3, 1, 2))
+neg("xn_vstart1_e16_ord",
+    "SEW=e16 且 vstart=1，csrw vstart 放在最后一次 vsetvli 之后"
+    "（vsetvl 会把 vstart 清 0，写在前面的旧用例在 vdot 处其实 vstart=0）",
+    [("vsetvli", "e16", "m1"), ("vstart", 1)], enc_vdot(3, 1, 2))
+neg("xn_vstart1_mf2_ord",
+    "LMUL=mf2（vlmul=111）且 vstart=1，csrw 在 vsetvli 之后：分数 LMUL 与 vstart≠0 独立成立",
+    [("vsetvli", "e8", "mf2"), ("vstart", 1)], enc_vdot(3, 1, 2))
+neg("xn_vstart1_m2_ord",
+    "LMUL=m2 且 vstart=1，操作数按 m2 对齐（vd=4,vs1=2,vs2=0），csrw 在 vsetvli 之后："
+    "陷入不得来自寄存器对齐非法",
+    [("vsetvli", "e8", "m2"), ("vstart", 1)], enc_vdot(4, 2, 0))
+neg("xn_vtype_rsvd8",
+    "vtype 保留位 bit8=1（rs2=0x100，紧邻 vma）：vsetvl 后 vill=1、vl=0，vdot 必须陷入；"
+    "漏判保留位会留下 e8,m1 的合法状态而静默执行",
+    [("vill", 0x100)], enc_vdot(3, 1, 2))
+neg("xn_vtype_rsvd62",
+    "vtype 保留位 bit62=1（rs2=2^62，保留字段最高位）：vsetvl 后 vill=1、vl=0；"
+    "该位可捕获 rs2 被截成 32 位、reserved.orR 只接低位、只查 bit[11:8] 等实现",
+    [("vill", 1 << 62)], enc_vdot(3, 1, 2))
+neg("xn_vlmul_rsvd100",
+    "vlmul=0b100 保留编码配 vsew=e8：vsetvl 后 vill=1（Vsetu 的 lmulIllegal 路径），"
+    "vdot 必须陷入；现有 0x24 同时含保留 vsew，无法区分是哪个字段触发",
+    [("vill", 0x04)], enc_vdot(3, 1, 2))
+neg("xn_vill_keepl_vlmax",
+    "keep-vl（rd=x0,rs1=x0）把 VLMAX 从 32(m2) 改成 16(m1)：vsetvl 必须判非法，vill=1、vl=0",
+    [("vsetvli", "e8", "m2"), ("vsetvli_keep", "e8", "m1")], enc_vdot(3, 1, 2))
+neg("xn_vs_off_e16",
+    "SEW=e16 且 VS=OFF：译码级 VS 门（DecodeUnit）与 vdot 的 SEW 谓词（VecExceptionGen）"
+    "是两个独立非法源，组合可抓「只修好一处」的回归",
+    [("vsetvli", "e16", "m1"), ("vs_off", 0)], enc_vdot(3, 1, 2))
+neg("xn_vs_off_m2",
+    "LMUL=m2 且 VS=OFF，操作数按 m2 对齐：陷入不得来自寄存器对齐非法，而是 VS 门或 LMUL 谓词",
+    [("vsetvli", "e8", "m2"), ("vs_off", 0)], enc_vdot(4, 2, 0))
+neg("xn_vs_off_vill",
+    "vill=1 且 VS=OFF：vill 门（isVArithMem）与 VS 门（DecodeUnit）分属两个模块，"
+    "两道门交叉从未同时出现",
+    [("vill", 0x38), ("vs_off", 0)], enc_vdot(3, 1, 2))
+neg("xn_lmul_m2_vl0",
+    "LMUL=m2 且 vl=0：非法判定优先于 vl=0 全写（m2 对齐操作数排除对齐非法）",
+    [("vsetvli_vl0", "e8", "m2")], enc_vdot(4, 2, 0))
+neg("xn_vm0_vl0",
+    "vm=0 且 vl=0：25 位匹配失败（解码不命中）不得被 vl=0 的提前返回吞掉",
+    [("vsetvli_vl0", "e8", "m1")], 0x3820A1D7)
+neg("xn_e16_mf4",
+    "SEW=e16 且 LMUL=mf4：vsetvl 合法（16 <= 64*0.25），vdot 因两个谓词同时不满足而陷入",
+    [("vsetvli", "e16", "mf4")], enc_vdot(3, 1, 2))
+neg("xn_e16_mf2",
+    "SEW=e16 且 LMUL=mf2：vsetvl 合法（16 <= 64*0.5），mf2 与 mf4 是不同 vlmul 位型",
+    [("vsetvli", "e16", "mf2")], enc_vdot(3, 1, 2))
+neg("xn_e32_mf2",
+    "SEW=e32 且 LMUL=mf2：vsetvl 合法边界（32 = 64*0.5），vsew 与 vlmul 两个字段同时不满足",
+    [("vsetvli", "e32", "mf2")], enc_vdot(3, 1, 2))
+
 for _n in NEG:
     add(_n["cid"], "negative", "illegal", _n["note"], None)
+
+# ---------------------------------------------------------------------------
+# ④-ter 合法对照 3 例（cls=negative-legal，must-not-trap + 值断言）
+#   上面 57 条负例的通过判据都是「必须陷入」。若实现把条件写成「vl=0 就陷入」
+#   「VS!=Dirty 就陷入」「vstart 写过就陷入」，负例侧全绿、错误只在合法侧暴露。
+#   本组三条正是这三条边界的反证；期望值同样由金模型算出。
+#   cls 取 negative-legal 而非 negative：94-run-extra.sh 的 negative 判据要求
+#   HIT CRITICAL ERROR（is_negative() 判 cls=="negative"），本组要求 HIT GOOD TRAP。
+# ---------------------------------------------------------------------------
+add("xn_ctrl_vl0_legal", "negative-legal", "negative-control",
+    "合法对照：六条必要条件全满足且 vl=0，vdot 必须执行并按全写语义写 vd[31:0]/清零高 96 位；"
+    "用于证明 3 条「非法优先于 vl=0」负例不是因为「所有 vl=0 都陷入」而通过",
+    [L(1, "A_pos"), L(2, "B_pos"), SETVL(0), VD(3, 1, 2), RD(3)])
+add("xn_ctrl_vs_initial", "negative-legal", "negative-control",
+    "合法对照：mstatus.VS=Initial(01) 不是非法态（只有 VS=OFF 才非法），vdot 必须执行并全写；"
+    "若实现写成「VS 必须为 Dirty」，现有正例全绿而误陷入只在本组暴露",
+    [L(1, "A_pos"), L(2, "B_pos"), VSOFF(), VSINIT(), SETVL(16), VD(3, 1, 2), RD(3)])
+add("xn_ctrl_vstart_reset", "negative-legal", "negative-control",
+    "合法对照：vstart=1 之后执行合法 vsetvli，架构上 vstart 被清 0，vdot 必须正常执行；"
+    "把「vsetvli 清 vstart」变成可失败断言（上面 3 条 _ord 负例依赖这条规则）",
+    [L(1, "A_pos"), L(2, "B_pos"), RSV(1), SETVL(16), VD(3, 1, 2), RD(3)])
 
 # ---------------------------------------------------------------------------
 # ⑤ G0 反例 2 行（期望值故意错 1 bit，必须打印 MISMATCH 并被同一套自检判为失败）
@@ -644,6 +1137,13 @@ def emit_linear(case):
             S("li t3, %d" % op["n"])
             S("vsetvl zero, t1, t3")
             cur_vl[0] = 16
+        elif kind == "vl_vt":
+            # vl 与 vta/vma 同时给：AVL 直接写 x[t1]，ta/ma 后缀决定 vtype 的 bit6/bit7
+            cur_vl[0] = op["n"]
+            C("vl_vt %d ta=%d ma=%d" % (op["n"], op["ta"], op["ma"]))
+            S("li t1, %d" % op["n"])
+            S("vsetvli zero, t1, e8, m1, %s, %s"
+              % ("ta" if op["ta"] else "tu", "ma" if op["ma"] else "mu"))
         elif kind == "rs_vstart":
             C("rs_vstart %d" % op["n"])
             S("li t4, %d" % op["n"])
@@ -658,6 +1158,13 @@ def emit_linear(case):
         elif kind == "vs_on":
             C("vs_on")
             S("li t4, 0x600")
+            S("csrs mstatus, t4")
+        elif kind == "vs_initial":
+            # VS 是 mstatus[10:9]：先清 0x600 再置 0x200 ⇒ 01 (Initial)，不是 11 (Dirty)
+            C("vs_initial")
+            S("li t4, 0x600")
+            S("csrc mstatus, t4")
+            S("li t4, 0x200")
             S("csrs mstatus, t4")
         elif kind == "jalover":
             C("jalover")
@@ -833,16 +1340,26 @@ def emit_negative(n):
         elif kind == "vsetvli_vl0":
             lines.append('      "li t1, 0\\n\\t"')
             lines.append('      "vsetvli zero, t1, %s, %s, ta, ma\\n\\t"' % (st[1], st[2]))
+        elif kind == "vsetvli_keep":
+            # keep-vl 形式：rd=x0 且 rs1=x0 ⇒ 只写 vtype，vl 取旧值（Vsetu keepVlIllegal 路径）
+            lines.append('      "vsetvli zero, zero, %s, %s, ta, ma\\n\\t"' % (st[1], st[2]))
         elif kind == "vstart":
             lines.append('      "li t4, %d\\n\\t"' % st[1])
             lines.append('      "csrw 0x008, t4\\n\\t"')
         elif kind == "vill":
-            lines.append('      "li t4, %d\\n\\t"' % st[1])
+            # 立即数 >0xFF 时用十六进制，2^62 这类值读起来才不费劲（<=0xFF 保持原样）
+            _imm = ("0x%X" % st[1]) if st[1] > 0xFF else ("%d" % st[1])
+            lines.append('      "li t4, %s\\n\\t"' % _imm)
             lines.append('      "li t5, 8\\n\\t"')
             lines.append('      "vsetvl zero, t5, t4\\n\\t"')
         elif kind == "vs_off":
             lines.append('      "li t4, 0x600\\n\\t"')
             lines.append('      "csrc mstatus, t4\\n\\t"')
+        elif kind == "vs_initial":
+            lines.append('      "li t4, 0x600\\n\\t"')
+            lines.append('      "csrc mstatus, t4\\n\\t"')
+            lines.append('      "li t4, 0x200\\n\\t"')
+            lines.append('      "csrs mstatus, t4\\n\\t"')
         else:
             raise SystemExit("未知负例状态构造：%r" % (st,))
     return """// %s.c — 扩容负例（生成器 design/verify/cases/gen_extra.py；请勿手改）
@@ -918,6 +1435,22 @@ ANCHOR = {
     "bb+bubble": "ARCHITECTURE §8:192 + R13",
     "loop": "控制流回边（循环内重复执行）",
     "illegal": "SPEC §1.1/§1.3 六条必要条件矩阵；SPEC §1.1「非法优先于 vl=0 全写」",
+    "alias3": "SPEC §1.1 全写 + §3.4.2 vd==vs 属合法重叠；v0/v31 索引边界与 §1.4 累加器上下界",
+    "alias-hi96": "SPEC §1.2 第 2 条（vd[127:32] 恒零）；SPEC §1.1 旧 vd 非语义输入",
+    "alias-lanehi": "SPEC §1.1 lane 8..15 不参与；§1.4 19 位累加范围",
+    "alias-wb": "SPEC §1.1 全写 + 写后读就地更新（同一 vd 连续写回）",
+    "alias-vl": "SPEC §1.1 vl 不影响结果；非法判定优先于 vl=0 全写",
+    "bb-distinct": "ARCHITECTURE §2.2 第 7 条 / §8 R13（fireS1 拍对齐）；vd 索引逐位正确",
+    "vd-reuse": "ARCHITECTURE §3.1 VimacCfg.latency=2（在飞窗口）；写回按程序序",
+    "raw-mid": "SPEC §1.1 写后读依赖；读回序列不破坏后续写后读",
+    "raw-cross": "ARCHITECTURE §2.2 发射/写回；跨指令类（VIMac↔Mgu）旁路",
+    "war": "SPEC §1.1 源寄存器在飞读取；WAR 冒险（vadd/vmacc/vle8.v 覆写源）",
+    "waw-x": "跨指令类 WAW：Mgu 与 VIMac 两个写回源的排序",
+    "vl-imm": "SPEC §1.1 vl 不影响语义且全写 vd",
+    "vtype-imm": "SPEC §1.1 vta/vma 不影响结果；vdot 旁路 Mgu 的 tail/agnostic 路径",
+    "rotate": "vd/vs1/vs2 三者独立轮转；写回目的地解码与端口映射",
+    "cross-class": "ARCHITECTURE §2.2 跨类旁路 + 写回口竞争",
+    "negative-control": "SPEC §1.1 六条必要条件为「与」：合法侧反证（must-not-trap）",
     "g0": "ALGORITHM §3.1 G0 反例（期望值故意错 1 bit）",
     "rand10k": "ALGORITHM §3.2 随机类（固定种子，金模型 + 算法 B 双算）",
 }
