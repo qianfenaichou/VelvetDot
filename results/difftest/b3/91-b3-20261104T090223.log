@@ -1,0 +1,9 @@
+===== job=126749121 host=a01r4n09 emu=/public/home/**********/core/src/XiangShan/build/emu img=/public/home/**********/core/test/bin/perf_base_chain.bin 2026-11-04 09:02:23 =====
+emu compiled at Nov  3 2026, 16:19:22
+[INFO] init for constantin: loaded from init.
+PERF base_chain: vl=8 expect=8 OK
+PERF chain_free_round: round=0 seed=1 samples=2000 median=16 mean=16 min=3 max=18 over=0 result=0x91A7 want=0x91A7 chain=OK
+===== emu rc=124 log=/public/home/**********/core/results/difftest/b3/91-b3-20261104T090223.log =====
+PERF base_chain: vl=8 expect=8 OK
+PERF chain_free_round: round=0 seed=1 samples=2000 median=16 mean=16 min=3 max=18 over=0 result=0x91A7 want=0x91A7 chain=OK
+[FAIL] B3 用例未达标（verdict 或 L_base_chain 缺失）

@@ -1,0 +1,36 @@
+===== job=126875029 host=k20r3n12 partition=kshcnormal 2026-11-05 09:12:21 =====
+emu=/public/home/**********/core/src/XiangShan/build/emu emu_md5=529c9abcd7655448774d8b1d0718969e
+ref_so=/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so ref_md5=ac3d96d32b781efd520a04c68cf22873
+img=/public/home/**********/core/test/bin/vdot_xcontam.bin img_md5=60a536ed9fe83ba7580f80b5a20e8bab max_instr=200000000 timeout=900s
+versions: xiangshan=a4eeaab yunsuan=9559211 nemu=a683e0b
+manifest(未改动) sha256=413b5796b20094b0ef6db7aa4ca1fa7e4cd683eb6e5e71a37b2c34cbf14b3e87 rows=31
+nm_exec_vdot_hits=2 difftest_state=/public/home/**********/core/src/XiangShan/build/generated-src/difftest-state.h vec_reg_compare=1
+----- emu --diff run -----
+emu rc=0 case_log=/public/home/**********/core/results/difftest/r13/cases/vdot_xcontam.20261105T091220.log (4755639 B)
+good=1 abort=0 bad_trap=0 mismatch=0 reg_size_bad=0
+xcontam_verdict_all_ok=1 has_fail=0 setup_bad=0
+XCONTAM SETUP S1=-948 w1=0xFFFFFC4C S2=-272 w2=0xFFFFFEF0
+XCONTAM b0 vdot->vmacc->vdot got=0xFFFFFEF0 want=0xFFFFFEF0 hi96_bad=0 OK
+XCONTAM b1 step1 got=0xFFFFFC4C want=0xFFFFFC4C hi96_bad=0
+XCONTAM b1 step2 bytes_bad=0
+XCONTAM b1 step3 got=0xFFFFFEF0 want=0xFFFFFEF0 hi96_bad=0 OK
+XCONTAM b1 step2 got=[44 EA D7 B9 7C 4A F0 AA 34 82 18 3E 84 F6 20 F6] exp=[44 EA D7 B9 7C 4A F0 AA 34 82 18 3E 84 F6 20 F6]
+XCONTAM b2 vdot->vdot got=0xFFFFFEF0 want=0xFFFFFEF0 hi96_bad=0 OK
+XCONTAM b2b vdot(S2)->vdot(S1) got=0xFFFFFC4C want=0xFFFFFC4C hi96_bad=0 OK
+XCONTAM b3 vmacc->vdot->vmacc bytes_bad=0 OK
+XCONTAM b3 got=[44 EA D7 B9 7C 4A F0 AA 34 82 18 3E 84 F6 20 F6] exp=[44 EA D7 B9 7C 4A F0 AA 34 82 18 3E 84 F6 20 F6]
+XCONTAM b4 vmacc->vdot got=0xFFFFFEF0 want=0xFFFFFEF0 hi96_bad=0 OK
+XCONTAM verdict=ALL_OK fails=0
+----- crosscheck rc=1 -----
+Traceback (most recent call last):
+  File "/public/home/**********/core/verify/cases/xcontam_crosscheck.py", line 219, in <module>
+    sys.exit(main())
+  File "/public/home/**********/core/verify/cases/xcontam_crosscheck.py", line 96, in main
+    model = load_model()
+  File "/public/home/**********/core/verify/cases/xcontam_crosscheck.py", line 34, in load_model
+    spec.loader.exec_module(mod)
+  File "<frozen importlib._bootstrap_external>", line 839, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 975, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1032, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/public/home/**********/core/verify/cases/../vdot_model.py'
+===== DONE status=通过  =====

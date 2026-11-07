@@ -1,0 +1,9 @@
+[2026-11-04 11:30:52] ===== 25-rtl-lint.sh job=126761068 host=k20r2n17 =====
+[2026-11-04 11:30:53] verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5 rtl_dir=/public/home/**********/core/src/XiangShan/build/rtl
+[2026-11-04 11:30:53] lint 闭包（top=VdotReduce，3 个文件）：VdotReduce.sv CSA_Nto2With3to2MainPipeline_5.sv CSA4to2_15.sv
+[2026-11-04 11:30:53] == verilator --lint-only -Wno-fatal --top-module VdotReduce ==
+[2026-11-04 11:30:54] top=VdotReduce verilator rc=0 %Error=0 %Warning=0 输出=/public/home/**********/core/results/lint/25-verilator-VdotReduce-20261104T113051.log
+[2026-11-04 11:30:54] lint 闭包（top=VIMac64b，1 个文件）：VIMac64b.sv
+[2026-11-04 11:30:54] == verilator --lint-only -Wno-fatal --top-module VIMac64b ==
+[2026-11-04 11:30:55] top=VIMac64b verilator rc=0 %Error=0 %Warning=0 输出=/public/home/**********/core/results/lint/25-verilator-VIMac64b-20261104T113051.log
+[2026-11-04 11:30:55] [OK] lint 达标：两个 top 全部 rc=0 %Error=0 %Warning 合计=0

@@ -1,0 +1,11 @@
+    80000170:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000174:	00003e97          	auipc	t4,0x3
+    80000178:	f6ce8e93          	addi	t4,t4,-148 # 800030e0 <buf_a>
+    8000017c:	020e8087          	vle8.v	v1,(t4)
+    80000180:	00003f17          	auipc	t5,0x3
+    80000184:	f70f0f13          	addi	t5,t5,-144 # 800030f0 <buf_b>
+    80000188:	020f0107          	vle8.v	v2,(t5)
+    8000018c:	3a20a1d7          	.word	0x3a20a1d7
+    80000190:	4e11                	li	t3,4
+    80000192:	010e7057          	vsetvli	zero,t3,e32,m1,tu,mu
+    80000196:	42302557          	vmv.x.s	a0,v3

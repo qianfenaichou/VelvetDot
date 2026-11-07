@@ -1,0 +1,9 @@
+[2026-11-03 03:23:37] ===== slurm_script mode=smoke max_instr=200000000 timeout=1800s =====
+[2026-11-03 03:23:38] 已 source /public/home/**********/tools/env.sh
+[2026-11-03 03:26:43]   case vadd-microbench [vadd] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:27:08]   case vdot_pos1 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:27:28]   case vdot_neg1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:27:47]   case vdot_bound1 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:28:35]   case vdot_mix [vdot-mix] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:28:36] 结果 JSON：/public/home/**********/core/results/difftest/20-smoke-20261103T032337.json
+[2026-11-03 03:28:36] 判据：未达标（5/5）

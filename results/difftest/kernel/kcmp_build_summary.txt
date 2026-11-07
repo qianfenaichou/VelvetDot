@@ -1,0 +1,11 @@
+# build_kcmp.sh 产物（2026-11-06 05:48:58）
+src=$REPO/design/verify/cases/perf_kernel_cmp.c
+src_sha256=821151164ff9ad54870ab9e35e81b85a54e1632242fd62da526ea1d0624b0c9b
+run_elf=$REPO/results/difftest/kernel/perf_kernel_cmp.elf
+run_elf_sha256=22b6dd60c646d15b00b04da2a0df98b6f6ca76332ec9726dfd56033f9ad914bb
+run_bin=$REPO/results/difftest/kernel/perf_kernel_cmp.bin
+run_bin_sha256=0ac51d5abba938b38a32d736f7d15e5399ce5ae8ae2ee51f3cb3d28ddd3b2833
+N_base=18
+N_vdot=11
+two_pass_agree=yes
+injected=-DSTATIC_N_BASE=18 -DSTATIC_N_VDOT=11

@@ -1,0 +1,81 @@
+#time	job_id	partition	cores	elapsed_s	core_hours	node_hours	item	purpose
+2026-11-01 19:29:43	126529589	kshcnormal	32	23	0.204	0.006	P0-env	工具链/构建排障（COMPLETED）
+2026-11-01 19:29:43	126529728	kshcnormal	32	3	0.027	0.001	P0-env	工具链/构建排障（COMPLETED）
+2026-11-01 19:29:43	126530785	kshcnormal	32	49	0.436	0.014	P0-emu	工具链/构建排障（FAILED）
+2026-11-01 19:29:44	126531156	kshcnormal	32	496	4.409	0.138	P0-emu	工具链/构建排障（FAILED）
+2026-11-01 19:29:44	126531556	kshcnormal	32	46	0.409	0.013	P0-emu	工具链/构建排障（CANCELLED by 276820）
+2026-11-01 19:29:44	126531659	kshcnormal	32	1601	14.231	0.445	P0-emu	工具链/构建排障（FAILED）
+2026-11-01 19:29:44	126533246	kshcnormal	32	1628	14.471	0.452	P0-emu	工具链/构建排障（FAILED）
+2026-11-01 20:07:23	126534905	kshcnormal	32	1272	11.307	0.353	P0-emu	带 vdot RTL 的 emu 构建+microbench 冒烟（通过）
+2026-11-01 21:07:31	126537392	kshcnormal	32	444	3.947	0.123	P0-difftest-smoke	vdot 冒烟 13/13 达标 + 建基线
+2026-11-01 21:57:09	126537819	kshcnormal	32	55	0.489	0.015	P2-yosys-formal	yosys 面积对比（达标）（COMPLETED）
+2026-11-01 21:57:09	126537633	kshcnormal	32	1	0.009	0.000	P2-yosys-formal	yosys 面积对比（达标）（FAILED）
+2026-11-01 21:57:09	126537816	kshcnormal	32	2	0.018	0.001	P2-yosys-formal	形式脚本排障（未达标/引用与单元类型问题）（FAILED）
+2026-11-01 21:57:10	126537852	kshcnormal	32	2	0.018	0.001	P2-yosys-formal	形式脚本排障（未达标/引用与单元类型问题）（FAILED）
+2026-11-01 21:57:10	126537912	kshcnormal	32	2	0.018	0.001	P2-yosys-formal	形式脚本排障（未达标/引用与单元类型问题）（FAILED）
+2026-11-01 21:57:10	126538478	kshcnormal	32	221	1.964	0.061	P2-yosys-formal	形式 miter 正反例（达标）（COMPLETED）
+2026-11-01 21:57:10	126536007	kshcnormal	32	1216	10.809	0.338	P0-emu	hello 冒烟（被 20 分钟时限截断）（TIMEOUT）
+2026-11-01 21:57:11	126537007	kshcnormal	32	605	5.378	0.168	P0-env	启动阶段探针（镜像路径缺失）（COMPLETED）
+2026-11-01 23:04:42	126538619	kshcnormal	32	643	5.716	0.179	P3-full	全量 difftest 14/15：vadd-microbench rc=139（与并发 10-build 改树重叠，疑似 .so 被原地覆盖）
+2026-11-01 23:04:42	126538633	kshcnormal	32	1107	9.840	0.308	P0-emu	hello 证据补跑（第二次构建，同一 RTL；1.1 证据 hello_evidence=yes）
+2026-11-01 23:49:30	126540844	kshcnormal	32	636	5.653	0.177	P3-full	P3 全量串行重跑 15/16：vadd 恢复正常（证实并发抢树为唯一失败因）；vdot_matrix 自检未过（用例把 vle8 的 vl 当成 vdot 的 vl）
+2026-11-02 00:06:50	126541295	kshcnormal	32	1265	11.244	0.351	P3-full	P3 全量 17/18：rand 通过（1024 组 fnv 与金模型一致）、g0 防空绿通过；matrix 用例自身 vma/vxsat 位错（已修）
+2026-11-02 00:28:41	126542079	kshcnormal	32	1274	11.324	0.354	P3-full	P3 全量 20/20 达标：0 ABORT、regression_delta=0、no_empty_green 达标（自检串 11/11、G0 捕获 1/1）、三口径齐备
+2026-11-03 08:07:51	126630806	kshcnormal	32	300	2.667	0.083	P0-difftest-smoke	R13 vdot_mix smoke(6例清单)
+2026-11-03 08:07:52	126642005	kshcnormal	32	472	4.196	0.131	P3-full	R13 全量 6/6 + G0 捕获
+2026-11-03 08:07:52	126646321	kshcnormal	32	604	5.369	0.168	P3-full	T5 ΔL 三链 + G0（通过）
+2026-11-03 08:07:52	126630755	kshcnormal	32	63	0.560	0.018	P0-emu	1.1 hello_identity 冒烟
+2026-11-03 12:09:45	126664477	kshcnormal	32	1562	13.884	0.434	P3-full	P3 30 例整份全量（含 vdot_mix + perf 四例）：28/30，vdot_rand 与 vdot_ill_sew 失败
+2026-11-03 15:18:53	126673563	kshcnormal	32	1670	14.844	0.464	P3-full	P3 30 例 --full 首遍（修复镜像；30/30 通过，仅 regression_delta 因基线缺失记未运行）
+2026-11-03 15:18:53	126676734	kshcnormal	32	1742	15.484	0.484	P3-full	P3 30 例 --full 验收遍（status=通过 30/30，9/9 criteria 达标，regression_delta=0）
+2026-11-03 15:18:54	126680541	kshcnormal	32	37	0.329	0.010	P0-emu	1.1 节点 IP 重建 v1 失败（xpack gcc 缺 -mabi=lp64）
+2026-11-03 15:18:54	126681977	kshcnormal	32	56	0.498	0.016	P0-emu	1.1 节点 IP 重建 v2 + 冒烟（IP=10.1.11.2 执行节点口径，status=通过）
+2026-11-03 16:30:09	126687276	kshcnormal	32	1511	13.431	0.420	P0-emu	1.3 vadd 波形：EMU_TRACE 重建 + 窄窗 VCD
+2026-11-03 16:35:00	126690058	kshcnormal	32	21	0.187	0.006	P0-emu	1.3 vadd 波形：EMU_TRACE 重建 + 窄窗 VCD
+2026-11-03 16:44:58	126690786	kshcnormal	32	96	0.853	0.027	P0-emu	1.3 vadd 波形：EMU_TRACE 重建 + 窄窗 VCD
+2026-11-03 21:25:26	126696175	kshcnormal	8	1	0.002	0.000	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:26	126696284	kshcnormal	8	28	0.062	0.008	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:26	126696892	kshcnormal	8	23	0.051	0.006	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:26	126697270	kshcnormal	4	18	0.020	0.005	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:26	126697817	kshcnormal	8	26	0.058	0.007	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:26	126698024	kshcnormal	8	24	0.053	0.007	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:26	126698404	kshcnormal	8	28	0.062	0.008	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126699082	kshcnormal	8	27	0.060	0.007	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126699763	kshcnormal	8	27	0.060	0.007	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126699950	kshcnormal	8	28	0.062	0.008	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126700152	kshcnormal	8	26	0.058	0.007	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126700854	kshcnormal	8	29	0.064	0.008	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126701149	kshcnormal	8	24	0.053	0.007	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126701708	kshcnormal	4	16	0.018	0.004	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126701838	kshcnormal	4	12	0.013	0.003	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:27	126702368	kshcnormal	4	19	0.021	0.005	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-03 21:25:28	126702976	kshcnormal	4	58	0.064	0.016	P0-emu	1.3 vadd 波形抽取/校验迭代
+2026-11-04 09:34:47	126749121	kshcnormal	8	602	1.338	0.167	P3-full	B3
+2026-11-04 09:34:48	126750152	kshcnormal	8	121	0.269	0.034	P3-full	B3
+2026-11-04 09:34:48	126750763	kshcnormal	8	527	1.171	0.146	P3-full	B3
+2026-11-04 09:38:54	126751660	kshcnormal	8	204	0.453	0.057	P2-yosys-formal	形式 miter
+2026-11-04 09:42:12	126752216	kshcnormal	8	29	0.064	0.008	P2-yosys-formal	Yosys 面积/级数
+2026-11-04 10:54:23	126758114	kshcnormal	32	69	0.613	0.019	P0-emu	1.1 hello 身份镜像（节点 IP）重建 + emu 冒烟
+2026-11-04 11:20:04	126760426	kshcnormal	4	3	0.003	0.001	P2-yosys-formal	2.2 RTL verilator lint
+2026-11-04 11:26:30	126760799	kshcnormal	4	3	0.003	0.001	P2-yosys-formal	2.2 RTL verilator lint
+2026-11-04 11:30:56	126761068	kshcnormal	4	7	0.008	0.002	P2-yosys-formal	2.2 RTL verilator lint
+2026-11-04 11:55:53	126758062	kshcnormal	8	3750	8.333	1.042	P3-full	B3 全量口径（共享节点被 VASP 挤占，第 2 轮后取消）
+2026-11-04 13:36:39	126762127	kshcnormal	32	5418	48.160	1.505	P3-full	B3/阶梯链全量口径 8x2000+ladder+B3
+2026-11-04 17:30:28	126797720	kshcnormal	4	17	0.019	0.005	P2-yosys-formal	2.2 RTL lint 严格模式首提（RTL 路径写错，rc=1，未产出结论）
+2026-11-04 17:31:57	126798101	kshcnormal	4	12	0.013	0.003	P2-yosys-formal	2.2 RTL lint 严格模式（去 -Wno-fatal；两端脚本 md5 a382af89…）
+2026-11-04 18:50:58	126803426	kshcnormal	4	8	0.009	0.002	P2-yosys-formal	2.2 RTL lint -Wall（13 条 UNUSEDSIGNAL，rc=1；两端脚本 md5 f7089880…）
+2026-11-05 09:15:31	126875029	kshcnormal	8	193	0.429	0.054	P0-difftest-smoke	R13 专项：vdot_xcontam 单例 difftest（清单外独立测量）
+2026-11-05 09:21:21	126875390	kshcnormal	32	190	1.689	0.053	P0-emu	2.2 vdot.vv 波形：窄窗 VCD + 关键信号摘录
+2026-11-05 09:42:58	126876081	kshcnormal	32	876	7.787	0.243	P0-difftest-smoke	difftest 冒烟
+2026-11-05 10:01:27	126877641	kshcnormal	32	487	4.329	0.135	P0-difftest-smoke	difftest 冒烟
+2026-11-05 11:34:54	126884288	kshcnormal	32	861	7.653	0.239	P0-difftest-smoke	difftest 冒烟
+2026-11-06 00:47:56	126957204	kshcnormal	8	192	0.427	0.053	P0-difftest-smoke	R13 专项：vdot_xcontam 单例 difftest（清单外独立测量）
+2026-11-06 04:16:42	126979059	kshcnormal	8	506	1.124	0.141	P3-full	内核级指令数/吞吐对比：perf_kernel_cmp 单例（清单外独立测量，分母=未融合 RVV 序列）
+2026-11-06 04:45:07	126982225	kshcnormal	8	472	1.049	0.131	P3-full	内核级指令数/吞吐对比：perf_kernel_cmp 单例（清单外独立测量，分母=未融合 RVV 序列）
+2026-11-06 05:20:54	126985495	kshcnormal	8	430	0.956	0.119	P3-full	内核级指令数/吞吐对比：perf_kernel_cmp 单例（清单外独立测量，分母=未融合 RVV 序列）
+2026-11-06 05:31:25	126986221	kshcnormal	8	553	1.229	0.154	P3-full	内核级指令数/吞吐对比：perf_kernel_cmp 单例（清单外独立测量，分母=未融合 RVV 序列）
+2026-11-06 05:44:07	126986882	kshcnormal	8	652	1.449	0.181	P3-full	内核级指令数/吞吐对比：perf_kernel_cmp 单例（清单外独立测量，分母=未融合 RVV 序列）
+2026-11-06 05:51:52	126983456	kshcnormal	8	451	1.002	0.125	P3-full	perf_kernel_cmp 迭代第3轮（三点差分首版；超 --time 后取消，未出结论）
+2026-11-06 05:51:52	126984043	kshcnormal	8	402	0.893	0.112	P3-full	perf_kernel_cmp 迭代第4轮（加 fence 屏障；超 --time 后取消，未出结论）
+2026-11-06 05:51:52	126984760	kshcnormal	8	337	0.749	0.094	P3-full	perf_kernel_cmp 迭代第5轮（缩规模重跑；route2 尾部缺口复现后取消）
+2026-11-06 06:06:50	126989295	kshcnormal	8	291	0.647	0.081	P3-full	内核级指令数/吞吐对比：perf_kernel_cmp 单例（清单外独立测量，分母=未融合 RVV 序列）

@@ -1,0 +1,31 @@
+[2026-11-05 09:27:24] ===== 00-env-check.sh mode=probe dry_run=0 =====
+[2026-11-05 09:27:24] == 平台信息 ==
+[2026-11-05 09:27:24] hostname=login01 user=********** date=2026-11-05 09:27:24
+[2026-11-05 09:27:24] SLURM_JOB_ID=<none> SLURM_JOB_PARTITION=<none>
+[2026-11-05 09:27:25] sinfo kshcnormal: kshcnormal|up|32|126500
+[2026-11-05 09:27:25] CORE_DIR=/public/home/**********/core
+[2026-11-05 09:27:25]   CORE_DIR 可写
+[2026-11-05 09:27:25]   /work 不可写（与平台实测一致）
+[2026-11-05 09:27:25]   /work1 不可写（与平台实测一致）
+[2026-11-05 09:27:25]   /public/share 不可写（与平台实测一致）
+[2026-11-05 09:27:25] == 工具探测 ==
+[2026-11-05 09:27:25]   [命中] gcc -> /public/software/compiler/gcc-13.3.0/bin/gcc :: gcc (GCC) 13.3.0
+[2026-11-05 09:27:25]   [命中] g++ -> /public/software/compiler/gcc-13.3.0/bin/g++ :: g++ (GCC) 13.3.0
+[2026-11-05 09:27:25]   [命中] cmake -> /public/software/compiler/cmake-3.25.0/usr/local/bin/cmake :: cmake version 3.25.0
+[2026-11-05 09:27:25]   [命中] make -> /opt/rh/devtoolset-7/root/usr/bin/make :: GNU Make 4.2.1
+[2026-11-05 09:27:25]   [命中] python3 -> /public/software/apps/python/3.8.13/bin/python3 :: Python 3.8.13
+[2026-11-05 09:27:27]   [命中] java -> /public/home/**********/tools/jdk17/bin/java :: openjdk version "17.0.21" 2026-10-20
+[2026-11-05 09:27:27]   [命中] git -> /public/software/apps/git/2.30.2/bin/git :: git version 2.30.2
+[2026-11-05 09:27:27]   [命中] verilator -> /public/home/**********/tools/verilator/bin/verilator :: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+[2026-11-05 09:27:28]   [命中] yosys -> /public/home/**********/tools/yosys/bin/yosys :: Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+[2026-11-05 09:27:28]   [缺失] sby
+[2026-11-05 09:27:35]   [命中] mill -> /public/home/**********/tools/bin/mill :: Mill Build Tool version 0.12.3
+[2026-11-05 09:27:35]   [命中] riscv64-unknown-elf-gcc -> /public/home/**********/tools/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/bin/riscv64-unknown-elf-gcc :: riscv64-unknown-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 13.2.0
+[2026-11-05 09:27:35]   [缺失] riscv64-linux-gnu-gcc
+[2026-11-05 09:27:35]   [缺失] riscv64-elf-gcc
+[2026-11-05 09:27:35]   [缺失] riscv64-elf-newlib-gcc
+[2026-11-05 09:27:35]   [缺失] z3
+[2026-11-05 09:27:35]   [缺失] apptainer
+[2026-11-05 09:27:35] probe 结束（只读）
+[2026-11-05 09:27:36] 结果 JSON：/public/home/**********/core/results/env/00-env-20261105T092724.json
+[2026-11-05 09:27:36] 判据：全部达标

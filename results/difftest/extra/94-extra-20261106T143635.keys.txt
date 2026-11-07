@@ -1,0 +1,130 @@
+# 逐用例关键判据行（run=20261106T143635；完整日志见 cases/<cid>.20261106T143635.log，单份约 4.7 MB 留在远端）
+# cid  cls  status  key-lines
+xb_neg_all	vdot-base	CASE xb_neg_all: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000284|
+xb_bound_max	vdot-base	CASE xb_bound_max: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000288|
+xb_bound_min	vdot-base	CASE xb_bound_min: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000284|
+xb_vl_sweep	vdot-base	CASE xb_vl_sweep: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000800|
+xb_vta_vma	vdot-base	CASE xb_vta_vma: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800004ac|
+xb_oldvd	vdot-base	CASE xb_oldvd: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_vs2_pos	vdot-ov	CASE xo_vs2_pos: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_neg	vdot-ov	CASE xo_vs2_neg: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_mixodd	vdot-ov	CASE xo_vs2_mixodd: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_bmax	vdot-ov	CASE xo_vs2_bmax: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_vs2_bmin	vdot-ov	CASE xo_vs2_bmin: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_zero	vdot-ov	CASE xo_vs2_zero: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_ext	vdot-ov	CASE xo_vs2_ext: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_vs2_asym	vdot-ov	CASE xo_vs2_asym: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_lanehi	vdot-ov	CASE xo_vs2_lanehi: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs2_rand	vdot-ov	CASE xo_vs2_rand: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_vs1_pos	vdot-ov	CASE xo_vs1_pos: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_neg	vdot-ov	CASE xo_vs1_neg: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_mixodd	vdot-ov	CASE xo_vs1_mixodd: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_bmax	vdot-ov	CASE xo_vs1_bmax: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_vs1_bmin	vdot-ov	CASE xo_vs1_bmin: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_zero	vdot-ov	CASE xo_vs1_zero: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_ext	vdot-ov	CASE xo_vs1_ext: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_vs1_asym	vdot-ov	CASE xo_vs1_asym: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_lanehi	vdot-ov	CASE xo_vs1_lanehi: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xo_vs1_rand	vdot-ov	CASE xo_vs1_rand: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xo_v12_pos	vdot-ov	CASE xo_v12_pos: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_neg	vdot-ov	CASE xo_v12_neg: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_mixodd	vdot-ov	CASE xo_v12_mixodd: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_bmax	vdot-ov	CASE xo_v12_bmax: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000284|
+xo_v12_bmin	vdot-ov	CASE xo_v12_bmin: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_zero	vdot-ov	CASE xo_v12_zero: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_ext	vdot-ov	CASE xo_v12_ext: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000284|
+xo_v12_asym	vdot-ov	CASE xo_v12_asym: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_lanehi	vdot-ov	CASE xo_v12_lanehi: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000280|
+xo_v12_rand	vdot-ov	CASE xo_v12_rand: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000284|
+xp_bb2	vdot-pl	CASE xp_bb2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000032c|
+xp_bb3	vdot-pl	CASE xp_bb3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800003d4|
+xp_bb4	vdot-pl	CASE xp_bb4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000047c|
+xp_bb6	vdot-pl	CASE xp_bb6: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800005cc|
+xp_bb8	vdot-pl	CASE xp_bb8: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000071c|
+xp_bub1	vdot-pl	CASE xp_bub1: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002a8|
+xp_bub2	vdot-pl	CASE xp_bub2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002ac|
+xp_bub3	vdot-pl	CASE xp_bub3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002b0|
+xp_bub5	vdot-pl	CASE xp_bub5: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002b8|
+xp_bub7	vdot-pl	CASE xp_bub7: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002c0|
+xp_chain2	vdot-pl	CASE xp_chain2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000288|
+xp_chain3	vdot-pl	CASE xp_chain3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xp_chain4	vdot-pl	CASE xp_chain4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xp_chain6	vdot-pl	CASE xp_chain6: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000298|
+xp_chain8	vdot-pl	CASE xp_chain8: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002a0|
+xp_wbp2	vdot-pl	CASE xp_wbp2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000035c|
+xp_wbp3	vdot-pl	CASE xp_wbp3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000410|
+xp_wbp4	vdot-pl	CASE xp_wbp4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800004c4|
+xp_wbp6	vdot-pl	CASE xp_wbp6: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000062c|
+xp_cxl2	vdot-pl	CASE xp_cxl2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000334|
+xp_cxl3	vdot-pl	CASE xp_cxl3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000340|
+xp_cxl4	vdot-pl	CASE xp_cxl4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000034c|
+xp_cxl8	vdot-pl	CASE xp_cxl8: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000037c|
+xp_ilv_vstart	vdot-pl	CASE xp_ilv_vstart: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xp_ilv_vill	vdot-pl	CASE xp_ilv_vill: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000298|
+xp_ilv_vs	vdot-pl	CASE xp_ilv_vs: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000294|
+xp_ilv_sew_back	vdot-pl	CASE xp_ilv_sew_back: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000029c|
+xp_ilv_lmul_back	vdot-pl	CASE xp_ilv_lmul_back: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000029c|
+xp_ilv_all	vdot-pl	CASE xp_ilv_all: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800002dc|
+xp_mix2	vdot-pl	CASE xp_mix2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000035c|
+xp_mix3	vdot-pl	CASE xp_mix3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000410|
+xp_mix4	vdot-pl	CASE xp_mix4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800004c4|
+xp_mix6	vdot-pl	CASE xp_mix6: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000062c|
+xp_hi2	vdot-pl	CASE xp_hi2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000032c|
+xp_hi4	vdot-pl	CASE xp_hi4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000047c|
+xp_hi8	vdot-pl	CASE xp_hi8: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000071c|
+xp_oldvd1	vdot-pl	CASE xp_oldvd1: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xp_oldvd2	vdot-pl	CASE xp_oldvd2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xp_oldvd3	vdot-pl	CASE xp_oldvd3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xp_oldvd4	vdot-pl	CASE xp_oldvd4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000290|
+xp_bbbub2	vdot-pl	CASE xp_bbbub2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800003fc|
+xp_bbbub3	vdot-pl	CASE xp_bbbub3: MATCH|Core 0: HIT GOOD TRAP at pc = 0x800004b0|
+xp_wbpv2	vdot-pl	CASE xp_wbpv2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000328|
+xp_wbpv4	vdot-pl	CASE xp_wbpv4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000474|
+xg0_overlap	g0	CASE xg0_overlap: MISMATCH|Core 0: HIT GOOD TRAP at pc = 0x8000028c|
+xg0_pipeline	g0	CASE xg0_pipeline: MISMATCH|Core 0: HIT GOOD TRAP at pc = 0x80000288|
+xp_loop2	vdot-pl	CASE xp_loop2: MATCH|Core 0: HIT GOOD TRAP at pc = 0x80000210|
+xp_loop4	vdot-pl	CASE xp_loop4: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000020e|
+xp_loop8	vdot-pl	CASE xp_loop8: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000020e|
+xp_loop16	vdot-pl	CASE xp_loop16: MATCH|Core 0: HIT GOOD TRAP at pc = 0x8000020e|
+xn_sew_e16	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_sew_e32	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_sew_e64	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmul_m2	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmul_m4	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmul_m8	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmul_mf8	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmul_mf4	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmul_mf2	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vm0	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart1	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart2	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart3	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart4	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart7	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart15	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vill_38	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vill_20	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vill_3a	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vill_24	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vs_off	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e16_m2	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e16_m4	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e16_m8	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e32_m2	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e32_m4	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e32_m8	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e64_m2	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e64_m4	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_e64_m8	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart1_e16	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart1_e32	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart8_e16	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart8_e32	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_lmulm8_vstart1	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vs_off_vstart1	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vill_vstart1	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vm0_sew16	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_sew16_vl0	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vs_off_vl0	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+xn_vstart1_vl0	negative	Core 0 dump: HIT CRITICAL ERROR: please check if software cause a double trap. |Core 0: HIT GOOD TRAP at pc = 0xe|
+vdot_rand10k	vdot-rand10k	RAND10K verdict=ALL_OK groups=10000 mism=0 model_bad=0 ab_bad=0|Core 0: HIT GOOD TRAP at pc = 0x8000026a|

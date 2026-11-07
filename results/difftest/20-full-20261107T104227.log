@@ -1,0 +1,47 @@
+[2026-11-07 10:42:27] ===== slurm_script mode=full max_instr=200000000 timeout=1800s =====
+[2026-11-07 10:42:27] 已 source /public/home/**********/tools/env.sh
+[2026-11-07 10:47:01]   case vadd-microbench [vadd] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:47:21]   case vdot_pos1 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:47:51]   case vdot_pos2 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:48:19]   case vdot_pos3 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:48:40]   case vdot_neg1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:49:02]   case vdot_neg_odd1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:49:30]   case vdot_neg_odd3 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:49:46]   case vdot_neg_odd5 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:50:03]   case vdot_neg_odd7 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:50:24]   case vdot_bound1 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:50:41]   case vdot_bound2 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:51:02]   case vdot_bound3 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:51:22]   case vdot_bound4 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:51:42]   case vdot_bound5 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:56:51]   case vdot_rand [vdot-rand] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:58:31]   case vdot_matrix [vdot-matrix] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:58:48]   case vdot_g0_badexp [g0] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:58:55]   case vdot_ill_sew [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:04]   case vdot_ill_lmul2 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:11]   case vdot_ill_lmul4 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:19]   case vdot_ill_lmul8 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:26]   case vdot_ill_vm0 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:35]   case vdot_ill_vstart [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:45]   case vdot_ill_vill [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 10:59:56]   case vdot_ill_vs [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 11:06:22]   case perf_vdot [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 11:06:22]   metric perf_vdot: L_vdot=4
+[2026-11-07 11:06:22]   metric perf_vdot: L_vdot_mean=4
+[2026-11-07 11:06:22]   metric perf_vdot: L_vdot_loop=6
+[2026-11-07 11:06:22]   metric perf_vdot: T_steady=1
+[2026-11-07 11:06:22]   metric perf_vdot: T_kernel=290
+[2026-11-07 11:07:31]   case perf_base [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 11:07:31]   metric perf_base: B1=6
+[2026-11-07 11:07:31]   metric perf_base: B2=9
+[2026-11-07 11:08:47]   case perf_vadd [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 11:08:47]   metric perf_vadd: L_vadd=3
+[2026-11-07 11:08:47]   metric perf_vadd: L_vadd_mean=3
+[2026-11-07 11:08:47]   metric perf_vadd: L_vadd_loop=5
+[2026-11-07 11:11:21]   case perf_vmacc [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 11:11:21]   metric perf_vmacc: L_vmacc=4
+[2026-11-07 11:11:21]   metric perf_vmacc: L_vmacc_mean=4
+[2026-11-07 11:11:21]   metric perf_vmacc: L_vmacc_loop=6
+[2026-11-07 11:12:17]   case vdot_mix [vdot-mix] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-07 11:12:17] 结果 JSON：/public/home/**********/core/results/difftest/20-full-20261107T104227.json
+[2026-11-07 11:12:17] 判据：达标（30/30）

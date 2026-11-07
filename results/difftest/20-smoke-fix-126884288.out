@@ -1,0 +1,28 @@
+[2026-11-05 11:20:35] ===== slurm_script mode=smoke max_instr=200000000 timeout=1800s =====
+[2026-11-05 11:20:35] 已 source /public/home/**********/tools/env.sh
+[2026-11-05 11:25:24]   case vadd-microbench [vadd] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:25:40]   case vdot_pos1 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:26:06]   case vdot_pos2 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:26:41]   case vdot_pos3 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:27:09]   case vdot_neg1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:27:46]   case vdot_neg_odd1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:28:09]   case vdot_neg_odd3 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:28:46]   case vdot_neg_odd5 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:29:22]   case vdot_neg_odd7 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:29:44]   case vdot_bound1 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:30:06]   case vdot_bound2 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:30:40]   case vdot_bound3 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:31:00]   case vdot_bound4 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:31:26]   case vdot_bound5 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:31:54]   case vdot_g0_badexp [g0] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:32:06]   case vdot_ill_sew [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:32:14]   case vdot_ill_lmul2 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:32:31]   case vdot_ill_lmul4 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:32:46]   case vdot_ill_lmul8 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:33:00]   case vdot_ill_vm0 [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:33:13]   case vdot_ill_vstart [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:33:29]   case vdot_ill_vill [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:33:41]   case vdot_ill_vs [negative] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:34:53]   case vdot_mix [vdot-mix] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-05 11:34:54] 结果 JSON：/public/home/**********/core/results/difftest/20-smoke-20261105T112035.json
+[2026-11-05 11:34:54] 判据：达标（24/24）

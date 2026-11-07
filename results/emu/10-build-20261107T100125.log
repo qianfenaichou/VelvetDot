@@ -1,0 +1,13 @@
+[2026-11-07 10:01:25] ===== 10-build-emu.sh jobs=32 jvm_xmx=40G dry_run=0 =====
+[2026-11-07 10:01:25] 已 source /public/home/**********/tools/env.sh
+[2026-11-07 10:01:25] 版本：XiangShan=a4eeaab yunsuan=9559211 NEMU=a683e0b（锁定值见 design/HANDOFF.md §2）
+[2026-11-07 10:01:26] verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5 EMU_THREADS=8
+[2026-11-07 10:01:26] NOOP_HOME=/public/home/**********/core/src/XiangShan NEMU_HOME=/public/home/**********/core/src/NEMU AM_HOME=/public/home/**********/core/src/nexus-am
+[2026-11-07 10:01:26] == 构建 NEMU ref .so ==
+[2026-11-07 10:01:27] NEMU defconfig: riscv64-xs-kmhv2-ref_defconfig
+[2026-11-07 10:01:33] == 构建 emu：make emu -j32 EMU_THREADS=8 JVM_XMX=40G ==
+[2026-11-07 10:34:47] [WARN] --image 未给：自动回退 ready-to-run/microbench.bin 做构建冒烟；它不是 1.1 的 hello 证据（JSON 记 smoke_image=microbench(fallback)）
+[2026-11-07 10:34:47] == 冒烟运行：/public/home/**********/core/src/XiangShan/ready-to-run/microbench.bin（label=microbench(fallback)）==
+[2026-11-07 10:37:40] 冒烟结果：rc=0 HIT_GOOD_TRAP=1 HIT_BAD_TRAP=0 ABORT=0
+[2026-11-07 10:37:40] 结果 JSON：/public/home/**********/core/results/emu/10-build-20261107T100125.json
+[2026-11-07 10:37:40] 判据：构建与冒烟达标（镜像标签=microbench(fallback)）

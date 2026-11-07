@@ -1,0 +1,34 @@
+gcc	/public/software/compiler/gcc-13.3.0/bin/gcc	gcc (GCC) 13.3.0
+g++	/public/software/compiler/gcc-13.3.0/bin/g++	g++ (GCC) 13.3.0
+cmake	/public/software/compiler/cmake-3.25.0/usr/local/bin/cmake	cmake version 3.25.0
+make	/opt/rh/devtoolset-7/root/usr/bin/make	GNU Make 4.2.1
+python3	/public/software/apps/python/3.8.13/bin/python3	Python 3.8.13
+java	/usr/bin/java	openjdk version "1.8.0_181"
+git	/usr/bin/git	git version 1.8.3.1
+verilator	MISSING	-
+yosys	MISSING	-
+sby	MISSING	-
+mill	MISSING	-
+riscv64-unknown-elf-gcc	MISSING	-
+riscv64-linux-gnu-gcc	MISSING	-
+riscv64-elf-gcc	MISSING	-
+riscv64-elf-newlib-gcc	MISSING	-
+z3	MISSING	-
+apptainer	MISSING	-
+gcc	/public/software/compiler/gcc-13.3.0/bin/gcc	gcc (GCC) 13.3.0
+g++	/public/software/compiler/gcc-13.3.0/bin/g++	g++ (GCC) 13.3.0
+cmake	/public/software/compiler/cmake-3.25.0/usr/local/bin/cmake	cmake version 3.25.0
+make	/opt/rh/devtoolset-7/root/usr/bin/make	GNU Make 4.2.1
+python3	/public/software/apps/python/3.8.13/bin/python3	Python 3.8.13
+java	/usr/bin/java	openjdk version "1.8.0_181"
+git	/usr/bin/git	git version 1.8.3.1
+verilator	MISSING	-
+yosys	MISSING	-
+sby	MISSING	-
+mill	/public/home/**********/tools/bin/mill	(版本命令失败)
+riscv64-unknown-elf-gcc	MISSING	-
+riscv64-linux-gnu-gcc	MISSING	-
+riscv64-elf-gcc	MISSING	-
+riscv64-elf-newlib-gcc	MISSING	-
+z3	MISSING	-
+apptainer	MISSING	-

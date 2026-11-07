@@ -1,0 +1,28 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P3-full",
+  "script": "scripts/slurm_script",
+  "case_id": "perf_kernel_cmp",
+  "status": "通过",
+  "note": "清单外单例（不进 design/verify/cases/manifest.tsv，该文件冻结 30 行/a90d1071…）；只报指令数对比/吞吐对比，分母=未融合 RVV 序列",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126986882",
+  "host": "a01r3n04",
+  "started_at": "2026-11-06T05:33:16+0800",
+  "ended_at": "2026-11-06T05:44:07+0800",
+  "machine_hours_planned": 0.1,
+  "mode": "single-case",
+  "provenance": {"emu": "/public/home/**********/core/src/XiangShan/build/emu", "emu_md5": "529c9abcd7655448774d8b1d0718969e", "img": "/public/home/**********/core/test/bin/perf_kernel_cmp.bin", "img_md5": "1f0a5f7ac8b002ffa452939b3e3bb441", "max_instr": "200000000"},
+  "metrics": {"base_instr": "18", "base_cyc": "16", "vdot_instr": "11", "vdot_cyc": "7", "denom": "unfused_rvv_seq"},
+  "criteria": [
+    {"name": "good_trap", "expected": "HIT GOOD TRAP >= 1", "actual": "1", "status": "达标"},
+    {"name": "no_abort", "expected": "ABORT == 0", "actual": "0", "status": "达标"},
+    {"name": "no_bad_trap", "expected": "HIT BAD TRAP == 0", "actual": "0", "status": "达标"},
+    {"name": "selfcheck_kernel_cmp", "expected": "KERNEL_CMP verdict=ALL_OK", "actual": "hits=1", "status": "达标"},
+    {"name": "kcmp_fields", "expected": "base_instr/base_cyc/vdot_instr/vdot_cyc 可解析", "actual": "base_instr=18 base_cyc=16 vdot_instr=11 vdot_cyc=7", "status": "达标"},
+    {"name": "no_mismatch_line", "expected": "无 *=MISMATCH / alt_differs=no", "actual": "0", "status": "达标"},
+    {"name": "emu_rc", "expected": "rc == 0", "actual": "0", "status": "达标"},
+    {"name": "static_xcheck", "expected": "KCMP static_xcheck delta=OK", "actual": "KCMP static_xcheck static_base=18 measured_base=18 base=OK static_vdot=11 measured_vdot=11 vdot=OK", "status": "达标"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/difftest/kernel/93-kcmp-20261106T053316.log", "/public/home/**********/core/results/difftest/kernel/cases/perf_kernel_cmp.20261106T053316.log"]
+}

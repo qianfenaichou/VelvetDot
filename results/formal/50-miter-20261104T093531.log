@@ -1,0 +1,7 @@
+[2026-11-04 09:35:31] ===== slurm_script top=miter mutant=/public/home/**********/core/rtl/formal/vdot_dp_miter_bug_full.sv self_check=0 =====
+[2026-11-04 09:35:32] 已 source /public/home/**********/tools/env.sh
+[2026-11-04 09:35:32] yosys=Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+[2026-11-04 09:38:53] 正向 miter：rc=0 SUCCESS=1（日志 /public/home/**********/core/results/formal/miter.20261104T093531.yosys.log）
+[2026-11-04 09:38:54] 负控 mutant：rc=1 FAIL=1（日志 /public/home/**********/core/results/formal/miter.mutant.20261104T093531.yosys.log）
+[2026-11-04 09:38:54] 结果 JSON：/public/home/**********/core/results/formal/50-miter-20261104T093531.json
+[2026-11-04 09:38:54] 判据：达标

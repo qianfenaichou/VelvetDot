@@ -1,0 +1,58 @@
+# B3 / perf_base_chain 作业 provenance（2026-11-04 复核补证）
+# 生成：2026-11-04T17:3x 由返修轮 ssh kunshan 实跑，逐条命令+原始输出，未改一字
+
+## [P1] sacct 作业记录（126762127 成功 / 126758062 取消 / 126749121 超时）
+$ ssh kunshan "sacct -j 126762127,126758062,126749121 --format=JobID,JobName%30,State,Elapsed,Partition,NodeList,Start,End,ExitCode"
+JobID                                   JobName      State    Elapsed Partition             NodeList               Start                 End ExitCode 
+---------------- ------------------------------ ---------- ---------- -------------- --------------- ------------------- ------------------- -------- 
+126749121                              b3_chain     FAILED   00:10:02 kshcnormal            a01r4n09 2026-11-04T09:02:22 2026-11-04T09:12:24      1:0 
+126749121.batch                           batch     FAILED   00:10:02                       a01r4n09 2026-11-04T09:02:22 2026-11-04T09:12:24      1:0 
+126749121.extern                         extern  COMPLETED   00:10:02                       a01r4n09 2026-11-04T09:02:22 2026-11-04T09:12:24      0:0 
+126758062                                b3full CANCELLED+   01:02:30 kshcnormal            a01r3n06 2026-11-04T10:52:42 2026-11-04T11:55:12      0:0 
+126758062.batch                           batch  CANCELLED   01:02:32                       a01r3n06 2026-11-04T10:52:42 2026-11-04T11:55:14     0:15 
+126758062.extern                         extern  COMPLETED   01:02:30                       a01r3n06 2026-11-04T10:52:42 2026-11-04T11:55:12      0:0 
+126758062.0                                bash  COMPLETED   00:00:02                       a01r3n06 2026-11-04T11:54:49 2026-11-04T11:54:51      0:0 
+126762127                               b3full2  COMPLETED   01:30:18 kshcnormal            a02r2n11 2026-11-04T11:56:21 2026-11-04T13:26:39      0:0 
+126762127.batch                           batch  COMPLETED   01:30:18                       a02r2n11 2026-11-04T11:56:21 2026-11-04T13:26:39      0:0 
+126762127.extern                         extern  COMPLETED   01:30:22                       a02r2n11 2026-11-04T11:56:21 2026-11-04T13:26:43      0:0 
+126762127.0                                bash  COMPLETED   00:00:02                       a02r2n11 2026-11-04T12:03:44 2026-11-04T12:03:46      0:0 
+
+## [P2] 远端运行镜像 md5（与 summary.json 的 image_md5 及仓库件逐字节一致）
+$ ssh kunshan "md5sum ~/core/test/bin/perf_base_chain.bin ~/core/test/bin/perf_base_chain_min.bin"
+8c5538c9e2dab0dcc96a7deee28b6989  /public/home/**********/core/test/bin/perf_base_chain.bin
+d977915176593da7229acc6e6f96bb5b  /public/home/**********/core/test/bin/perf_base_chain_min.bin
+-rwxrwxr-x 1 ********** ********** 26272 Nov  4 10:51 /public/home/**********/core/test/bin/perf_base_chain.bin
+-rwxrwxr-x 1 ********** ********** 24448 Nov  4 09:23 /public/home/**********/core/test/bin/perf_base_chain_min.bin
+
+## [P3] 本地仓库镜像 md5（对照 P2）
+$ md5sum design/verify/cases/perf_base_chain.bin design/verify/cases/perf_base_chain_min.bin
+8c5538c9e2dab0dcc96a7deee28b6989  design/verify/cases/perf_base_chain.bin
+d977915176593da7229acc6e6f96bb5b  design/verify/cases/perf_base_chain_min.bin
+
+## [P4] 失败作业 126758062 的远端产物（此前仓内零证据）
+$ ssh kunshan "cat ~/core/results/logs/b3full-126758062.out; echo ERR; cat ~/core/results/logs/b3full-126758062.err; echo B3LOG; cat ~/core/results/difftest/b3/91-b3-20261104T105245.log"
+===== job=126758062 host=a01r3n06 emu=/public/home/**********/core/src/XiangShan/build/emu img=/public/home/**********/core/test/bin/perf_base_chain.bin 2026-11-04 10:52:45 =====
+slurmstepd: error: *** JOB 126758062 ON a01r3n06 CANCELLED AT 2026-11-04T11:55:12 ***
+-----ERR-----
+-----B3LOG-----
+===== job=126758062 host=a01r3n06 emu=/public/home/**********/core/src/XiangShan/build/emu img=/public/home/**********/core/test/bin/perf_base_chain.bin 2026-11-04 10:52:45 =====
+emu compiled at Nov  3 2026, 16:19:22
+[INFO] init for constantin: loaded from init.
+PERF base_chain: vl=8 expect=8 OK
+PERF chain_free_round: round=0 seed=1 samples=2000 median=16 mean=16 min=3 max=18 over=0 result=0x91A7 want=0x91A7 chain=OK
+PERF chain_free_round: round=1 seed=2 samples=2000 median=16 mean=16 min=3 max=18 over=0 result=0xEDC5 want=0xEDC5 chain=OK
+
+## [P5] 已回仓的失败作业产物（sha256）
+$ sha256sum results/logs/b3full-126758062.out results/difftest/b3/91-b3-20261104T105245.log
+f6aac2ebcb6794c1919e0ac4400581899c0d03178010b9ffae131e22af6d3493  results/logs/b3full-126758062.out
+d2ec3fd795f6c509fdc16e46dae6760066ea1f6efb10c20097e251862b2df79f  results/difftest/b3/91-b3-20261104T105245.log
+# 注：`b3full-126758062.err` 在远端**不存在**（`ls ~/core/results/logs/ | grep 126758062` 只有 .out），
+#   即该作业没有独立 stderr 文件；stderr 内容只出现在 .out 的 `slurmstepd: error:` 行里。
+
+## [P6] 口径限定（本 provenance 能证与不能证）
+# 能证：sacct 状态/耗时/节点（P1）、远端运行镜像 md5 与仓库件同值（P2/P3）、失败作业的原始产物（P4/P5）。
+# 不能证：① 「同节点被 VASP 占核」——仓内无 srun/ps/loadavg 留痕，仅操作者口述；
+#         ② 「22 min/轮」——失败作业只有 round 0/1 两条 round 行，无逐轮耗时；
+#         ③ 远端运行的**就是** 8c5538c9 这一份：md5 证明「远端路径上的文件 = 仓库件」，
+#            但日志首行只记路径不记 md5 ⇒ 「该路径在该时刻未被替换」这一步仍属推定（时间戳佐证：
+#            远端文件 mtime 10:51，早于作业开始 11:56）。

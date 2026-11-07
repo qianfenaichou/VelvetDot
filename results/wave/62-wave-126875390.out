@@ -1,0 +1,159 @@
+===== 2.2 vdot wave job=126875390 host=a03r2n10 runid=20261105T091811 =====
+core=/public/home/**********/core out=/public/home/**********/core/results/wave export=/public/home/**********/core/results/wave/export-stage2
+case_src=/public/home/**********/core/verify/cases/vdot_wave.c
+probe_py=/public/home/**********/core/core-package/verify/vdot_wave_probe.py
+expect_low32=0x00008780 instr=0x3A20A1D7 window=[c0-60, c1+150]
+用例里发射 0x3A20A1D7 的 .4byte 处数=1（须为 1）
+cores=32 start=2026-11-05T09:18:12+0800
+verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+NOOP_HOME=/public/home/**********/core/src/XiangShan NEMU_HOME=/public/home/**********/core/src/NEMU AM_HOME=/public/home/**********/core/src/nexus-am
+versions: xiangshan=a4eeaab yunsuan=9559211 nemu=a683e0b
+case_sha256=50b0e476a15027089d921c91334c66b95025f91ef9bb9da69fe3d21d5cc70728 probe_sha256=ff161182fee02fd78335736329d70d01735b33e0414205da3c7a050bb6438f08
+===== A. 带 trace 的 emu（EMU_TRACE=1 EMU_TRACE_ALL=1）=====
+[A] 已存在带 trace 的 emu（2026-11-03 16:29:55.000000000 +0800 289324184），跳过重建
+lrwxrwxr-x 1 ********** ********** 70 Nov  4 10:53 /public/home/**********/core/src/XiangShan/build/emu -> /public/home/**********/core/src/XiangShan/build/verilator-compile/emu
+[A] 生效判定 'dump wave to %s' 字符串数=1
+[A] 生效判定 'EMU_TRACE=1' 提示串数=0
+===== B. 构建 vdot_wave 镜像 =====
+[B] MARCH=rv64gcv_zba_zbb_zbc_zbs_zbkb_zbkc_zbkx_zknd_zkne_zknh_zkr_zksed_zksh_zkt -mabi=lp64d
+[B] 已清空 AM 静态库缓存（am/build、libs/klib/build），按本轮 MARCH 重建
+# Building vdot_wave [riscv64-xs] with AM_HOME {/public/home/**********/core/src/nexus-am}
++ CC main.c
+# Building lib-am [riscv64-xs]
++ CC src/noop/isa/riscv/trm.c
++ AS src/nemu/common/mainargs.S
++ CC src/noop/isa/riscv/perf.c
++ CC src/noop/common/uartlite.c
++ CC src/noop/common/serial-16550.c
++ CC src/nemu/isa/riscv/cte.c
++ AS src/nemu/isa/riscv/trap.S
++ CC src/nemu/isa/riscv/cte64.c
++ AS src/nemu/isa/riscv/mtime.S
++ CC src/nemu/isa/riscv/vme.c
++ CC src/xs/common/ioe.c
++ CC src/noop/common/input.c
++ CC src/noop/common/timer.c
++ CC src/noop/isa/riscv/instr.c
++ CC src/xs/isa/riscv/mpe.c
++ CC src/xs/isa/riscv/clint.c
++ CC src/xs/isa/riscv/pmp.c
++ CC src/xs/isa/riscv/plic.c
++ CC src/xs/isa/riscv/pma.c
++ CC src/xs/isa/riscv/cache.c
++ AS src/nemu/isa/riscv/boot/start.S
++ AR -> build/am-riscv64-xs.a
+# Building lib-klib [riscv64-xs]
++ CC src/printf.c
++ CC src/stdlib.c
++ CC src/string.c
++ CC src/atomic.c
++ CC src/cpp.c
++ CC src/int64.c
++ CC src/io.c
++ AR -> build/klib-riscv64-xs.a
+# Creating binary image [riscv64-xs]
++ LD -> build/vdot_wave-riscv64-xs.elf
+riscv64-unknown-elf-ld: warning: /public/home/**********/core/src/nexus-am/apps/vdot_wave/build/vdot_wave-riscv64-xs.elf has a LOAD segment with RWX permissions
++ OBJCOPY -> build/vdot_wave-riscv64-xs.bin
+[B] 镜像 6096 B md5=2ae6e236dee2f451cc4cd93579f32505
+[B] 反汇编里 3A20A1D7 出现次数=1（反汇编只是旁证；判据用下面的字节检索）
+[B] 字节检索 d7a1203a 命中偏移=['0x16a']
+===== C. --no-diff 跑一遍，取 c0/c1 =====
+[C] run-a rc=0 elapsed=33s
+WAVE_MARK c0=8425 c1=8427 vl=16
+WAVE_RESULT vd=0x00000000000000000000000000008780 low32=0x00008780
+WAVE_EXPECT vd=0x00000000000000000000000000008780 wrong_all16=0x00007C5F
+[C] c0=8425 c1=8427
+===== D. 窄窗 --dump-wave =====
+[D] run-b rc=0 elapsed=36s window=[8365,8577]
+WAVE_MARK c0=8425 c1=8427 vl=16
+WAVE_RESULT vd=0x00000000000000000000000000008780 low32=0x00008780
+WAVE_EXPECT vd=0x00000000000000000000000000008780 wrong_all16=0x00007C5F
+dump wave to /public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd...
+[D] VCD=131077177 B sha256=ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470
+[D] gzip rc=0 -> /public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd.gz 17056410 B
+[D] gzip 解压后 sha256=ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470（与原始 一致）
+===== E. VCD 体检 + 窄窗关键信号摘录 =====
+[E] PY3=/public/software/apps/python/3.8.13/bin/python3
+===== vdot 波形体检 =====
+vcd            : /public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd (131077177 B)
+vcd_sha256     : ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470
+timescale      : 1ps
+vars / scopes  : 1357193 / 16331
+时间戳范围     : [8365, 8577] 采样点=213
+摘录窗口       : [8377, 8577]
+指令机器码     : 0x3A20A1D7  锚点拍=8417 槽=2（候选 3 次）
+执行级 fuOpType: 0x067（期望 0x067）
+结果拍         : 8500
+写回拍/res_data: 8500 / 0x00000000000000000000000000008780
+摘录信号       : 取到 49 个，缺失 0 个
+摘录文件       : /public/home/**********/core/results/wave/vdot_wave_20261105T091811.key.vcd (14156 B)
+
+[PASS] header_ok        期望=timescale 可解析且 vars/scopes 非零 | 实测=timescale=1ps vars=1357193 scopes=16331
+[PASS] instr_hit        期望=0x3A20A1D7 在译码级 valid=1 命中 | 实测=anchor_time=8417 slot=2（全 VCD 候选 3 次）
+[PASS] fuoptype_exec    期望=Vimac io_in_bits_ctrl_fuOpType == 0x067 | 实测=0x067
+[PASS] result_low32     期望=锚点之后 vdotReduce/io_vd 低 32 位 == 0x00008780 | 实测=t=8500
+[PASS] high96_zero      期望=写回 res_data[127:32] == 0 | 实测=t=8500 res_data=0x00000000000000000000000000008780
+[PASS] wb_after_anchor  期望=写回拍 > 译码锚点 | 实测=wb=8500 anchor=8417
+[PASS] ts_range         期望=VCD 时间戳范围 [min,max] | 实测=[8365,8577] 采样点=213；摘录窗口=[8377,8577]
+[PASS] excerpt_verify   期望=摘录回读逐拍与源 VCD 一致 | 实测=checked=9648 mismatches=0
+
+verdict=OK
+[E] probe rc=0（摘要另存 vcd-summary-20261105T091811.txt，内容已在上方逐条打印）
+===== F. 导出（供 stage2/2.2-rtl/wave/）+ 产物清单 =====
+[F] 导出目录 /public/home/**********/core/results/wave/export-stage2：
+-rw-rw-r-- 1 ********** **********     1915 Nov  5 09:21 vcd-head-20261105T091811.txt
+-rw-rw-r-- 1 ********** **********  1689765 Nov  5 09:21 vcd-scopes-20261105T091811.txt
+-rw-rw-r-- 1 ********** **********     1595 Nov  5 09:21 vcd-summary-20261105T091811.txt
+-rw-rw-r-- 1 ********** **********     2347 Nov  5 09:21 vdot_wave_20261105T091811.health.json
+-rw-rw-r-- 1 ********** **********    14156 Nov  5 09:21 vdot_wave_20261105T091811.key.vcd
+-rw-rw-r-- 1 ********** ********** 17056410 Nov  5 09:21 vdot_wave_20261105T091811.vcd.gz
+{
+  "schema": "vdot-wave/1",
+  "runid": "20261105T091811",
+  "job_id": "126875390",
+  "host": "a03r2n10",
+  "partition": "kshcnormal",
+  "case_src": "/public/home/**********/core/verify/cases/vdot_wave.c",
+  "case_sha256": "50b0e476a15027089d921c91334c66b95025f91ef9bb9da69fe3d21d5cc70728",
+  "probe_sha256": "ff161182fee02fd78335736329d70d01735b33e0414205da3c7a050bb6438f08",
+  "stage_rc": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0},
+  "failed_stage": "none",
+  "failed_stages_all": "none",
+  "window": {"c0": "8425", "c1": "8427", "begin": 8365, "end": 8577},
+  "instr": "0x3A20A1D7",
+  "expect_low32": "0x00008780",
+  "vcd": "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd",
+  "vcd_bytes": 131077177,
+  "vcd_sha256": "ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470",
+  "vcd_gz": "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd.gz",
+  "vcd_gz_sha256": "0b71707fd59aeada86233abf9effe4820e227c962af38c9db10ecf9e7948c845",
+  "excerpt": "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.key.vcd",
+  "excerpt_bytes": 14156,
+  "excerpt_sha256": "925152e046d38b684ebe709ae759234248a06bc3d6d4a559f453d2a84a0646e8",
+  "health": "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.health.json",
+  "export_dir": "/public/home/**********/core/results/wave/export-stage2",
+  "local_landing": "stage2/2.2-rtl/wave/",
+  "verdict": "OK",
+  "end": "2026-11-05T09:21:20+0800",
+  "artifacts": ["/public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd", "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd.gz", "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.key.vcd", "/public/home/**********/core/results/wave/vdot_wave_20261105T091811.health.json", "/public/home/**********/core/results/wave/vcd-head-20261105T091811.txt", "/public/home/**********/core/results/wave/vcd-scopes-20261105T091811.txt", "/public/home/**********/core/results/wave/vcd-summary-20261105T091811.txt", "/public/home/**********/core/results/wave/vdot_wave.bin", "/public/home/**********/core/results/wave/run-a-20261105T091811.key.txt", "/public/home/**********/core/results/wave/run-b-20261105T091811.key.txt"]
+}
+[F] SHA256SUMS：/public/home/**********/core/results/wave/SHA256SUMS-20261105T091811.txt
+ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470  /public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd
+0b71707fd59aeada86233abf9effe4820e227c962af38c9db10ecf9e7948c845  /public/home/**********/core/results/wave/vdot_wave_20261105T091811.vcd.gz
+925152e046d38b684ebe709ae759234248a06bc3d6d4a559f453d2a84a0646e8  /public/home/**********/core/results/wave/vdot_wave_20261105T091811.key.vcd
+a52b952cb2b74f3958df94c60f3ccfd7c4c4a7f71561de0b4d9a317a4b57ee68  /public/home/**********/core/results/wave/vdot_wave_20261105T091811.health.json
+ff91caa7b9b41455acdb2d6bb2e499dc9e0ee72f36040b59dc5fa73568bc320c  /public/home/**********/core/results/wave/vcd-head-20261105T091811.txt
+add755779062a690b3a3251d804a129fb980c9e53d4a6682e96aa119fcece5f7  /public/home/**********/core/results/wave/vcd-scopes-20261105T091811.txt
+49f0d5ba9a56f87957b7982679f9f5931eea1796d42bc1b94810a67da4873ec7  /public/home/**********/core/results/wave/vcd-summary-20261105T091811.txt
+cf13052c2b72fc02b336376d42db177bacf4ff4359433f08615172ebddbb94b3  /public/home/**********/core/results/wave/vdot_wave.bin
+5c0a87bbe9c42bc4a80dee0caa8d3121bf08c9126237c7e3e25e2061b5341e8e  /public/home/**********/core/results/wave/run-a-20261105T091811.key.txt
+c1f0094ac928d9fa42cab2fac4fa71f8e5d8ce968be10f70d9a1bfaa1e9e5130  /public/home/**********/core/results/wave/run-b-20261105T091811.key.txt
+a76c1f3ded73f595b55081915be88e2618e939b8e63971b8de5efe4873c30278  /public/home/**********/core/results/wave/62-wave-20261105T091811.json
+bbb89e1deebd59ef17c8a678ac7362724f73de9ae96806735b3d191baf95a885  /public/home/**********/core/results/wave/62-wave-20261105T091811.log
+===== 回传后落位（本地执行，不在本作业内）=====
+  rsync -av kunshan:/public/home/**********/core/results/wave/export-stage2/ stage2/2.2-rtl/wave/
+  find stage2 -iname '*.vcd' -o -iname '*.fst' | wc -l   # 期望 >= 1
+  (cd stage2/2.2-rtl/wave && sha256sum -c SHA256SUMS-20261105T091811.txt)  # 逐份校验回传件
+[2026-11-05 09:21:21] 记账：item=P0-emu job=126875390 partition=kshcnormal cores=32 elapsed=190s core_hours=1.689 node_hours=0.053
+===== DONE failed_stage=none all=none verdict=OK =====

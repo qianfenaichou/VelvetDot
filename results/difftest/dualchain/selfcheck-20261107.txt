@@ -1,0 +1,112 @@
+# 双链整改自查（2026-11-07）
+
+## wc -l
+$ wc -l stage3/3.3/sections/dualchain.md tasks/T-dualchain.md design/verify/cases/vdot_dualchain.c design/verify/cases/build_dualchain.sh core-package/scripts/96-run-dualchain.sh
+   251 stage3/3.3/sections/dualchain.md
+   107 tasks/T-dualchain.md
+   677 design/verify/cases/vdot_dualchain.c
+   143 design/verify/cases/build_dualchain.sh
+   267 core-package/scripts/96-run-dualchain.sh
+  1445 总计
+
+## bash -n
+$ bash -n design/verify/cases/build_dualchain.sh && echo OK
+OK
+$ bash -n core-package/scripts/96-run-dualchain.sh && echo OK
+OK
+
+## py_compile（本轮未改 Python；对涉及的 checker 做编译检查）
+$ python3 -I -m py_compile design/verify/cases/dualchain_check.py && echo OK
+OK
+
+## RTL 锚点 grep
+$ sed -n '400p' repos/XiangShan/yunsuan/src/main/scala/yunsuan/package.scala
+    def vdot               = LiteralCat(0.U(2.W), INT.S, INT.S, INT.X, FMT.VVV, VimacOpcode.vdot)   // "b00_110_0_111".U(OpTypeWidth.W) // vdot    vdot.vv (custom, K=8 → 32-bit in vd[31:0])
+$ sed -n '385p' repos/XiangShan/src/main/scala/xiangshan/backend/decode/VecDecoder.scala
+    VDOT_VV      -> OPMVV(F, FuType.vimac, VimacType.vdot, F, T, F, UopSplitType.VEC_VVV), // custom: vdRen=F ⇒ src3=X (不读旧 vd)
+$ sed -n '18p' repos/XiangShan/yunsuan/src/main/scala/yunsuan/encoding/Opcode/VimacOpcode.scala
+  def isMacc(opcode: UInt) = Seq(vmacc, vnmsac, vmadd, vnmsub).map(_ === opcode).reduce(_ || _)
+$ sed -n '125p' repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64b.scala
+  partProd(33) := Mux(io.isMacc, Mux(io.widen, Cat(oldVd, oldVd), Mux(io.isSub, ~oldVdReorg, oldVdReorg)), 0.U)
+
+## 禁语 grep（dualchain.md）
+$ grep -nE "优于同题|全场唯一|唯一.*优势" stage3/3.3/sections/dualchain.md; echo rc=$?
+15:> 本节**不写**「优于同题」「全场唯一」；芯锐/Gloria 的 7 cyc 均按【作者自述】处理。
+199:4. **红线**：对方 7.008065/20.991935 是【作者自述】、本仓未复跑其镜像；本节只做**同口径量级对照**，不写「优于同题」「全场唯一」，
+250:**禁语自查**（2026-11-07 复核，逐条如实）：`grep -nE "优于同题|全场唯一|唯一.*优势" stage3/3.3/sections/dualchain.md`
+rc=0
+$ grep -nE "延迟加速 ?(6|9)" stage3/3.3/sections/dualchain.md; echo rc=$?
+rc=1
+
+## 三分列/对照口径锚点
+$ grep -n "口径 A 吞吐\|口径 B 依赖间隔\|口径 C T5-L\|M9 vdot 依赖链\|作者自述" stage3/3.3/sections/dualchain.md | head -12
+12:> **标记约定**：`【我方 emu 实测】`= 本作业日志读数；`【作者自述】`= 对手文档数字、本仓未复跑其镜像；`【推算】`/`【未运行】` 按字面。
+15:> 本节**不写**「优于同题」「全场唯一」；芯锐/Gloria 的 7 cyc 均按【作者自述】处理。
+158:**口径原文**（`design/_recon/diamond-competitor.md` §3 与 §7.1 指向的 `相关证明材料/performance/README.md:35`，【作者自述】）：
+165:其程序 `apps/vdot-chain-v1/cases.S` 公开，但本轮**未复跑**（【作者自述】）。本节的 M9/M10/M11 复现的是 **Gloria 的
+178:**实测（作业 `127142843`，【我方 emu 实测】；对方列为【作者自述】）**：
+180:| 臂 | 本项 gross（cyc/点积） | 本项 adjusted（减 M11） | 对方 gross【作者自述】 | 对方 adjusted【作者自述】 | 差（gross / adjusted） |
+182:| **M9 vdot 依赖链** | **6.984** | **6.006** | **7.008065** | **5.979839** | −0.024 / +0.026 |
+199:4. **红线**：对方 7.008065/20.991935 是【作者自述】、本仓未复跑其镜像；本节只做**同口径量级对照**，不写「优于同题」「全场唯一」，
+252:`grep -nE "延迟加速 ?(6|9)"` → **0 命中（rc=1）**。`grep -n "7 cyc"` → 全部在【作者自述】/口径说明语境，逐处带标记。
+
+## 金模型复核
+$ python3 -I design/verify/cases/dualchain_check.py --check-log results/difftest/dualchain/vdot_dualchain.20261107T124540.log | tail -2
+DUALCHAIN_CROSSCHECK want M8           checklen=16 [08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK verdict=LOG_MATCH chains=16 dep_lines=8
+rc=0
+
+## JSON 严格解析 + 关键 metrics
+$ python3 -I -c "import json; d=json.load(open(...)); print(...)"
+status= 通过 criteria= 12 metrics= 19
+{'M9_slope_milli': '6984', 'M10_slope_milli': '20994', 'M11_slope_milli': '978'}
+
+## git status（本组 vs 非本组）
+$ git status --short -- <本组5文件>
+ M core-package/scripts/96-run-dualchain.sh
+ M design/verify/cases/build_dualchain.sh
+ M design/verify/cases/vdot_dualchain.c
+ M stage3/3.3/sections/dualchain.md
+ M tasks/T-dualchain.md
+$ git status --short -- stage3/3.3/report.md design/HANDOFF.md design/verify/cases/manifest.tsv repos/
+(空=未碰)
+
+## 作业/台账
+$ sacct -j 127142843 --format=JobID,State,Elapsed,ExitCode,AllocCPUS
+JobID                 State    Elapsed ExitCode  AllocCPUS 
+---------------- ---------- ---------- -------- ---------- 
+127142843         COMPLETED   00:16:46      0:0          8 
+$ grep 127142843 ~/core/results/budget-log.tsv
+2026-11-07 13:02:07	127142843	kshcnormal	8	988	2.196	0.274	P3-full	双链实验：vdot→vdot 依赖间隔 + old_vd 机制归因（清单外独立测量）
+
+## 终稿复核（最后一次编辑后）
+$ wc -l stage3/3.3/sections/dualchain.md tasks/T-dualchain.md
+  251 stage3/3.3/sections/dualchain.md
+  108 tasks/T-dualchain.md
+  359 总计
+$ grep -cE "优于同题|全场唯一|唯一.*优势" stage3/3.3/sections/dualchain.md
+3
+$ grep -n "我方 4 vs 对方 7" stage3/3.3/sections/dualchain.md
+193:   即：**同口径下两者是同一量级（≈7 cyc/点积），本项不主张任何优势**。上一稿「我方 4 vs 对方 7」是**跨口径**
+$ grep -a "^DUALCHAIN_G44 M(9|10|11) fit\|^DUALCHAIN_G44 M(9|10) one_step" results/difftest/dualchain/vdot_dualchain.20261107T124540.log
+DUALCHAIN_G44 M9 one_step bytes_bad=0 want=[08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_G44 M10 one_step bytes_bad=0 want=[08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_G44 M9 fit points=4 repeats=3 slope_milli=6984 intercept_milli=46876 r2_milli=1000
+DUALCHAIN_G44 M10 fit points=4 repeats=3 slope_milli=20994 intercept_milli=35766 r2_milli=1000
+DUALCHAIN_G44 M11 fit points=4 repeats=3 slope_milli=978 intercept_milli=70642 r2_milli=994
+
+## 终稿复核（2026-11-07 最后一次编辑后，doc=252 行）
+$ wc -l stage3/3.3/sections/dualchain.md tasks/T-dualchain.md
+  252 stage3/3.3/sections/dualchain.md
+  108 tasks/T-dualchain.md
+  360 总计
+$ grep -nE "优于同题|全场唯一|唯一.*优势" stage3/3.3/sections/dualchain.md
+15:> 本节**不写**「优于同题」「全场唯一」；芯锐/Gloria 的 7 cyc 均按【作者自述】处理。
+200:4. **红线**：对方 7.008065/20.991935 是【作者自述】、本仓未复跑其镜像；本节只做**同口径量级对照**，不写「优于同题」「全场唯一」，
+251:**禁语自查**（2026-11-07 复核，逐条如实）：`grep -nE "优于同题|全场唯一|唯一.*优势" stage3/3.3/sections/dualchain.md`
+$ grep -nE "延迟加速 ?(6|9)" stage3/3.3/sections/dualchain.md; echo rc=$?
+rc=1
+$ grep -n "我方 4 vs 对方 7" stage3/3.3/sections/dualchain.md
+194:   即：**同口径下两者是同一量级（≈7 cyc/点积），本项不主张任何优势**。上一稿「我方 4 vs 对方 7」是**跨口径**
+$ grep -n "口径不可比" stage3/3.3/sections/dualchain.md
+165:**芯锐的 7 cyc 与本项 M9 口径不可比**（对方【作者自述】；其程序 `apps/vdot-chain-v1/cases.S` 虽公开，但本轮未复跑，

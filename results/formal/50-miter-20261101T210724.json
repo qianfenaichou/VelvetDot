@@ -1,0 +1,18 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P2-yosys-formal",
+  "script": "scripts/slurm_script",
+  "status": "失败",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126537629",
+  "started_at": "2026-11-01T21:07:24+0800",
+  "ended_at": "2026-11-01T21:07:25+0800",
+  "machine_hours_planned": 0.75,
+  "scope": "只证数据通路（vdot_dp），不覆盖流水/发射/旁路",
+  "miter": "/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv",
+  "criteria": [
+    {"name": "miter_prove", "expected": "SAT proof finished - no model found: SUCCESS!", "actual": "未出现 SUCCESS（rc=1）", "status": "未达标"},
+    {"name": "miter_mutant", "expected": "负控必须报 model found: FAIL!", "actual": "未出现 FAIL（miter 可能空转）", "status": "未达标"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/formal/50-miter-20261101T210724.log"]
+}

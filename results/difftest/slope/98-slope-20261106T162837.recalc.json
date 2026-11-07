@@ -1,0 +1,217 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P3-full",
+  "script": "scripts/98-run-slope.sh",
+  "case_id": "perf_base_slope",
+  "status": "通过",
+  "note": "清单外单例（不进 design/verify/cases/manifest.tsv，该文件冻结 30 行/a90d1071…）；斜率口径 cyc=a+b·N 的 b（批吞吐），不是单指令依赖延迟、不是中位数口径、不是每指令 1.33×",
+  "platform": "kshcnormal",
+  "slurm_job_id": "127043836",
+  "host": "a10r4n03",
+  "started_at": "2026-11-06T16:28:37+0800",
+  "ended_at": "2026-11-06T16:37:29+0800",
+  "mode": "single-case",
+  "provenance": {
+    "emu": "/public/home/**********/core/src/XiangShan/build/emu",
+    "emu_md5": "529c9abcd7655448774d8b1d0718969e",
+    "img": "/public/home/**********/core/test/bin/perf_base_slope.bin",
+    "img_md5": "a34aa36d9bbe233bf0a80c5ff57e239e",
+    "img_sha256": "04b8a40bc6bd410fd40897209f6bd5f97c5e9b0ac167b6c3963a8e3673f77716",
+    "max_instr": "200000000",
+    "rounds": "3"
+  },
+  "metrics": {
+    "groups": "4",
+    "n_list": "8,64,512",
+    "rounds_per_point": "3",
+    "point_lines": "12"
+  },
+  "criteria": [
+    {
+      "name": "good_trap",
+      "expected": "HIT GOOD TRAP >= 1",
+      "actual": "1",
+      "status": "达标"
+    },
+    {
+      "name": "no_abort",
+      "expected": "ABORT == 0",
+      "actual": "0",
+      "status": "达标"
+    },
+    {
+      "name": "no_bad_trap",
+      "expected": "HIT BAD TRAP == 0",
+      "actual": "0",
+      "status": "达标"
+    },
+    {
+      "name": "selfcheck_slope",
+      "expected": "SLOPE verdict=ALL_OK 且无 HAS_FAIL",
+      "actual": "ok=1 bad=0",
+      "status": "达标"
+    },
+    {
+      "name": "point_count",
+      "expected": "4 组 × 3 N = 12 条 SLOPE point",
+      "actual": "12/12",
+      "status": "达标"
+    },
+    {
+      "name": "fit_lines",
+      "expected": "SLOPE fit == 4 且 fit2 == 4",
+      "actual": "fit=4 fit2=4",
+      "status": "达标"
+    },
+    {
+      "name": "functional_check",
+      "expected": "4 条 SLOPE check 全 match=OK not_vl4=yes",
+      "actual": "lines=4 bad=0 vl4_bad=0",
+      "status": "达标"
+    },
+    {
+      "name": "emu_rc",
+      "expected": "rc == 0",
+      "actual": "0",
+      "status": "达标"
+    }
+  ],
+  "artifacts": [
+    "/public/home/**********/core/results/difftest/slope/98-slope-20261106T162837.log",
+    "/public/home/**********/core/results/difftest/slope/cases/perf_base_slope.20261106T162837.log"
+  ],
+  "slope_recalc": {
+    "n_list": [
+      8,
+      64,
+      512
+    ],
+    "groups": [
+      {
+        "ch": "b2",
+        "cls": "resident",
+        "points": [
+          {
+            "n": 8,
+            "median_cyc": 86
+          },
+          {
+            "n": 64,
+            "median_cyc": 740
+          },
+          {
+            "n": 512,
+            "median_cyc": 5655
+          }
+        ],
+        "slope_milli": 11019,
+        "intercept_milli": 15214,
+        "r2_micro": 999963,
+        "r2_ident_micro": 999963,
+        "r2_legacy_micro": 994642,
+        "r2_crosscheck_ok": true,
+        "num": 5045320,
+        "den": 457856,
+        "case_r2_micro": 994642,
+        "case_r2_formula": "legacy"
+      },
+      {
+        "ch": "b2",
+        "cls": "stream",
+        "points": [
+          {
+            "n": 8,
+            "median_cyc": 119
+          },
+          {
+            "n": 64,
+            "median_cyc": 987
+          },
+          {
+            "n": 512,
+            "median_cyc": 7519
+          }
+        ],
+        "slope_milli": 14643,
+        "intercept_milli": 24429,
+        "r2_micro": 999964,
+        "r2_ident_micro": 999964,
+        "r2_legacy_micro": 993526,
+        "r2_crosscheck_ok": true,
+        "num": 6704544,
+        "den": 457856,
+        "case_r2_micro": 993526,
+        "case_r2_formula": "legacy"
+      },
+      {
+        "ch": "vdot",
+        "cls": "resident",
+        "points": [
+          {
+            "n": 8,
+            "median_cyc": 22
+          },
+          {
+            "n": 64,
+            "median_cyc": 119
+          },
+          {
+            "n": 512,
+            "median_cyc": 553
+          }
+        ],
+        "slope_milli": 1021,
+        "intercept_milli": 32571,
+        "r2_micro": 994990,
+        "r2_ident_micro": 994990,
+        "r2_legacy_micro": 853631,
+        "r2_crosscheck_ok": true,
+        "num": 467488,
+        "den": 457856,
+        "case_r2_micro": 853631,
+        "case_r2_formula": "legacy"
+      },
+      {
+        "ch": "vdot",
+        "cls": "stream",
+        "points": [
+          {
+            "n": 8,
+            "median_cyc": 26
+          },
+          {
+            "n": 64,
+            "median_cyc": 250
+          },
+          {
+            "n": 512,
+            "median_cyc": 1630
+          }
+        ],
+        "slope_milli": 3143,
+        "intercept_milli": 23429,
+        "r2_micro": 999230,
+        "r2_ident_micro": 999230,
+        "r2_legacy_micro": 969640,
+        "r2_crosscheck_ok": true,
+        "num": 1439200,
+        "den": 457856,
+        "case_r2_micro": 969640,
+        "case_r2_formula": "legacy"
+      }
+    ],
+    "tolerances": {
+      "slope_permille": 2,
+      "r2_micro": 2
+    },
+    "r2_formula": "1-SSres/SStot; cross-checked with (n*Sxy-Sx*Sy)^2/((n*Sxx-Sx^2)*(n*Syy-Sy^2))",
+    "all_r2_crosscheck_ok": true,
+    "case_r2_legacy_groups": [
+      "b2/resident",
+      "b2/stream",
+      "vdot/resident",
+      "vdot/stream"
+    ],
+    "all_match_case_fit": true
+  }
+}

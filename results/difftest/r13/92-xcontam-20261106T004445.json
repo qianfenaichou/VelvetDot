@@ -1,0 +1,28 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P0-difftest-smoke",
+  "script": "scripts/slurm_script",
+  "case_id": "vdot_xcontam",
+  "status": "通过",
+  "note": "清单外单例（manifest.tsv 未改动）：20-run-difftest.sh 无单例入口，按 91-run-b3.sh 先例直接复刻其 run_case 调用形态",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126957204",
+  "host": "a01r1n14",
+  "started_at": "2026-11-06T00:44:45+0800",
+  "ended_at": "2026-11-06T00:47:56+0800",
+  "machine_hours_planned": 0.1,
+  "mode": "single-case",
+  "provenance": {"emu": "/public/home/**********/core/src/XiangShan/build/emu", "emu_md5": "529c9abcd7655448774d8b1d0718969e", "ref_so": "/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so", "ref_md5": "ac3d96d32b781efd520a04c68cf22873", "img": "/public/home/**********/core/test/bin/vdot_xcontam.bin", "img_md5": "77c35e3152e98406a5f708be0f4e3679", "max_instr": "200000000"},
+  "criteria": [
+    {"name": "good_trap", "expected": "HIT GOOD TRAP >= 1", "actual": "1", "status": "达标"},
+    {"name": "no_abort", "expected": "ABORT == 0", "actual": "0", "status": "达标"},
+    {"name": "no_bad_trap", "expected": "HIT BAD TRAP == 0", "actual": "0", "status": "达标"},
+    {"name": "no_diff_mismatch", "expected": "diff REF/Different operands == 0", "actual": "0", "status": "达标"},
+    {"name": "selfcheck_xcontam", "expected": "XCONTAM verdict=ALL_OK fails=0", "actual": "hits=1", "status": "达标"},
+    {"name": "reg_size_match", "expected": "无 different states than DUT", "actual": "0", "status": "达标"},
+    {"name": "nm_exec_vdot", "expected": "nm exec_vdot >= 1", "actual": "2", "status": "达标"},
+    {"name": "vec_reg_compare", "expected": "difftest-state.h 含 CONFIG_DIFFTEST_ARCHVECREGSTATE", "actual": "/public/home/**********/core/src/XiangShan/build/generated-src/difftest-state.h", "status": "达标"},
+    {"name": "golden_crosscheck", "expected": "XCONTAM_CROSSCHECK verdict=LOG_MATCH", "actual": "XCONTAM_CROSSCHECK verdict=LOG_MATCH lines=12", "status": "达标"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/difftest/r13/92-xcontam-20261106T004445.log", "/public/home/**********/core/results/difftest/r13/cases/vdot_xcontam.20261106T004445.log"]
+}

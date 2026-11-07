@@ -1,0 +1,91 @@
+===== job=127051826 host=a01r3n00 partition=kshcnormal 2026-11-06 17:23:58 =====
+emu=/public/home/**********/core/src/XiangShan/build/emu emu_md5=529c9abcd7655448774d8b1d0718969e
+img=/public/home/**********/core/test/bin/llm_attn.bin img_md5=817ee45bb1a58540e5615a03fb25e375 g0=/public/home/**********/core/test/bin/llm_attn_g0.bin g0_md5=9043f7b7e169eb25b7a65b5a3afcea31 max_instr=400000000 timeout=1200s
+versions: xiangshan=a4eeaab yunsuan=9559211
+manifest_remote sha256=413b5796b20094b0ef6db7aa4ca1fa7e4cd683eb6e5e71a37b2c34cbf14b3e87 rows=31（远端现状；本脚本不修改它）
+denom=unfused_rvv_seq（主分母）；vwmacc_rvv_seq 只作敏感性；emu≠硅（Verilator 仿真周期）
+----- normal image: emu --no-diff -----
+emu(normal) rc=0 case_log=/public/home/**********/core/results/difftest/llm/cases/perf_llm_attn.20261106T172356.log (4758442 B)
+----- G0 image: emu --no-diff -----
+emu(g0) rc=0 case_log=/public/home/**********/core/results/difftest/llm/cases/perf_llm_attn_g0.20261106T172356.log (4755017 B)
+normal: good=1 abort=0 bad_trap=0 all_ok=1 has_fail=0
+g0    : good=1 all_ok=0 has_fail=1（G0 必须 only HAS_FAIL）
+LLM_ATTN enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK body_enc=0x3A20A657
+LLM_ATTN vl base=8 macc=8 vdot=8 expect=8 OK
+LLM_ATTN golden isum_fnv=0xAE617E159015FC18 expect=0xAE617E159015FC18 chunks=512 scores=64 arms_ok=64/64/64 OK
+LLM_ATTN scalar_ref ref_vs_header_bad=0 OK
+LLM_ATTN scale d_fp16=0x3800 dequant=0.25 exact=yes quant=Q8_0/INT8 head_dim=64 chunk=8 scores=64 chunkdots=512
+LLM_ATTN plan rounds=3 r_loop=1 warmup=1 npts=4 ns=2,8,16,32 dots_per_pt=16,64,128,256 dots_per_arm=7424 scores_per_arm=116
+LLM_ATTN point arm=base n=2 dots=128 cyc_med=218 cyc_min=218 cyc_max=218 instr_med=205 instr_per_body=102.50
+LLM_ATTN point arm=base n=8 dots=512 cyc_med=758 cyc_min=758 cyc_max=758 instr_med=805 instr_per_body=100.62
+LLM_ATTN point arm=base n=16 dots=1024 cyc_med=1479 cyc_min=1479 cyc_max=1479 instr_med=1605 instr_per_body=100.31
+LLM_ATTN point arm=base n=32 dots=2048 cyc_med=2918 cyc_min=2917 cyc_max=2918 instr_med=3205 instr_per_body=100.15
+LLM_ATTN fit arm=base denom=unfused_rvv_seq npts=4 sumx=3712 sumy=5373 sumxy=7906560 sumxx=5521408 sumyy=11324253 A=11681664 B=8306688 C=16427883
+LLM_ATTN fit arm=base slope_num=11681664 slope_den=8306688 slope_milli_cyc_per_dot=1406 cyc_per_score_num=747626496 cyc_per_score_den=8306688 intercept_num=1269497856 intercept_den=33226752
+LLM_ATTN point arm=macc n=2 dots=128 cyc_med=188 cyc_min=188 cyc_max=188 instr_med=175 instr_per_body=87.50
+LLM_ATTN point arm=macc n=8 dots=512 cyc_med=654 cyc_min=653 cyc_max=654 instr_med=685 instr_per_body=85.62
+LLM_ATTN point arm=macc n=16 dots=1024 cyc_med=1277 cyc_min=1277 cyc_max=1277 instr_med=1365 instr_per_body=85.31
+LLM_ATTN point arm=macc n=32 dots=2048 cyc_med=2518 cyc_min=2518 cyc_max=2518 instr_med=2725 instr_per_body=85.15
+LLM_ATTN fit arm=macc denom=vwmacc_rvv_seq npts=4 sumx=3712 sumy=4637 sumxy=6823424 sumxx=5521408 sumyy=8434113 A=10081152 B=8306688 C=12234683
+LLM_ATTN fit arm=macc slope_num=10081152 slope_den=8306688 slope_milli_cyc_per_dot=1213 cyc_per_score_num=645193728 cyc_per_score_den=8306688 intercept_num=1096876032 intercept_den=33226752
+LLM_ATTN point arm=vdot n=2 dots=128 cyc_med=136 cyc_min=136 cyc_max=136 instr_med=121 instr_per_body=60.50
+LLM_ATTN point arm=vdot n=8 dots=512 cyc_med=422 cyc_min=422 cyc_max=422 instr_med=469 instr_per_body=58.62
+LLM_ATTN point arm=vdot n=16 dots=1024 cyc_med=806 cyc_min=806 cyc_max=806 instr_med=933 instr_per_body=58.31
+LLM_ATTN point arm=vdot n=32 dots=2048 cyc_med=1566 cyc_min=1565 cyc_max=1566 instr_med=1861 instr_per_body=58.15
+LLM_ATTN fit arm=vdot denom=vdot_seq npts=4 sumx=3712 sumy=2930 sumxy=4265984 sumxx=5521408 sumyy=3298572 A=6187776 B=8306688 C=4609388
+LLM_ATTN fit arm=vdot slope_num=6187776 slope_den=8306688 slope_milli_cyc_per_dot=744 cyc_per_score_num=396017664 cyc_per_score_den=8306688 intercept_num=1369571328 intercept_den=33226752
+LLM_ATTN xcheck_route route2_used=yes route1_disclosure=102/87/60 (route1 含常量边缘项，不作判据)
+LLM_ATTN static_xcheck static_base=100 measured_base=100 base=OK static_macc=85 measured_macc=85 macc=OK static_vdot=58 measured_vdot=58 vdot=OK div=OK
+LLM_ATTN base_alt accum_n=0xFFF3472F accum_nm1=0xFFF3DFEC alt_differs=yes
+LLM_ATTN verdict=ALL_OK scale=32 head_dim=64 q=8 k=8 enc=0x3A20A1D7 vl=8 golden=model chunks=512 scores=64 denom=unfused_rvv_seq arms=base,macc,vdot enc_ok=OK vl_ok=OK golden_ok=OK alt_differs=yes fit=OK static_xcheck=OK
+----- G0 镜像日志行（只筛判据行） -----
+LLM_ATTN enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK body_enc=0x3A20A657
+LLM_ATTN vl base=8 macc=8 vdot=8 expect=8 OK
+LLM_ATTN golden isum_fnv=0xB91DCC9B457A6A2F expect=0xAE617E159015FC18 chunks=512 scores=64 arms_ok=63/63/63 MISMATCH
+LLM_ATTN verdict=HAS_FAIL reason=golden_mismatch score=0,0 got=0x0000D73D want=0x0000D73E arms_bad=1/1/1 denom=unfused_rvv_seq
+VDOT_METRIC LLM_base_instr 100
+VDOT_METRIC LLM_macc_instr 85
+VDOT_METRIC LLM_vdot_instr 58
+VDOT_METRIC LLM_base_slope_num 11681664
+VDOT_METRIC LLM_base_slope_den 8306688
+VDOT_METRIC LLM_macc_slope_num 10081152
+VDOT_METRIC LLM_macc_slope_den 8306688
+VDOT_METRIC LLM_vdot_slope_num 6187776
+VDOT_METRIC LLM_vdot_slope_den 8306688
+VDOT_METRIC LLM_dots_per_arm 7424
+llm_fields base_instr=100 macc_instr=85 vdot_instr=58 dots_per_arm=7424
+llm_fit base=11681664/8306688 macc=10081152/8306688 vdot=6187776/8306688
+llm_r2 base_r2_ppm=999999 macc_r2_ppm=999999 vdot_r2_ppm=999995 base_slope_milli=1406 macc_slope_milli=1213 vdot_slope_milli=744（由 A/B/C 现算；A² 超 int64，故不在镜像内算）
+llm_fit_abc base=11681664/8306688/16427883 macc=10081152/8306688/12234683 vdot=6187776/8306688/4609388
+{
+  "schema": "vdot-verify/1",
+  "item": "P3-full",
+  "script": "scripts/97-run-llm.sh",
+  "case_id": "perf_llm_attn",
+  "status": "通过",
+  "note": "清单外单例（不进 design/verify/cases/manifest.tsv，该文件冻结 30 行/a90d1071…）；只报指令数对比/拍数对比/内核吞吐对比，主分母=unfused_rvv_seq，vwmacc_rvv_seq 只作敏感性；emu≠硅",
+  "platform": "kshcnormal",
+  "slurm_job_id": "127051826",
+  "host": "a01r3n00",
+  "started_at": "2026-11-06T17:23:56+0800",
+  "ended_at": "2026-11-06T17:46:05+0800",
+  "machine_hours_planned": 0.5,
+  "mode": "single-case",
+  "provenance": {"emu": "/public/home/**********/core/src/XiangShan/build/emu", "emu_md5": "529c9abcd7655448774d8b1d0718969e", "img": "/public/home/**********/core/test/bin/llm_attn.bin", "img_md5": "817ee45bb1a58540e5615a03fb25e375", "g0": "/public/home/**********/core/test/bin/llm_attn_g0.bin", "g0_md5": "9043f7b7e169eb25b7a65b5a3afcea31", "max_instr": "400000000"},
+  "metrics": {"base_instr": "100", "macc_instr": "85", "vdot_instr": "58", "base_slope_num": "11681664", "base_slope_den": "8306688", "macc_slope_num": "10081152", "macc_slope_den": "8306688", "vdot_slope_num": "6187776", "vdot_slope_den": "8306688", "base_r2_ppm": "999999", "macc_r2_ppm": "999999", "vdot_r2_ppm": "999995", "dots_per_arm": "7424", "denom": "unfused_rvv_seq"},
+  "criteria": [
+    {"name": "normal_all_ok", "expected": "LLM_ATTN verdict=ALL_OK >=1 且 HAS_FAIL == 0", "actual": "ok=1 fail=0", "status": "达标"},
+    {"name": "g0_has_fail", "expected": "G0: HAS_FAIL >=1 且 ALL_OK == 0", "actual": "ok=0 fail=1", "status": "达标"},
+    {"name": "good_trap", "expected": "两个镜像 HIT GOOD TRAP >= 1", "actual": "normal=1 g0=1", "status": "达标"},
+    {"name": "no_abort", "expected": "ABORT == 0", "actual": "0", "status": "达标"},
+    {"name": "no_bad_trap", "expected": "HIT BAD TRAP == 0", "actual": "0", "status": "达标"},
+    {"name": "llm_fields", "expected": "LLM_{base,macc,vdot}_instr 可解析且 >=1", "actual": "base=100 macc=85 vdot=58", "status": "达标"},
+    {"name": "no_mismatch_line", "expected": "无 *=MISMATCH / alt_differs=no", "actual": "0", "status": "达标"},
+    {"name": "emu_rc", "expected": "rc == 0（两个镜像）", "actual": "normal=0 g0=0", "status": "达标"},
+    {"name": "static_xcheck", "expected": "LLM_ATTN static_xcheck … base=OK … macc=OK … vdot=OK", "actual": "LLM_ATTN static_xcheck static_base=100 measured_base=100 base=OK static_macc=85 measured_macc=85 macc=OK static_vdot=58 measured_vdot=58 vdot=OK div=OK", "status": "达标"}
+  ],
+  "verdict_line": "LLM_ATTN verdict=ALL_OK scale=32 head_dim=64 q=8 k=8 enc=0x3A20A1D7 vl=8 golden=model chunks=512 scores=64 denom=unfused_rvv_seq arms=base,macc,vdot enc_ok=OK vl_ok=OK golden_ok=OK alt_differs=yes fit=OK static_xcheck=OK",
+  "g0_verdict_line": "LLM_ATTN verdict=HAS_FAIL reason=golden_mismatch score=0,0 got=0x0000D73D want=0x0000D73E arms_bad=1/1/1 denom=unfused_rvv_seq",
+  "artifacts": ["/public/home/**********/core/results/difftest/llm/97-llm-20261106T172356.log", "/public/home/**********/core/results/difftest/llm/cases/perf_llm_attn.20261106T172356.log", "/public/home/**********/core/results/difftest/llm/cases/perf_llm_attn_g0.20261106T172356.log"]
+}
+===== DONE status=通过  =====

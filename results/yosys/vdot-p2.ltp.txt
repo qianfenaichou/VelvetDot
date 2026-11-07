@@ -1,0 +1,18 @@
+5. Executing LTP pass (find longest path).
+
+Longest topological path in VdotReduce (length=14):
+    0: \sumS2 [1]
+    1: $abc$807$new_n58 (via $abc$807$auto$blifparse.cc:396:parse_blif$808)
+    2: $abc$807$new_n63 (via $abc$807$auto$blifparse.cc:396:parse_blif$813)
+    3: $abc$807$new_n64 (via $abc$807$auto$blifparse.cc:396:parse_blif$814)
+    4: $abc$807$new_n76 (via $abc$807$auto$blifparse.cc:396:parse_blif$826)
+    5: $abc$807$new_n77 (via $abc$807$auto$blifparse.cc:396:parse_blif$827)
+    6: $abc$807$new_n105 (via $abc$807$auto$blifparse.cc:396:parse_blif$855)
+    7: $abc$807$new_n106 (via $abc$807$auto$blifparse.cc:396:parse_blif$856)
+    8: $abc$807$new_n134 (via $abc$807$auto$blifparse.cc:396:parse_blif$884)
+    9: $abc$807$new_n135 (via $abc$807$auto$blifparse.cc:396:parse_blif$885)
+   10: $abc$807$new_n147 (via $abc$807$auto$blifparse.cc:396:parse_blif$897)
+   11: $abc$807$new_n148 (via $abc$807$auto$blifparse.cc:396:parse_blif$898)
+   12: $abc$807$new_n152 (via $abc$807$auto$blifparse.cc:396:parse_blif$902)
+   13: $abc$807$new_n153 (via $abc$807$auto$blifparse.cc:396:parse_blif$903)
+   14: \io_vd [15] (via $abc$807$auto$blifparse.cc:396:parse_blif$904)

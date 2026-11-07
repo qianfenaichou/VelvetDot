@@ -1,0 +1,22 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P2-yosys-formal",
+  "script": "scripts/slurm_script",
+  "status": "通过",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126752216",
+  "started_at": "2026-11-04T09:41:44+0800",
+  "ended_at": "2026-11-04T09:42:12+0800",
+  "machine_hours_planned": 0.75,
+  "mode": "area",
+  "scope": "仅 vdot 数据通路模块，未含 VIMacU 其余部分，未含工艺库",
+  "criteria": [
+    {"name": "tool_yosys", "expected": "yosys 可用", "actual": "Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)", "status": "达标"},
+    {"name": "two_tops", "expected": "两版均产出 cells/transistors/longest_path", "actual": "vmac_only + VdotReduce", "status": "达标"}
+  ],
+  "metrics": [
+    {"top": "VIMac64b", "cells": "42783", "transistors_est": "293640", "longest_path": "100", "stat_json": "/public/home/**********/core/results/yosys/vmac_only.stat.json", "ltp_txt": "/public/home/**********/core/results/yosys/vmac_only.ltp.txt"},
+    {"top": "VdotReduce", "cells": "481", "transistors_est": "4900", "longest_path": "22", "stat_json": "/public/home/**********/core/results/yosys/vdot.stat.json", "ltp_txt": "/public/home/**********/core/results/yosys/vdot.ltp.txt"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/yosys/40-area-20261104T094144.log", "/public/home/**********/core/results/yosys/40-area-20261104T094144.md"]
+}

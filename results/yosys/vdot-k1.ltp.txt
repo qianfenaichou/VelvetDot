@@ -1,0 +1,27 @@
+5. Executing LTP pass (find longest path).
+
+Longest topological path in VdotReduce (length=22):
+    0: \io_sum_wo_0 [1]
+    1: $flatten\tree.\U_CSA4to2.$abc$673$new_n117 (via $flatten\tree.\U_CSA4to2.$abc$673$auto$blifparse.cc:396:parse_blif$677)
+    2: $flatten\tree.\U_CSA4to2.$abc$673$new_n162 (via $flatten\tree.\U_CSA4to2.$abc$673$auto$blifparse.cc:396:parse_blif$722)
+    3: $flatten\tree.\U_CSA4to2.$abc$673$new_n163 (via $flatten\tree.\U_CSA4to2.$abc$673$auto$blifparse.cc:396:parse_blif$723)
+    4: \tree.U_CSA4to2.io_out_car [1] (via $flatten\tree.\U_CSA4to2.$abc$673$auto$blifparse.cc:396:parse_blif$776)
+    5: $flatten\tree.\U_CSA4to2_2.$abc$673$new_n117 (via $flatten\tree.\U_CSA4to2_2.$abc$673$auto$blifparse.cc:396:parse_blif$677)
+    6: $flatten\tree.\U_CSA4to2_2.$abc$673$new_n162 (via $flatten\tree.\U_CSA4to2_2.$abc$673$auto$blifparse.cc:396:parse_blif$722)
+    7: $flatten\tree.\U_CSA4to2_2.$abc$673$new_n163 (via $flatten\tree.\U_CSA4to2_2.$abc$673$auto$blifparse.cc:396:parse_blif$723)
+    8: \tree.U_CSA4to2_2.io_out_car [1] (via $flatten\tree.\U_CSA4to2_2.$abc$673$auto$blifparse.cc:396:parse_blif$776)
+    9: $abc$786$new_n58 (via $abc$786$auto$blifparse.cc:396:parse_blif$787)
+   10: $abc$786$new_n63 (via $abc$786$auto$blifparse.cc:396:parse_blif$792)
+   11: $abc$786$new_n64 (via $abc$786$auto$blifparse.cc:396:parse_blif$793)
+   12: $abc$786$new_n76 (via $abc$786$auto$blifparse.cc:396:parse_blif$805)
+   13: $abc$786$new_n77 (via $abc$786$auto$blifparse.cc:396:parse_blif$806)
+   14: $abc$786$new_n105 (via $abc$786$auto$blifparse.cc:396:parse_blif$834)
+   15: $abc$786$new_n106 (via $abc$786$auto$blifparse.cc:396:parse_blif$835)
+   16: $abc$786$new_n134 (via $abc$786$auto$blifparse.cc:396:parse_blif$863)
+   17: $abc$786$new_n135 (via $abc$786$auto$blifparse.cc:396:parse_blif$864)
+   18: $abc$786$new_n147 (via $abc$786$auto$blifparse.cc:396:parse_blif$876)
+   19: $abc$786$new_n148 (via $abc$786$auto$blifparse.cc:396:parse_blif$877)
+   20: $abc$786$new_n152 (via $abc$786$auto$blifparse.cc:396:parse_blif$881)
+   21: $abc$786$new_n153 (via $abc$786$auto$blifparse.cc:396:parse_blif$882)
+   22: \cpa [15] (via $abc$786$auto$blifparse.cc:396:parse_blif$883)
+   ff: \io_vd [15] (via $auto$ff.cc:266:slice$293)

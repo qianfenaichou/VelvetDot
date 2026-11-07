@@ -1,0 +1,17 @@
+gcc	/public/software/compiler/gcc-13.3.0/bin/gcc	gcc (GCC) 13.3.0
+g++	/public/software/compiler/gcc-13.3.0/bin/g++	g++ (GCC) 13.3.0
+cmake	/public/software/compiler/cmake-3.25.0/usr/local/bin/cmake	cmake version 3.25.0
+make	/opt/rh/devtoolset-7/root/usr/bin/make	GNU Make 4.2.1
+python3	/public/software/apps/python/3.8.13/bin/python3	Python 3.8.13
+java	/public/home/**********/tools/jdk17/bin/java	openjdk version "17.0.21" 2026-10-20
+git	/public/software/apps/git/2.30.2/bin/git	git version 2.30.2
+verilator	/public/home/**********/tools/verilator/bin/verilator	Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+yosys	/public/home/**********/tools/yosys/bin/yosys	Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+sby	MISSING	-
+mill	/public/home/**********/tools/bin/mill	Mill Build Tool version 0.12.3
+riscv64-unknown-elf-gcc	/public/home/**********/tools/xpack/xpack-riscv-none-elf-gcc-13.2.0-2/bin/riscv64-unknown-elf-gcc	riscv64-unknown-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 13.2.0
+riscv64-linux-gnu-gcc	MISSING	-
+riscv64-elf-gcc	MISSING	-
+riscv64-elf-newlib-gcc	MISSING	-
+z3	MISSING	-
+apptainer	MISSING	-

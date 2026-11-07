@@ -1,0 +1,11 @@
+8,15c8
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vmv.v.i v10,0
+< vredsum.vs v10,v6,v10
+---
+> .word 0x3a20a1d7

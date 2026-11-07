@@ -1,0 +1,14 @@
+# build_llm_attn.sh 产物_g0（2026-11-06 17:04:43）
+variant=g0
+src=/public/home/**********/core/design_verify/cases/perf_llm_attn.c
+src_sha256=0591f92aacc39d8a62c05cd39303ef7e226b0056188805d7fd5c358778551313
+header_sha256=60914c8e326cb4e9299ec8c605a699d933f451b557cc44e5c5d6d111ce39617b
+run_elf=/public/home/**********/results/difftest/llm/llm_attn_g0.elf
+run_elf_sha256=fc7cba162be034bd8b8e8f0ae157df12f2f5792c17048accaad2dce50f1d85c4
+run_bin=/public/home/**********/results/difftest/llm/llm_attn_g0.bin
+run_bin_sha256=7ac8616ca93e9de96646e59bf583067138bbdcd7b8ba8a0aeeeb39ca20b05f25
+N_base=100
+N_macc=85
+N_vdot=58
+two_pass_agree=yes
+injected=-DSTATIC_N_BASE=100 -DSTATIC_N_MACC=85 -DSTATIC_N_VDOT=58 -DLLM_G0_MUTATE=1

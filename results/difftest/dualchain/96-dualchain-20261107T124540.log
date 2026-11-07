@@ -1,0 +1,68 @@
+===== job=127142843 host=a04r3n00 partition=kshcnormal 2026-11-07 12:45:41 =====
+emu=/public/home/**********/core/src/XiangShan/build/emu emu_md5=fd65ca4af946bff28a7e2f1ce6c7bd01
+ref_so=/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so ref_md5=ac3d96d32b781efd520a04c68cf22873
+img=/public/home/**********/core/test/bin/vdot_dualchain.bin img_md5=e7f1b02d8fe6e21a91150f0ac97347cb
+img_g0=/public/home/**********/core/test/bin/vdot_dualchain_g0.bin img_g0_md5=24a996e45df8e16560d8a53f4852bc43
+max_instr=200000000 timeout=2400s
+versions: xiangshan=a4eeaab yunsuan=9559211 nemu=a683e0b
+manifest_remote sha256=413b5796b20094b0ef6db7aa4ca1fa7e4cd683eb6e5e71a37b2c34cbf14b3e87 rows=31（远端现状；本脚本不改动它；冻结件 design/verify/cases/manifest.tsv = a90d1071…/30 行数据行）
+independent_measure=yes（本用例不进 manifest.tsv；走单例作业路径）
+redline=只报我方实测 + 机制归因；竞品 7 cyc 为其文档自述、未复跑，不构造跨队比较
+nm_exec_vdot_hits=2 difftest_state=/public/home/**********/core/src/XiangShan/build/generated-src/difftest-state.h vec_reg_compare=1
+----- [1/2] emu --no-diff 主镜像 -----
+emu rc=0 case_log=/public/home/**********/core/results/difftest/dualchain/cases/vdot_dualchain.20261107T124540.log (4758948 B)
+good=1 abort=0 bad_trap=0 mismatch=0 reg_size_bad=0
+verdict_all_ok=1 verdict_has_fail=0 setup_bad=0
+----- 八链中位数（日志原文）-----
+DUALCHAIN M1 dep I=1 q4_milli=5687 q8_milli=7031 L_milli=8375 L=8 O_milli=0
+DUALCHAIN M2 dep I=2 q4_milli=6437 q8_milli=6984 L_milli=7531 L=8 O_milli=0
+DUALCHAIN M3 dep I=1 q4_milli=1125 q8_milli=968 L_milli=811 L=1 O_milli=1256
+DUALCHAIN M4 dep I=1 q4_milli=4812 q8_milli=7531 L_milli=10250 L=10 O_milli=0
+DUALCHAIN M5 dep I=1 q4_milli=4875 q8_milli=7531 L_milli=10187 L=10 O_milli=0
+DUALCHAIN M6 dep I=1 q4_milli=2000 q8_milli=4375 L_milli=6750 L=7 O_milli=0
+DUALCHAIN M7 dep I=1 q4_milli=1937 q8_milli=1031 L_milli=125 L=0 O_milli=7248
+DUALCHAIN M8 dep I=8 q4_milli=890 q8_milli=1011 L_milli=1132 L=1 O_milli=0
+DUALCHAIN alt_lines m1=yes m2v10=yes m2v11=yes m4=yes m5=yes m6=yes m3_oldvd_invariant=yes
+DUALCHAIN expected_sha256=c1beda4b3865a93949ce7dd3caa0a90ccff576a9a4f3d5bdb80704134e7f518c
+----- 同口径对照三臂（日志原文）-----
+DUALCHAIN_G44 M9 one_step bytes_bad=0 want=[08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_G44 M10 one_step bytes_bad=0 want=[08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_G44 M9 n=0 cycles=36 y=[72 36 36]
+DUALCHAIN_G44 M9 n=64 cycles=514 y=[530 514 478]
+DUALCHAIN_G44 M9 n=256 cycles=1824 y=[1825 1824 1822]
+DUALCHAIN_G44 M9 n=1024 cycles=7200 y=[7201 7200 7198]
+DUALCHAIN_G44 M9 fit points=4 repeats=3 slope_milli=6984 intercept_milli=46876 r2_milli=1000
+DUALCHAIN_G44 M10 n=0 cycles=36 y=[74 36 36]
+DUALCHAIN_G44 M10 n=64 cycles=1382 y=[1397 1382 1374]
+DUALCHAIN_G44 M10 n=256 cycles=5407 y=[5409 5407 5406]
+DUALCHAIN_G44 M10 n=1024 cycles=21534 y=[21537 21534 21534]
+DUALCHAIN_G44 M10 fit points=4 repeats=3 slope_milli=20994 intercept_milli=35766 r2_milli=1000
+DUALCHAIN_G44 M11 n=0 cycles=36 y=[73 36 36]
+DUALCHAIN_G44 M11 n=64 cycles=183 y=[183 198 113]
+DUALCHAIN_G44 M11 n=256 cycles=305 y=[319 305 305]
+DUALCHAIN_G44 M11 n=1024 cycles=1073 y=[1088 1073 1073]
+DUALCHAIN_G44 M11 fit points=4 repeats=3 slope_milli=978 intercept_milli=70642 r2_milli=994
+----- crosscheck rc=0 -----
+DUALCHAIN_CROSSCHECK falsifiable=YES chains=8
+DUALCHAIN_CROSSCHECK want M1           checklen=16 [AF FA FF FF 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M1_alt       checklen=16 [B4 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M2_v10       checklen=16 [6D FE FF FF 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M2_v10_alt   checklen=16 [32 F7 FF FF 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M2_v11       checklen=16 [EA F9 FF FF 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M2_v11_alt   checklen=16 [83 FC FF FF 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M3           checklen=16 [08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M3b          checklen=16 [08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M4           checklen= 8 [12 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M4_alt       checklen= 8 [E6 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M5           checklen= 8 [12 01 FF 01 FF 00 00 FD]
+DUALCHAIN_CROSSCHECK want M5_alt       checklen= 8 [00 01 FF 01 00 00 00 06]
+DUALCHAIN_CROSSCHECK want M6           checklen= 8 [12 01 FF 01 FF 00 00 FD]
+DUALCHAIN_CROSSCHECK want M6_alt       checklen= 8 [00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK want M7           checklen= 8 [13 01 FF 01 00 01 01 00]
+DUALCHAIN_CROSSCHECK want M8           checklen=16 [08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+DUALCHAIN_CROSSCHECK verdict=LOG_MATCH chains=16 dep_lines=8
+----- [2/2] emu --no-diff G0 反例镜像 -----
+g0 emu rc=0 case_log=/public/home/**********/core/results/difftest/dualchain/cases/vdot_dualchain_g0.20261107T124540.log (4756773 B)
+g0 good=1 abort=0 caught=1 not_caught=0
+CASE vdot_dualchain_g0: MISMATCH bytes_bad=1 want=[09 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+===== DONE status=通过  =====

@@ -1,0 +1,2 @@
+# cid	cls	image	extra
+perf_base_chain_min	perf	/public/home/**********/core/test/bin/perf_base_chain_min.bin	--no-diff

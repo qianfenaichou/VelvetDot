@@ -1,0 +1,12 @@
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+/bin/sync: 忽略任何参数
+/bin/sync: 忽略任何参数
+/opt/gridview/slurm/spool_slurmd/job127117867/slurm_script: 行 236: 24646 段错误               NOOP_HOME="$chome" timeout "$TIMEOUT_S" "$EMU_BIN" --diff "$REF_SO" -i "$img" --max-instr="$MAX_INSTR" --dump-coverage $extra > "$clog" 2>&1
+slurmstepd: error: *** JOB 127117867 ON a01r1n03 CANCELLED AT 2026-11-07T06:53:23 ***

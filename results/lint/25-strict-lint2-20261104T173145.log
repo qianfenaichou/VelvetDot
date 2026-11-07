@@ -1,0 +1,18 @@
+===== job=126798101 host=a04r1n07 rtl=/public/home/**********/core/src/XiangShan/build/rtl 2026-11-04 17:31:45 =====
+AcquireUnit.sv
+ActiveGenerationTable.sv
+Adder_18.sv
+Adder_2.sv
+Adder_chain_rnd.sv
+Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+== strict: verilator --lint-only (NO -Wno-fatal) --top-module VdotReduce ==
+top=VdotReduce rc=0 %Error=0 %Warning=0 raw=/public/home/**********/core/results/lint/25-strict-VdotReduce-20261104T173145.log lines=3
+  | - V e r i l a t i o n   R e p o r t: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+  | - Verilator: Built from 0.082 MB sources in 5 modules, into 0.175 MB in 6 C++ files needing 0.000 MB
+  | - Verilator: Walltime 0.158 s (elab=0.004, cvt=0.047, bld=0.000); cpu 0.048 s on 1 threads; allocated 9.910 MB
+== strict: verilator --lint-only (NO -Wno-fatal) --top-module VIMac64b ==
+top=VIMac64b rc=0 %Error=0 %Warning=0 raw=/public/home/**********/core/results/lint/25-strict-VIMac64b-20261104T173145.log lines=3
+  | - V e r i l a t i o n   R e p o r t: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+  | - Verilator: Built from 0.145 MB sources in 3 modules, into 1.018 MB in 3 C++ files needing 0.000 MB
+  | - Verilator: Walltime 0.274 s (elab=0.039, cvt=0.140, bld=0.000); cpu 0.253 s on 1 threads; allocated 18.605 MB
+===== done =====

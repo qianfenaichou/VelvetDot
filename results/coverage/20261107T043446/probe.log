@@ -1,0 +1,32 @@
+# [trimmed] original=4754791B
+emu compiled at Nov  7 2026, 06:12:56
+[INFO] init for constantin: loaded from init.
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutFullData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutFullData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutPartialData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_PutPartialData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_ArithmeticData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_ArithmeticData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_LogicalData_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_LogicalData_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Get_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Get_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Hint_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_Hint_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquireBlock_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquireBlock_stall,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquirePerm_fire,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.socMisc.busPMU: L3_Mem_L3_bank_0_A_channel_AcquirePerm_stall,                    0
+... [middle omitted] ...
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+[PERF ][time=                 105] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0

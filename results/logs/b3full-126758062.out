@@ -1,0 +1,2 @@
+===== job=126758062 host=a01r3n06 emu=/public/home/**********/core/src/XiangShan/build/emu img=/public/home/**********/core/test/bin/perf_base_chain.bin 2026-11-04 10:52:45 =====
+slurmstepd: error: *** JOB 126758062 ON a01r3n06 CANCELLED AT 2026-11-04T11:55:12 ***

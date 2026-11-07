@@ -1,0 +1,143 @@
+# 2.2 RTL lint — 返修轮严格模式（去掉 -Wno-fatal）provenance
+#
+# 背景：原证据（results/lint/25-rtl-lint-20261104T113051.{log,json}，作业 126761068）用
+#   `verilator --lint-only -Wno-fatal`，会把 warning 降级 ⇒ 脚本的 `grep -c '%Warning'` 天然为 0，
+#   「%Warning=0」**不证明无告警**。返修轮另跑一次**不带 -Wno-fatal** 的严格模式以补齐该缺口。
+#
+# 局限（如实声明）：该轮用的是**一次性脚本**（已随证据入库为 results/lint/strict-lint2.sh，
+#   与提交到昆山 .upload/strict-lint2.sh 的那份逐字节相同：sha256 见 §P5），不是入库的
+#   core-package/scripts/25-rtl-lint.sh；原因见下 §P0（入库脚本无「严格模式」开关）。
+#   两个 top 的 RTL 闭包与 126761068 完全相同（VdotReduce + 两级 CSA；VIMac64b 单文件）。
+
+## [P0] 入库脚本的开关缺口（本条即为返修轮的真实发现）
+$ grep -n 'Wno-fatal' core-package/scripts/25-rtl-lint.sh
+17:#       -Wno-fatal 只把 warning 降级，**不掩盖 error**）
+161:    log "== verilator --lint-only -Wno-fatal --top-module $top =="
+163:      log "[dry-run] verilator --lint-only -Wno-fatal --top-module $top ${files[*]}"
+165:      timeout "$LINT_TIMEOUT" verilator --lint-only -Wno-fatal --top-module "$top" \
+# ⇒ 脚本硬编码 -Wno-fatal，没有「严格模式」参数；要复现严格模式必须改脚本或另写一次性命令。
+#   本次选择「另写一次性命令」（最小改动面），并把结论如实降级：严格模式达标，
+#   但**该轮不是入库脚本的产物**，脚本若要长期覆盖此项需补 --strict 开关（未做，记入剩余项）。
+
+## [P1] 提交与结果（作业 126798101，节点 a04r1n07）
+$ ssh kunshan 'cd ~/core && sbatch -p kshcnormal -N 1 -n 4 --time=00:10:00 -J strictlint2 \
+    -o ~/core/results/logs/strictlint2-%j.out .upload/strict-lint2.sh'
+Submitted batch job 126798101
+
+$ cat results/lint/25-strict-lint2-20261104T173145.log
+===== job=126798101 host=a04r1n07 rtl=/public/home/**********/core/src/xiangshan/build/rtl 2026-11-04 17:31:45 =====
+AcquireUnit.sv
+ActiveGenerationTable.sv
+Adder_18.sv
+Adder_2.sv
+Adder_chain_rnd.sv
+Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+== strict: verilator --lint-only (NO -Wno-fatal) --top-module VdotReduce ==
+top=VdotReduce rc=0 %Error=0 %Warning=0 raw=/public/home/**********/core/results/lint/25-strict-VdotReduce-20261104T173145.log lines=3
+  | - V e r i l a t i o n   R e p o r t: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+  | - Verilator: Built from 0.082 MB sources in 5 modules, into 0.175 MB in 6 C++ files needing 0.000 MB
+  | - Verilator: Walltime 0.158 s (elab=0.004, cvt=0.047, bld=0.000); cpu 0.048 s on 1 threads; allocated 9.910 MB
+== strict: verilator --lint-only (NO -Wno-fatal) --top-module VIMac64b ==
+top=VIMac64b rc=0 %Error=0 %Warning=0 raw=/public/home/**********/core/results/lint/25-strict-VIMac64b-20261104T173145.log lines=3
+  | - V e r i l a t i o n   R e p o r t: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+  | - Verilator: Built from 0.145 MB sources in 3 modules, into 1.018 MB in 3 C++ files needing 0.000 MB
+  | - Verilator: Walltime 0.274 s (elab=0.039, cvt=0.140, bld=0.000); cpu 0.253 s on 1 threads; allocated 18.605 MB
+===== done =====
+
+## [P2] 严格模式原始输出全文（两个 top 各 3 行，无 %Warning / %Error 行）
+$ cat results/lint/25-strict-VdotReduce-20261104T173145.log
+- V e r i l a t i o n   R e p o r t: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+- Verilator: Built from 0.082 MB sources in 5 modules, into 0.175 MB in 6 C++ files needing 0.000 MB
+- Verilator: Walltime 0.158 s (elab=0.004, cvt=0.047, bld=0.000); cpu 0.048 s on 1 threads; allocated 9.910 MB
+
+$ cat results/lint/25-strict-VIMac64b-20261104T173145.log
+- V e r i l a t i o n   R e p o r t: Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+- Verilator: Built from 0.145 MB sources in 3 modules, into 1.018 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.274 s (elab=0.039, cvt=0.140, bld=0.000); cpu 0.253 s on 1 threads; allocated 18.605 MB
+
+$ grep -c '%Warning' results/lint/25-strict-VdotReduce-20261104T173145.log results/lint/25-strict-VIMac64b-20261104T173145.log
+results/lint/25-strict-VdotReduce-20261104T173145.log:0
+results/lint/25-strict-VIMac64b-20261104T173145.log:0
+$ grep -c '%Error' results/lint/25-strict-VdotReduce-20261104T173145.log results/lint/25-strict-VIMac64b-20261104T173145.log
+results/lint/25-strict-VdotReduce-20261104T173145.log:0
+results/lint/25-strict-VIMac64b-20261104T173145.log:0
+# 注：不要把 25-strict-lint2-*.log（作业级汇总日志）算进来——它自身含 2 行含 '%Warning'/'%Error'
+#   的**统计输出**（`top=… rc=0 %Error=0 %Warning=0 …`），那是脚本的汇总行，不是 verilator 的输出。
+$ grep -c '%Warning' results/lint/25-strict-lint2-20261104T173145.log
+2
+
+## [P3] 执行员自述 host 与日志 host 不一致（诚实记录）
+# 执行员自述「节点 a05r1n10」，但：
+$ grep -rn 'a05r1n10' stage1 stage2 stage3 design tasks core-package results/logs --exclude-dir=.git
+# → 0 命中（该串在仓内唯一出现处就是本 provenance 文件自身，即下面这一行的自引用）
+$ head -1 results/lint/25-rtl-lint-20261104T113051.log
+[2026-11-04 11:30:52] ===== 25-rtl-lint.sh job=126761068 host=k20r2n17 =====
+# ⇒ 作业 126761068 的日志记 host=k20r2n17；「a05r1n10」是无据自述，已从文档中删除。
+#   本项不影响 lint 结论（判据是 rc / %Error / %Warning，与节点名无关）。
+
+## [P4] 我（返修员）能否本地复跑
+$ command -v verilator || echo NOT_FOUND
+NOT_FOUND
+$ ls -d repos/xiangshan/build/rtl 2>/dev/null || echo NO_RTL_BUILD_DIR
+NO_RTL_BUILD_DIR
+# ⇒ 本机无 verilator、无 build/rtl ⇒ 原 lint 与严格模式 lint **均未由我在本地复跑**；
+#   上表结论来自远端作业日志（已 scp 回仓，sha256 见下）。
+
+$ sha256sum results/lint/25-strict-lint2-20261104T173145.log results/lint/25-strict-VdotReduce-20261104T173145.log results/lint/25-strict-VIMac64b-20261104T173145.log
+4942660e1d91620944cf83e0e96ce3098d8a1aa2d5d9f020ef746e190faeb30e  results/lint/25-strict-lint2-20261104T173145.log
+6bccfcfd884810820d091744e25a341b8240be10b48d41e3ca4d278d96bd11a9  results/lint/25-strict-VdotReduce-20261104T173145.log
+abced89b1302d30b025f64698448da6c9fc493122a39b4488ef87c6e37bcbeb4  results/lint/25-strict-VIMac64b-20261104T173145.log
+
+## [P5] 一次性严格模式脚本已入库（可复跑）
+$ sha256sum results/lint/strict-lint2.sh
+23960c887c65262a86cf5ab439feb72f49aaa85ea70432146f61bd35e4d53f49  results/lint/strict-lint2.sh
+$ md5sum results/lint/strict-lint2.sh; ssh kunshan 'md5sum ~/core/.upload/strict-lint2.sh'
+a382af89f3e05f7e218514009ad0f211  results/lint/strict-lint2.sh
+a382af89f3e05f7e218514009ad0f211  /public/home/**********/core/.upload/strict-lint2.sh
+#   两端 md5 相同 ⇒ 作业 126798101 跑的就是入库这一份脚本（不是「另写了个近似的」）。
+# 复跑：sbatch -p kshcnormal -N 1 -n 4 --time=00:10:00 -J strictlint2 \
+#         -o ~/core/results/logs/strictlint2-%j.out .upload/strict-lint2.sh
+
+## [P6] 第三档：`-Wall`（打开告警集合；返修轮第二次补测）
+#
+# 上一档（§P1，126798101）只去掉了 `-Wno-fatal`，**未加 `-Wall`** ⇒ 告警集合仍是 Verilator 默认集，
+# 「严格模式」这个名字容易让读者以为已开全告警。故补跑第三档。
+# 脚本 results/lint/wall-lint.sh（两端 md5 `f7089880e9db504997266d327df60028` 同值）。
+
+$ ssh kunshan 'cd ~/core && sbatch -p kshcnormal -N 1 -n 4 --time=00:10:00 -J walllint \
+    -o ~/core/results/logs/walllint-%j.out .upload/wall-lint.sh'
+Submitted batch job 126803426
+$ ssh kunshan 'sacct -j 126803426 --format=JobID,State,Elapsed,Partition,NodeList,ExitCode'
+JobID       State     Elapsed Partition   NodeList ExitCode
+126803426   COMPLETED 00:00:08 kshcnormal  a11r4n10   0:0
+
+$ cat results/lint/25-wall-lint-20261104T185050.log
+===== job=126803426 host=a11r4n10 rtl=/public/home/**********/core/src/xiangshan/build/rtl 2026-11-04 18:50:50 =====
+Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+CMD: verilator --lint-only -Wall --top-module <top> <files>
+top=VdotReduce rc=1 %Error=1 %Warning=1 raw=…/25-wall-VdotReduce-20261104T185050.log lines=7
+  | %Warning-UNUSEDSIGNAL: …/VdotReduce.sv:113:18: Signal is not driven, nor used: '_RANDOM'
+  | %Error: Exiting due to 1 warning(s)
+top=VIMac64b rc=1 %Error=1 %Warning=12 raw=…/25-wall-VIMac64b-20261104T185050.log lines=51
+  | （11 条 UNUSEDSIGNAL：io_srcType_0[3]、io_srcType_1[3,1:0]、_bits_T_2[0]…_bits_T_23[0]、
+  |   uopIdxS2[5:1]；1 条 _RANDOM）
+  | %Error: Exiting due to 12 warning(s)
+===== done =====
+
+## [P7] -Wall 告警清单（逐条，13 条全为 UNUSEDSIGNAL）
+$ grep -c '%Warning' results/lint/25-wall-VdotReduce-20261104T185050.log results/lint/25-wall-VIMac64b-20261104T185050.log
+results/lint/25-wall-VdotReduce-20261104T185050.log:1
+results/lint/25-wall-VIMac64b-20261104T185050.log:12
+$ grep -o '%Warning-[A-Z]*' results/lint/25-wall-VdotReduce-20261104T185050.log results/lint/25-wall-VIMac64b-20261104T185050.log | sort | uniq -c
+      1 results/lint/25-wall-VdotReduce-20261104T185050.log:%Warning-UNUSEDSIGNAL
+     12 results/lint/25-wall-VIMac64b-20261104T185050.log:%Warning-UNUSEDSIGNAL
+# ⇒ 无 %Error（`rc=1` 是因为 Verilator 把 warning 计入退出码，`%Error: Exiting due to N warning(s)`）；
+#   无 LATCH / WIDTH / CASEINCOMPLETE / IMPLICIT 等实质缺陷类告警。
+#   `_RANDOM` 与 `io_srcType_*`/`uopIdxS2` 高位均为 Chisel 生成物既有形态（VIMac64b 是基线既有模块）。
+
+## [P8] 结论口径（三档分列，不合并）
+# 档1（-Wno-fatal）：rc=0、%Error=0；**%Warning 计数不可信**（warning 被降级）。
+# 档2（默认告警集，去 -Wno-fatal）：rc=0、%Error=0、%Warning=0。
+# 档3（-Wall）：rc=1（Verilator 对 warning 计入退出码）、%Error 行 1（仅 "Exiting due to N warning(s)"）、
+#   %Warning=13（全 UNUSEDSIGNAL）。
+# ⇒ 「lint 通过」（入库脚本判据 rc=0 ∧ %Error=0）在档1/档2 成立；若判据是「-Wall 下 0 告警」则**不成立**。

@@ -1,0 +1,118 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2024  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+
+-- Running command `read_verilog -formal -sv -DSYNTHESIS /public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv; hierarchy -check; proc; miter -equiv -make_assert -flatten VdotReduce vdot_dp_spec miter; chformal -skip 1; sat -verify -prove-asserts -seq 3 -set-at 1 in_io_fireS1 1 -set-at 2 in_io_fireS1 1 -set-at 3 in_io_fireS1 1 miter' --
+
+1. Executing Verilog-2005 frontend: /public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv
+Parsing formal SystemVerilog input from `/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv' to AST representation.
+Generating RTLIL representation for module `\CSA_Nto2With3to2MainPipeline_5'.
+Generating RTLIL representation for module `\VdotReduce'.
+Generating RTLIL representation for module `\CSA4to2_15'.
+Generating RTLIL representation for module `\vdot_dp_spec'.
+Successfully finished Verilog frontend.
+
+2. Executing HIERARCHY pass (managing design hierarchy).
+
+3. Executing PROC pass (convert processes to netlists).
+
+3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 0 assignments to connections.
+
+3.4. Executing PROC_INIT pass (extract init attributes).
+
+3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~2 debug messages>
+
+3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\vdot_dp_spec.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:467$194'.
+     1/1: $0\io_vd[127:0]
+Creating decoders for process `\VdotReduce.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:236$2'.
+     1/1: $0\io_vd_r[127:0]
+
+3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\vdot_dp_spec.\io_vd' using process `\vdot_dp_spec.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:467$194'.
+  created $dff cell `$procdff$199' with positive edge clock.
+Creating register for signal `\VdotReduce.\io_vd_r' using process `\VdotReduce.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:236$2'.
+  created $dff cell `$procdff$200' with positive edge clock.
+
+3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `\vdot_dp_spec.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:467$194'.
+Removing empty process `vdot_dp_spec.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:467$194'.
+Found and cleaned up 1 empty switch in `\VdotReduce.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:236$2'.
+Removing empty process `VdotReduce.$proc$/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv:236$2'.
+Cleaned up 2 empty switches.
+
+3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module vdot_dp_spec.
+Optimizing module CSA4to2_15.
+Optimizing module VdotReduce.
+Optimizing module CSA_Nto2With3to2MainPipeline_5.
+
+4. Executing MITER pass (creating miter circuit).
+Creating miter cell "miter" with gold cell "VdotReduce" and gate cell "vdot_dp_spec".
+
+4.1. Executing FLATTEN pass (flatten design).
+<suppressed ~6 debug messages>
+
+4.2. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+<suppressed ~7 debug messages>
+Removed 2 unused cells and 182 unused wires.
+
+5. Executing SAT pass (solving SAT problems in the circuit).
+
+Setting up time step 1:
+Import set-constraint for this timestep: \in_io_fireS1 = 1'1
+Final constraint equation: \in_io_fireS1 = 1'1
+Imported 567 cells to SAT database.
+Import set-constraint from init attribute: $auto$chformal.cc:346:execute$219 = 1'0
+Final init constraint equation: $auto$chformal.cc:346:execute$219 = 1'0
+Import proof for assert: $auto$miter.cc:242:create_miter_equiv$202 when $auto$rtlil.cc:2806:LogicAnd$222.
+
+Setting up time step 2:
+Import set-constraint for this timestep: \in_io_fireS1 = 1'1
+Final constraint equation: \in_io_fireS1 = 1'1
+Imported 567 cells to SAT database.
+Import proof for assert: $auto$miter.cc:242:create_miter_equiv$202 when $auto$rtlil.cc:2806:LogicAnd$222.
+
+Setting up time step 3:
+Import set-constraint for this timestep: \in_io_fireS1 = 1'1
+Final constraint equation: \in_io_fireS1 = 1'1
+Imported 567 cells to SAT database.
+Import proof for assert: $auto$miter.cc:242:create_miter_equiv$202 when $auto$rtlil.cc:2806:LogicAnd$222.
+
+Solving problem with 24354 variables and 64752 clauses..
+SAT proof finished - no model found: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+
+End of script. Logfile hash: dedb190c30, CPU: user 200.87s system 0.10s, MEM: 88.15 MB peak
+Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+Time spent: 99% 1x sat (200 sec), 0% 2x read_verilog (0 sec), ...

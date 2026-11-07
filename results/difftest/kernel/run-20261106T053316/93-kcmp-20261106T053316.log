@@ -1,0 +1,28 @@
+===== job=126986882 host=a01r3n04 partition=kshcnormal 2026-11-06 05:33:17 =====
+emu=/public/home/**********/core/src/XiangShan/build/emu emu_md5=529c9abcd7655448774d8b1d0718969e
+img=/public/home/**********/core/test/bin/perf_kernel_cmp.bin img_md5=1f0a5f7ac8b002ffa452939b3e3bb441 max_instr=200000000 timeout=900s
+versions: xiangshan=a4eeaab yunsuan=9559211
+manifest_remote sha256=413b5796b20094b0ef6db7aa4ca1fa7e4cd683eb6e5e71a37b2c34cbf14b3e87 rows=31（远端现状；本脚本不修改它）
+denom=unfused_rvv_seq（分母 = 未融合 RVV 序列；本用例只报指令数对比/吞吐对比）
+----- emu --no-diff run -----
+emu rc=0 case_log=/public/home/**********/core/results/difftest/kernel/cases/perf_kernel_cmp.20261106T053316.log (4756124 B)
+good=1 abort=0 bad_trap=0 verdict_all_ok=1 has_fail=0
+KCMP enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK
+KCMP vl base=8 vdot=8 expect=8 OK
+KCMP equiv base=0x00000008 vdot=0x00000008 want=0x00000008 want_vl4=0x00000012 equiv=OK not_vl4=yes discriminates=yes
+KCMP plan rounds=10 r_loop=10 n_small=8 n_big=16 warmup_rounds=2 invocations_per_version=2400
+KCMP est base_rounds=8 cyc_med=16 cyc_mean=15 cyc_min=15 cyc_max=16 over=0 i1_med_raw=1440 i1_q_min=18 i1_q_max=18 i1_q_varied=no
+KCMP est vdot_rounds=8 cyc_med=7 cyc_mean=7 cyc_min=7 cyc_max=7 over=0 i1_med_raw=880 i1_q_min=11 i1_q_max=11 i1_q_varied=no
+KCMP base_instr=18 base_cyc=16 vdot_instr=11 vdot_cyc=7 instr_ratio=1.63 cyc_ratio=2.28 denom=unfused_rvv_seq
+KCMP route_disclosure route1_base=18 route1_vdot=11 route2_base=17 route2_vdot=11 route2_minus_route1_base=-1 route2_minus_route1_vdot=0 route1_used=yes
+KCMP route2_cyc_disclosure base_per_call=15 vdot_per_call=7
+KCMP div_check step=80 i1_med_base=1440 i1_med_vdot=880 base_rem=0 vdot_rem=0 OK
+KCMP base_alt accum_n=0x00000280 accum_nm1=0x00000278 alt_differs=yes
+KCMP invocations per_version=2400 base_plus_vdot=4800 need>=2000_each OK
+KCMP static_xcheck static_base=18 measured_base=18 base=OK static_vdot=11 measured_vdot=11 vdot=OK
+VDOT_METRIC KCMP_base_instr 18
+VDOT_METRIC KCMP_base_cyc 16
+VDOT_METRIC KCMP_vdot_instr 11
+VDOT_METRIC KCMP_vdot_cyc 7
+kcmp_fields=base_instr=18 base_cyc=16 vdot_instr=11 vdot_cyc=7
+===== DONE status=通过  =====

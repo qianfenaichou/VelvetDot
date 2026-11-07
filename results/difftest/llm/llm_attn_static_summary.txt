@@ -1,0 +1,447 @@
+# llm_attn 静态指令数（口径见 design/verify/cases/objdump_llm_attn.sh 头注）
+date=2026-11-06 17:55:27
+source=/public/home/**********/core/design_verify/cases/perf_llm_attn.c
+source_sha256=0591f92aacc39d8a62c05cd39303ef7e226b0056188805d7fd5c358778551313
+header=/public/home/**********/core/design_verify/cases/llm_attn_vectors.h
+header_sha256=60914c8e326cb4e9299ec8c605a699d933f451b557cc44e5c5d6d111ce39617b
+elf=/public/home/**********/results/difftest/llm/llm_attn.elf
+elf_sha256=c1ac0843e5c9b3d7fe81e54be7648cbed94e8756baed12e1ecabab0cb285d8c3
+toolchain=riscv64-unknown-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 13.2.0
+objdump=GNU objdump (xPack GNU RISC-V Embedded GCC x86_64) 2.41
+march=rv64gcv_zba_zbb_zbc_zbs_zbkb_zbkc_zbkx_zknd_zkne_zknh_zkr_zksed_zksh_zkt -mabi=lp64d
+range_base=llm_base_begin..llm_base_end
+range_macc=llm_macc_begin..llm_macc_end
+range_vdot=llm_vdot_begin..llm_vdot_end
+N_base=100
+N_macc=85
+N_vdot=58
+N_diff_base_minus_vdot=42
+ratio=N_base/N_vdot=1.724
+ratio=N_macc/N_vdot=1.466
+N_base_compute_kinds=10   # base-vdot：仅 base 有的**不同**归一化行数（被 vdot 顶替的指令种类）
+N_vdot_compute_kinds_vs_base=10  # 仅 vdot 有的不同行数（实测 10 = 1 vdot + 7 vadd + 2 配置）
+N_macc_compute_kinds=30   # macc-vdot：仅 macc 有的不同行数
+N_vdot_compute_kinds_vs_macc=10  # 同上（实测 10）
+（差集按 sort -u 后的行集合算，不是 diff 的逐块行数；逐块全文见 diff 段）
+denom=unfused_rvv_seq（主分母 = 未融合 RVV 序列）；vwmacc_rvv_seq 只作敏感性
+note=每 score 的静态数 = 8 个子块 × 每块条数 + 共用清零/读回；比值一律是裸比值，不是加速比
+--- 逐条（base，100 条）---
+    8000012c:	5e003557          	vmv.v.i	v10,0
+    80000130:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000134:	00278e93          	add	t4,a5,2
+    80000138:	00258f13          	add	t5,a1,2
+    8000013c:	020e8087          	vle8.v	v1,(t4)
+    80000140:	020f0107          	vle8.v	v2,(t5)
+    80000144:	ee112257          	vwmul.vv	v4,v1,v2
+    80000148:	4321                	li	t1,8
+    8000014a:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    8000014e:	c6406357          	vwcvt.x.x.v	v6,v4
+    80000152:	43a1                	li	t2,8
+    80000154:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    80000158:	02652557          	vredsum.vs	v10,v6,v10
+    8000015c:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000160:	00a78e93          	add	t4,a5,10
+    80000164:	00a58f13          	add	t5,a1,10
+    80000168:	020e8087          	vle8.v	v1,(t4)
+    8000016c:	020f0107          	vle8.v	v2,(t5)
+    80000170:	ee112257          	vwmul.vv	v4,v1,v2
+    80000174:	4321                	li	t1,8
+    80000176:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    8000017a:	c6406357          	vwcvt.x.x.v	v6,v4
+    8000017e:	43a1                	li	t2,8
+    80000180:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    80000184:	02652557          	vredsum.vs	v10,v6,v10
+    80000188:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    8000018c:	01278e93          	add	t4,a5,18
+    80000190:	01258f13          	add	t5,a1,18
+    80000194:	020e8087          	vle8.v	v1,(t4)
+    80000198:	020f0107          	vle8.v	v2,(t5)
+    8000019c:	ee112257          	vwmul.vv	v4,v1,v2
+    800001a0:	4321                	li	t1,8
+    800001a2:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    800001a6:	c6406357          	vwcvt.x.x.v	v6,v4
+    800001aa:	43a1                	li	t2,8
+    800001ac:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    800001b0:	02652557          	vredsum.vs	v10,v6,v10
+    800001b4:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    800001b8:	01a78e93          	add	t4,a5,26
+    800001bc:	01a58f13          	add	t5,a1,26
+    800001c0:	020e8087          	vle8.v	v1,(t4)
+    800001c4:	020f0107          	vle8.v	v2,(t5)
+    800001c8:	ee112257          	vwmul.vv	v4,v1,v2
+    800001cc:	4321                	li	t1,8
+    800001ce:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    800001d2:	c6406357          	vwcvt.x.x.v	v6,v4
+    800001d6:	43a1                	li	t2,8
+    800001d8:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    800001dc:	02652557          	vredsum.vs	v10,v6,v10
+    800001e0:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    800001e4:	02478e93          	add	t4,a5,36
+    800001e8:	02458f13          	add	t5,a1,36
+    800001ec:	020e8087          	vle8.v	v1,(t4)
+    800001f0:	020f0107          	vle8.v	v2,(t5)
+    800001f4:	ee112257          	vwmul.vv	v4,v1,v2
+    800001f8:	4321                	li	t1,8
+    800001fa:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    800001fe:	c6406357          	vwcvt.x.x.v	v6,v4
+    80000202:	43a1                	li	t2,8
+    80000204:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    80000208:	02652557          	vredsum.vs	v10,v6,v10
+    8000020c:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000210:	02c78e93          	add	t4,a5,44
+    80000214:	02c58f13          	add	t5,a1,44
+    80000218:	020e8087          	vle8.v	v1,(t4)
+    8000021c:	020f0107          	vle8.v	v2,(t5)
+    80000220:	ee112257          	vwmul.vv	v4,v1,v2
+    80000224:	4321                	li	t1,8
+    80000226:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    8000022a:	c6406357          	vwcvt.x.x.v	v6,v4
+    8000022e:	43a1                	li	t2,8
+    80000230:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    80000234:	02652557          	vredsum.vs	v10,v6,v10
+    80000238:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    8000023c:	03478e93          	add	t4,a5,52
+    80000240:	03458f13          	add	t5,a1,52
+    80000244:	020e8087          	vle8.v	v1,(t4)
+    80000248:	020f0107          	vle8.v	v2,(t5)
+    8000024c:	ee112257          	vwmul.vv	v4,v1,v2
+    80000250:	4321                	li	t1,8
+    80000252:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    80000256:	c6406357          	vwcvt.x.x.v	v6,v4
+    8000025a:	43a1                	li	t2,8
+    8000025c:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    80000260:	02652557          	vredsum.vs	v10,v6,v10
+    80000264:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000268:	03c78e93          	add	t4,a5,60
+    8000026c:	03c58f13          	add	t5,a1,60
+    80000270:	020e8087          	vle8.v	v1,(t4)
+    80000274:	020f0107          	vle8.v	v2,(t5)
+    80000278:	ee112257          	vwmul.vv	v4,v1,v2
+    8000027c:	4321                	li	t1,8
+    8000027e:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    80000282:	c6406357          	vwcvt.x.x.v	v6,v4
+    80000286:	43a1                	li	t2,8
+    80000288:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    8000028c:	02652557          	vredsum.vs	v10,v6,v10
+    80000290:	4e11                	li	t3,4
+    80000292:	010e7057          	vsetvli	zero,t3,e32,m1,tu,mu
+    80000296:	42a02557          	vmv.x.s	a0,v10
+--- 逐条（macc，85 条）---
+    800002a0:	cc847057          	vsetivli	zero,8,e16,m1,ta,ma
+    800002a4:	5e003257          	vmv.v.i	v4,0
+    800002a8:	5e003357          	vmv.v.i	v6,0
+    800002ac:	5e003457          	vmv.v.i	v8,0
+    800002b0:	5e003657          	vmv.v.i	v12,0
+    800002b4:	5e003757          	vmv.v.i	v14,0
+    800002b8:	5e003857          	vmv.v.i	v16,0
+    800002bc:	5e003957          	vmv.v.i	v18,0
+    800002c0:	5e003a57          	vmv.v.i	v20,0
+    800002c4:	5e003557          	vmv.v.i	v10,0
+    800002c8:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    800002cc:	00278e93          	add	t4,a5,2
+    800002d0:	00258f13          	add	t5,a1,2
+    800002d4:	020e8087          	vle8.v	v1,(t4)
+    800002d8:	020f0107          	vle8.v	v2,(t5)
+    800002dc:	f620a257          	vwmacc.vv	v4,v1,v2
+    800002e0:	4321                	li	t1,8
+    800002e2:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    800002e6:	c6450557          	vwredsum.vs	v10,v4,v10
+    800002ea:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    800002ee:	00a78e93          	add	t4,a5,10
+    800002f2:	00a58f13          	add	t5,a1,10
+    800002f6:	020e8087          	vle8.v	v1,(t4)
+    800002fa:	020f0107          	vle8.v	v2,(t5)
+    800002fe:	f620a357          	vwmacc.vv	v6,v1,v2
+    80000302:	4321                	li	t1,8
+    80000304:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    80000308:	c6650557          	vwredsum.vs	v10,v6,v10
+    8000030c:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000310:	01278e93          	add	t4,a5,18
+    80000314:	01258f13          	add	t5,a1,18
+    80000318:	020e8087          	vle8.v	v1,(t4)
+    8000031c:	020f0107          	vle8.v	v2,(t5)
+    80000320:	f620a457          	vwmacc.vv	v8,v1,v2
+    80000324:	4321                	li	t1,8
+    80000326:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    8000032a:	c6850557          	vwredsum.vs	v10,v8,v10
+    8000032e:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000332:	01a78e93          	add	t4,a5,26
+    80000336:	01a58f13          	add	t5,a1,26
+    8000033a:	020e8087          	vle8.v	v1,(t4)
+    8000033e:	020f0107          	vle8.v	v2,(t5)
+    80000342:	f620a657          	vwmacc.vv	v12,v1,v2
+    80000346:	4321                	li	t1,8
+    80000348:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    8000034c:	c6c50557          	vwredsum.vs	v10,v12,v10
+    80000350:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000354:	02478e93          	add	t4,a5,36
+    80000358:	02458f13          	add	t5,a1,36
+    8000035c:	020e8087          	vle8.v	v1,(t4)
+    80000360:	020f0107          	vle8.v	v2,(t5)
+    80000364:	f620a757          	vwmacc.vv	v14,v1,v2
+    80000368:	4321                	li	t1,8
+    8000036a:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    8000036e:	c6e50557          	vwredsum.vs	v10,v14,v10
+    80000372:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000376:	02c78e93          	add	t4,a5,44
+    8000037a:	02c58f13          	add	t5,a1,44
+    8000037e:	020e8087          	vle8.v	v1,(t4)
+    80000382:	020f0107          	vle8.v	v2,(t5)
+    80000386:	f620a857          	vwmacc.vv	v16,v1,v2
+    8000038a:	4321                	li	t1,8
+    8000038c:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    80000390:	c7050557          	vwredsum.vs	v10,v16,v10
+    80000394:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000398:	03478e93          	add	t4,a5,52
+    8000039c:	03458f13          	add	t5,a1,52
+    800003a0:	020e8087          	vle8.v	v1,(t4)
+    800003a4:	020f0107          	vle8.v	v2,(t5)
+    800003a8:	f620a957          	vwmacc.vv	v18,v1,v2
+    800003ac:	4321                	li	t1,8
+    800003ae:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    800003b2:	c7250557          	vwredsum.vs	v10,v18,v10
+    800003b6:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    800003ba:	03c78e93          	add	t4,a5,60
+    800003be:	03c58f13          	add	t5,a1,60
+    800003c2:	020e8087          	vle8.v	v1,(t4)
+    800003c6:	020f0107          	vle8.v	v2,(t5)
+    800003ca:	f620aa57          	vwmacc.vv	v20,v1,v2
+    800003ce:	4321                	li	t1,8
+    800003d0:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    800003d4:	c7450557          	vwredsum.vs	v10,v20,v10
+    800003d8:	4e11                	li	t3,4
+    800003da:	010e7057          	vsetvli	zero,t3,e32,m1,tu,mu
+    800003de:	42a02557          	vmv.x.s	a0,v10
+--- 逐条（vdot，58 条）---
+    800003e8:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    800003ec:	00278e93          	add	t4,a5,2
+    800003f0:	00258f13          	add	t5,a1,2
+    800003f4:	020e8087          	vle8.v	v1,(t4)
+    800003f8:	020f0107          	vle8.v	v2,(t5)
+    800003fc:	3a20a657          	.word	0x3a20a657
+    80000400:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000404:	00a78e93          	add	t4,a5,10
+    80000408:	00a58f13          	add	t5,a1,10
+    8000040c:	020e8087          	vle8.v	v1,(t4)
+    80000410:	020f0107          	vle8.v	v2,(t5)
+    80000414:	3a20a6d7          	.word	0x3a20a6d7
+    80000418:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    8000041c:	01278e93          	add	t4,a5,18
+    80000420:	01258f13          	add	t5,a1,18
+    80000424:	020e8087          	vle8.v	v1,(t4)
+    80000428:	020f0107          	vle8.v	v2,(t5)
+    8000042c:	3a20a757          	.word	0x3a20a757
+    80000430:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000434:	01a78e93          	add	t4,a5,26
+    80000438:	01a58f13          	add	t5,a1,26
+    8000043c:	020e8087          	vle8.v	v1,(t4)
+    80000440:	020f0107          	vle8.v	v2,(t5)
+    80000444:	3a20a7d7          	.word	0x3a20a7d7
+    80000448:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    8000044c:	02478e93          	add	t4,a5,36
+    80000450:	02458f13          	add	t5,a1,36
+    80000454:	020e8087          	vle8.v	v1,(t4)
+    80000458:	020f0107          	vle8.v	v2,(t5)
+    8000045c:	3a20a857          	.word	0x3a20a857
+    80000460:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000464:	02c78e93          	add	t4,a5,44
+    80000468:	02c58f13          	add	t5,a1,44
+    8000046c:	020e8087          	vle8.v	v1,(t4)
+    80000470:	020f0107          	vle8.v	v2,(t5)
+    80000474:	3a20a8d7          	.word	0x3a20a8d7
+    80000478:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    8000047c:	03478e93          	add	t4,a5,52
+    80000480:	03458f13          	add	t5,a1,52
+    80000484:	020e8087          	vle8.v	v1,(t4)
+    80000488:	020f0107          	vle8.v	v2,(t5)
+    8000048c:	3a20a957          	.word	0x3a20a957
+    80000490:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000494:	03c78e93          	add	t4,a5,60
+    80000498:	03c58f13          	add	t5,a1,60
+    8000049c:	020e8087          	vle8.v	v1,(t4)
+    800004a0:	020f0107          	vle8.v	v2,(t5)
+    800004a4:	3a20a9d7          	.word	0x3a20a9d7
+    800004a8:	4e05                	li	t3,1
+    800004aa:	0d0e7057          	vsetvli	zero,t3,e32,m1,ta,ma
+    800004ae:	02c68657          	vadd.vv	v12,v12,v13
+    800004b2:	02e78757          	vadd.vv	v14,v14,v15
+    800004b6:	03088857          	vadd.vv	v16,v16,v17
+    800004ba:	03298957          	vadd.vv	v18,v18,v19
+    800004be:	02c70657          	vadd.vv	v12,v12,v14
+    800004c2:	03090857          	vadd.vv	v16,v16,v18
+    800004c6:	02c80657          	vadd.vv	v12,v12,v16
+    800004ca:	42c02557          	vmv.x.s	a0,v12
+--- 归一化 diff（< = 前臂独有，> = vdot 独有）---
+=== base vs vdot ===
+1d0
+< vmv.v.i v10,0
+7,13c6
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+19,25c12
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+31,37c18
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+43,49c24
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+55,61c30
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+67,73c36
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+79,85c42
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+---
+> .word VDOT
+91,99c48,57
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vredsum.vs v10,v6,v10
+< li t3,4
+< vsetvli zero,t3,e32,m1,tu,mu
+---
+> .word VDOT
+> li t3,1
+> vsetvli zero,t3,e32,m1,ta,ma
+> vadd.vv v12,v12,v13
+> vadd.vv v14,v14,v15
+> vadd.vv v16,v16,v17
+> vadd.vv v18,v18,v19
+> vadd.vv v12,v12,v14
+> vadd.vv v16,v16,v18
+> vadd.vv v12,v12,v16
+=== macc vs vdot ===
+1,10d0
+< vsetivli zero,8,e16,m1,ta,ma
+< vmv.v.i v4,0
+< vmv.v.i v6,0
+< vmv.v.i v8,0
+< vmv.v.i v12,0
+< vmv.v.i v14,0
+< vmv.v.i v16,0
+< vmv.v.i v18,0
+< vmv.v.i v20,0
+< vmv.v.i v10,0
+16,19c6
+< vwmacc.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v4,v10
+---
+> .word VDOT
+25,28c12
+< vwmacc.vv v6,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v6,v10
+---
+> .word VDOT
+34,37c18
+< vwmacc.vv v8,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v8,v10
+---
+> .word VDOT
+43,46c24
+< vwmacc.vv v12,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v12,v10
+---
+> .word VDOT
+52,55c30
+< vwmacc.vv v14,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v14,v10
+---
+> .word VDOT
+61,64c36
+< vwmacc.vv v16,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v16,v10
+---
+> .word VDOT
+70,73c42
+< vwmacc.vv v18,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v18,v10
+---
+> .word VDOT
+79,84c48,57
+< vwmacc.vv v20,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwredsum.vs v10,v20,v10
+< li t3,4
+< vsetvli zero,t3,e32,m1,tu,mu
+---
+> .word VDOT
+> li t3,1
+> vsetvli zero,t3,e32,m1,ta,ma
+> vadd.vv v12,v12,v13
+> vadd.vv v14,v14,v15
+> vadd.vv v16,v16,v17
+> vadd.vv v18,v18,v19
+> vadd.vv v12,v12,v14
+> vadd.vv v16,v16,v18
+> vadd.vv v12,v12,v16

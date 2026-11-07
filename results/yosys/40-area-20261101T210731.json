@@ -1,0 +1,20 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P2-yosys-formal",
+  "script": "scripts/slurm_script",
+  "status": "失败",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126537633",
+  "started_at": "2026-11-01T21:07:31+0800",
+  "ended_at": "2026-11-01T21:07:32+0800",
+  "machine_hours_planned": 0.75,
+  "mode": "area",
+  "scope": "仅 vdot 数据通路模块，未含 VIMacU 其余部分，未含工艺库",
+  "criteria": [
+    {"name": "tool_yosys", "expected": "yosys 可用", "actual": "Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)", "status": "达标"},
+    {"name": "two_tops", "expected": "两版均产出 cells/transistors/longest_path", "actual": "至少一版解析失败", "status": "未达标"}
+  ],
+  "metrics": [
+  ],
+  "artifacts": ["/public/home/**********/core/results/yosys/40-area-20261101T210731.log", "/public/home/**********/core/results/yosys/40-area-20261101T210731.md"]
+}

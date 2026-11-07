@@ -1,0 +1,7 @@
+%Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VdotReduce.sv:113:18: Signal is not driven, nor used: '_RANDOM'
+                                                                                                : ... note: In instance 'VdotReduce'
+  113 |     logic [31:0] _RANDOM[0:3];
+      |                  ^~~~~~~
+                       ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.053
+                       ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+%Error: Exiting due to 1 warning(s)

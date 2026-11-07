@@ -1,0 +1,1 @@
+GEN OK chunks=512 dots=512 scores=64 spec_range_ok=yes ab_crosscheck=yes chunk_s_min=-130048 chunk_s_max=131072 isum_fnv1a=0xAE617E159015FC18 chunk_fnv1a=0x8D74DDAEA79CFABE d_fp16=0x3800 dequant_exact=0.25 sha256=60914c8e326cb4e9299ec8c605a699d933f451b557cc44e5c5d6d111ce39617b path=design/verify/cases/llm_attn_vectors.h

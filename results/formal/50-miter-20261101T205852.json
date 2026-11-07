@@ -1,0 +1,17 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P2-yosys-formal",
+  "script": "scripts/slurm_script",
+  "status": "未运行",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126537394",
+  "started_at": "2026-11-01T20:58:52+0800",
+  "ended_at": "2026-11-01T20:58:52+0800",
+  "machine_hours_planned": 0.75,
+  "scope": "只证数据通路（vdot_dp），不覆盖流水/发射/旁路",
+  "miter": "/public/home/**********/core/rtl/formal/vdot_dp_miter_full.sv",
+  "criteria": [
+    {"name": "tool_yosys", "expected": "yosys 可用", "actual": "MISSING（先跑 00-env-check.sh --install）", "status": "未运行"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/formal/50-miter-20261101T205852.log"]
+}

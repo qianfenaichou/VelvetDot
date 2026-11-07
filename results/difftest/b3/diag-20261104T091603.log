@@ -1,0 +1,5 @@
+[09:16:03] start job=126750152 node=a01r2n12
+[09:16:03] emu compiled at Nov  3 2026, 16:19:22
+[09:16:03] [INFO] init for constantin: loaded from init.
+[09:16:24] PERF base_chain: vl=8 expect=8 OK
+[09:18:03] end rc=124

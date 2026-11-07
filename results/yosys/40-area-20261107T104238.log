@@ -1,0 +1,10 @@
+[2026-11-07 10:42:38] ===== slurm_script dry_run=0 self_test=0 =====
+[2026-11-07 10:42:38] 已 source /public/home/**********/tools/env.sh
+[2026-11-07 10:42:38] yosys=Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+[2026-11-07 10:42:38] == yosys: VIMac64b <= /public/home/**********/core-p2/rtl/area/vmac_only.sv ==
+[2026-11-07 10:53:06] 解析：cells=42783 transistors=293640 longest_path=100
+[2026-11-07 10:53:06] == yosys: VdotReduce <= /public/home/**********/core-p2/rtl/area/vdot_dp.sv ==
+[2026-11-07 10:53:07] 解析：cells=500 transistors=4900 longest_path=14
+[2026-11-07 10:53:07] 对比表：/public/home/**********/core/results/yosys/40-area-20261107T104238.md
+[2026-11-07 10:53:07] 结果 JSON：/public/home/**********/core/results/yosys/40-area-20261107T104238.json
+[2026-11-07 10:53:07] 判据：达标

@@ -1,0 +1,7 @@
+[2026-11-07 04:34:46] ===== slurm_script run=20261107T043446 jobs=32 emu_threads=8 timeout=2400s guard=0 =====
+[2026-11-07 04:34:46] 已 source /public/home/**********/tools/env.sh
+[2026-11-07 04:34:46] [WARN] --no-budget-guard：跳过预算闸（用户已授权），机时风险与超支事实由记账脚本承担
+[2026-11-07 04:34:46] versions: xiangshan=a4eeaab difftest=3729300 verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+[2026-11-07 04:34:46] == 覆盖率重建：rm -rf build/verilator-compile build/emu（T1）==
+[2026-11-07 06:24:47] coverage emu sha256=b86f95b41eee5db1861286787fd63958c75b6f79e92d97da6ee37e59024fdc2f
+[2026-11-07 06:49:16]   case vadd-microbench [vadd] -> 失败(GOOD=0 ABORT=0 BAD=0 SELFCHK=1) (GOOD=0 ABORT=0 CRIT=0 rc=139 dat=/public/home/**********/core/results/coverage/20261107T043446/build/vadd-microbench/build/2026-11-07-06-47-58.coverage.dat)

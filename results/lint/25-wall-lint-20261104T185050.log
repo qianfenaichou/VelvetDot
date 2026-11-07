@@ -1,0 +1,64 @@
+===== job=126803426 host=a11r4n10 rtl=/public/home/**********/core/src/XiangShan/build/rtl 2026-11-04 18:50:50 =====
+Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+CMD: verilator --lint-only -Wall --top-module <top> <files>
+top=VdotReduce rc=1 %Error=1 %Warning=1 raw=/public/home/**********/core/results/lint/25-wall-VdotReduce-20261104T185050.log lines=7
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VdotReduce.sv:113:18: Signal is not driven, nor used: '_RANDOM'
+  |                                                                                                 : ... note: In instance 'VdotReduce'
+  |   113 |     logic [31:0] _RANDOM[0:3];
+  |       |                  ^~~~~~~
+  |                        ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.053
+  |                        ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+  | %Error: Exiting due to 1 warning(s)
+top=VIMac64b rc=1 %Error=1 %Warning=12 raw=/public/home/**********/core/results/lint/25-wall-VIMac64b-20261104T185050.log lines=51
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:93:17: Bits of signal are not used: 'io_srcType_0'[3]
+  |                                                                                              : ... note: In instance 'VIMac64b'
+  |    93 |   input  [3:0]  io_srcType_0,
+  |       |                 ^~~~~~~~~~~~
+  |                        ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.053
+  |                        ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:94:17: Bits of signal are not used: 'io_srcType_1'[3,1:0]
+  |                                                                                              : ... note: In instance 'VIMac64b'
+  |    94 |   input  [3:0]  io_srcType_1,
+  |       |                 ^~~~~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:180:16: Bits of signal are not used: '_bits_T_2'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   180 |   wire [17:0]  _bits_T_2 =
+  |       |                ^~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:182:16: Bits of signal are not used: '_bits_T_5'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   182 |   wire [17:0]  _bits_T_5 =
+  |       |                ^~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:186:16: Bits of signal are not used: '_bits_T_8'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   186 |   wire [17:0]  _bits_T_8 =
+  |       |                ^~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:190:16: Bits of signal are not used: '_bits_T_11'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   190 |   wire [17:0]  _bits_T_11 =
+  |       |                ^~~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:194:16: Bits of signal are not used: '_bits_T_14'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   194 |   wire [17:0]  _bits_T_14 =
+  |       |                ^~~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:198:16: Bits of signal are not used: '_bits_T_17'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   198 |   wire [17:0]  _bits_T_17 =
+  |       |                ^~~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:202:16: Bits of signal are not used: '_bits_T_20'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   202 |   wire [17:0]  _bits_T_20 =
+  |       |                ^~~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:206:16: Bits of signal are not used: '_bits_T_23'[0]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   206 |   wire [16:0]  _bits_T_23 =
+  |       |                ^~~~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:214:16: Bits of signal are not used: 'uopIdxS2'[5:1]
+  |                                                                                               : ... note: In instance 'VIMac64b'
+  |   214 |   reg  [5:0]   uopIdxS2;
+  |       |                ^~~~~~~~
+  | %Warning-UNUSEDSIGNAL: /public/home/**********/core/src/XiangShan/build/rtl/VIMac64b.sv:2417:18: Signal is not driven, nor used: '_RANDOM'
+  |                                                                                                : ... note: In instance 'VIMac64b'
+  |  2417 |     logic [31:0] _RANDOM[0:29];
+  |       |                  ^~~~~~~
+  | %Error: Exiting due to 12 warning(s)
+===== done =====

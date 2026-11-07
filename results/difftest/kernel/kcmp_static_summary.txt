@@ -1,0 +1,63 @@
+# kcmp 静态指令数（口径见 design/verify/cases/objdump_kcmp.sh 头注）
+date=2026-11-06 05:48:58
+source=$REPO/design/verify/cases/perf_kernel_cmp.c
+source_sha256=821151164ff9ad54870ab9e35e81b85a54e1632242fd62da526ea1d0624b0c9b
+elf=$HOME/tools/nexus-am/apps/kcmp_pass2/build/kcmp_pass2-riscv64-xs.elf
+elf_sha256=22b6dd60c646d15b00b04da2a0df98b6f6ca76332ec9726dfd56033f9ad914bb
+toolchain=riscv64-unknown-elf-gcc (14.2.0+19) 14.2.0
+objdump=GNU objdump (2.42-1ubuntu1+6) 2.42
+march=rv64gcv_zba_zbb_zbc_zbs_zbkb_zbkc_zbkx_zknd_zkne_zknh_zkr_zksed_zksh_zkt
+range_base=base_kernel..kcmp_base_end
+range_vdot=vdot_kernel..kcmp_vdot_end
+N_base=18
+N_vdot=11
+N_diff=7
+ratio=N_base/N_vdot=1.636
+N_base_compute_only=8   # 归一化差集里仅 base 有的行数（被 vdot 顶替掉的指令数）
+N_vdot_compute_only=1   # 归一化差集里仅 vdot 有的行数（应为 1：vdot 那一条）
+compute_ratio=8/1=8.000
+denom=unfused_rvv_seq（分母是未融合 RVV 序列）
+note=vwadd.vx 且 rs1=x0 被反汇编为 vwcvt.x.x.v（RVV 1.0 正式别名，机器码相同）
+--- 逐条（base，18 条）---
+    8000012a:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    8000012e:	00003e97          	auipc	t4,0x3
+    80000132:	092e8e93          	addi	t4,t4,146 # 800031c0 <buf_a>
+    80000136:	020e8087          	vle8.v	v1,(t4)
+    8000013a:	00003f17          	auipc	t5,0x3
+    8000013e:	096f0f13          	addi	t5,t5,150 # 800031d0 <buf_b>
+    80000142:	020f0107          	vle8.v	v2,(t5)
+    80000146:	ee112257          	vwmul.vv	v4,v1,v2
+    8000014a:	4321                	li	t1,8
+    8000014c:	0c837057          	vsetvli	zero,t1,e16,m1,ta,ma
+    80000150:	c6406357          	vwcvt.x.x.v	v6,v4
+    80000154:	43a1                	li	t2,8
+    80000156:	0d13f057          	vsetvli	zero,t2,e32,m2,ta,ma
+    8000015a:	5e003557          	vmv.v.i	v10,0
+    8000015e:	02652557          	vredsum.vs	v10,v6,v10
+    80000162:	4e11                	li	t3,4
+    80000164:	010e7057          	vsetvli	zero,t3,e32,m1,tu,mu
+    80000168:	42a02557          	vmv.x.s	a0,v10
+--- 逐条（vdot，11 条）---
+    80000170:	cc047057          	vsetivli	zero,8,e8,m1,ta,ma
+    80000174:	00003e97          	auipc	t4,0x3
+    80000178:	04ce8e93          	addi	t4,t4,76 # 800031c0 <buf_a>
+    8000017c:	020e8087          	vle8.v	v1,(t4)
+    80000180:	00003f17          	auipc	t5,0x3
+    80000184:	050f0f13          	addi	t5,t5,80 # 800031d0 <buf_b>
+    80000188:	020f0107          	vle8.v	v2,(t5)
+    8000018c:	3a20a1d7          	.word	0x3a20a1d7
+    80000190:	4e11                	li	t3,4
+    80000192:	010e7057          	vsetvli	zero,t3,e32,m1,tu,mu
+    80000196:	42302557          	vmv.x.s	a0,v3
+--- 归一化 diff（< = 仅 base 有，> = 仅 vdot 有）---
+8,15c8
+< vwmul.vv v4,v1,v2
+< li t1,8
+< vsetvli zero,t1,e16,m1,ta,ma
+< vwcvt.x.x.v v6,v4
+< li t2,8
+< vsetvli zero,t2,e32,m2,ta,ma
+< vmv.v.i v10,0
+< vredsum.vs v10,v6,v10
+---
+> .word 0x3a20a1d7

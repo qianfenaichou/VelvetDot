@@ -1,0 +1,31 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P3-full",
+  "script": "scripts/97-run-llm.sh",
+  "case_id": "perf_llm_attn",
+  "status": "失败",
+  "note": "清单外单例（不进 design/verify/cases/manifest.tsv，该文件冻结 30 行/a90d1071…）；只报指令数对比/拍数对比/内核吞吐对比，主分母=unfused_rvv_seq，vwmacc_rvv_seq 只作敏感性；emu≠硅",
+  "platform": "kshcnormal",
+  "slurm_job_id": "127049777",
+  "host": "a01r2n00",
+  "started_at": "2026-11-06T17:07:16+0800",
+  "ended_at": "2026-11-06T17:21:41+0800",
+  "machine_hours_planned": 0.5,
+  "mode": "single-case",
+  "provenance": {"emu": "/public/home/**********/core/src/XiangShan/build/emu", "emu_md5": "529c9abcd7655448774d8b1d0718969e", "img": "/public/home/**********/core/test/bin/llm_attn.bin", "img_md5": "817ee45bb1a58540e5615a03fb25e375", "g0": "/public/home/**********/core/test/bin/llm_attn_g0.bin", "g0_md5": "9043f7b7e169eb25b7a65b5a3afcea31", "max_instr": "400000000"},
+  "metrics": {"base_instr": "100", "macc_instr": "85", "vdot_instr": "58", "base_slope_num": "11681664", "base_slope_den": "8306688", "macc_slope_num": "10081152", "macc_slope_den": "8306688", "vdot_slope_num": "6187776", "vdot_slope_den": "8306688", "base_r2_ppm": "999999", "macc_r2_ppm": "999999", "vdot_r2_ppm": "999995", "dots_per_arm": "7424", "denom": "unfused_rvv_seq"},
+  "criteria": [
+    {"name": "normal_all_ok", "expected": "LLM_ATTN verdict=ALL_OK >=1 且 HAS_FAIL == 0", "actual": "ok=1 fail=0", "status": "达标"},
+    {"name": "g0_has_fail", "expected": "G0: HAS_FAIL >=1 且 ALL_OK == 0", "actual": "ok=0 fail=1", "status": "达标"},
+    {"name": "good_trap", "expected": "两个镜像 HIT GOOD TRAP >= 1", "actual": "normal=1 g0=1", "status": "达标"},
+    {"name": "no_abort", "expected": "ABORT == 0", "actual": "0", "status": "达标"},
+    {"name": "no_bad_trap", "expected": "HIT BAD TRAP == 0", "actual": "0", "status": "达标"},
+    {"name": "llm_fields", "expected": "LLM_{base,macc,vdot}_instr 可解析且 >=1", "actual": "base=100 macc=85 vdot=58", "status": "未达标"},
+    {"name": "no_mismatch_line", "expected": "无 *=MISMATCH / alt_differs=no", "actual": "0", "status": "达标"},
+    {"name": "emu_rc", "expected": "rc == 0（两个镜像）", "actual": "normal=0 g0=0", "status": "达标"},
+    {"name": "static_xcheck", "expected": "LLM_ATTN static_xcheck … base=OK … macc=OK … vdot=OK", "actual": "LLM_ATTN static_xcheck static_base=100 measured_base=100 base=OK static_macc=85 measured_macc=85 macc=OK static_vdot=58 measured_vdot=58 vdot=OK div=OK", "status": "达标"}
+  ],
+  "verdict_line": "LLM_ATTN verdict=ALL_OK scale=32 head_dim=64 q=8 k=8 enc=0x3A20A1D7 vl=8 golden=model chunks=512 scores=64 denom=unfused_rvv_seq arms=base,macc,vdot enc_ok=OK vl_ok=OK golden_ok=OK alt_differs=yes fit=OK static_xcheck=OK",
+  "g0_verdict_line": "LLM_ATTN verdict=HAS_FAIL reason=golden_mismatch score=0,0 got=0x0000D73D want=0x0000D73E arms_bad=1/1/1 denom=unfused_rvv_seq",
+  "artifacts": ["/public/home/**********/core/results/difftest/llm/97-llm-20261106T170716.log", "/public/home/**********/core/results/difftest/llm/cases/perf_llm_attn.20261106T170716.log", "/public/home/**********/core/results/difftest/llm/cases/perf_llm_attn_g0.20261106T170716.log"]
+}

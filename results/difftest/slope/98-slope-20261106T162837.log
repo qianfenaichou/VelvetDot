@@ -1,0 +1,45 @@
+===== job=127043836 host=a10r4n03 partition=kshcnormal 2026-11-06 16:28:38 =====
+emu=/public/home/**********/core/src/XiangShan/build/emu emu_md5=529c9abcd7655448774d8b1d0718969e
+img=/public/home/**********/core/test/bin/perf_base_slope.bin img_md5=a34aa36d9bbe233bf0a80c5ff57e239e img_sha256=04b8a40bc6bd410fd40897209f6bd5f97c5e9b0ac167b6c3963a8e3673f77716 max_instr=200000000 timeout=1800s
+versions: xiangshan=a4eeaab yunsuan=9559211
+manifest_remote sha256=413b5796b20094b0ef6db7aa4ca1fa7e4cd683eb6e5e71a37b2c34cbf14b3e87 rows=31（远端现状；本脚本不修改它）
+denom=per_point_sequence（斜率口径：cyc = a + b·N 的 b；不是单指令依赖延迟，也不是中位数口径）
+----- emu --no-diff run -----
+emu rc=0 case_log=/public/home/**********/core/results/difftest/slope/cases/perf_base_slope.20261106T162837.log (4758021 B)
+good=1 abort=0 bad_trap=0 verdict_ok=1 verdict_bad=0
+point_lines=12 (expect 12) rounds_per_point=3 fit_lines=4 fit2_lines=4 check_lines=4 check_bad=0 check_vl4_bad=0
+PERF slope: enc_check=0x3A20A1D7 expect=0x3A20A1D7 OK
+PERF slope: vl=8 expect=8 OK
+PERF slope: want_vl8=0x00000008 want_vl4=0x00000012 discriminates=yes
+SLOPE header vl=8 unroll=8 rounds=3 n_list=8,64,512 data=buf_a/buf_b groups=4 points=12
+SLOPE point ch=vdot cls=resident n=8 rounds=3 median=22 min=11 max=28 cyc=28,22,11
+SLOPE point ch=vdot cls=resident n=64 rounds=3 median=119 min=94 max=185 cyc=185,94,119
+SLOPE point ch=vdot cls=resident n=512 rounds=3 median=553 min=553 max=681 cyc=681,553,553
+SLOPE fit ch=vdot cls=resident points=3 n0=8 n1=64 n2=512 m0=22 m1=119 m2=553 slope_milli=1021 intercept_milli=32571 r2_micro=853631 sx=584 sxx=266304 sy=694 syy=320454 sxy=290928 slope_status=computed
+SLOPE fit2 ch=vdot cls=resident points=2 n0=64 n1=512 slope_milli=969
+SLOPE monotonic ch=vdot cls=resident m0=22 m1=119 m2=553 increasing=yes
+SLOPE check ch=vdot cls=resident result_v8=0x00000008 result_v15=0x00000008 want=0x00000008 want_vl4=0x00000012 match=OK not_vl4=yes
+SLOPE point ch=vdot cls=stream n=8 rounds=3 median=26 min=26 max=46 cyc=46,26,26
+SLOPE point ch=vdot cls=stream n=64 rounds=3 median=250 min=197 max=394 cyc=394,250,197
+SLOPE point ch=vdot cls=stream n=512 rounds=3 median=1630 min=1579 max=1771 cyc=1771,1630,1579
+SLOPE fit ch=vdot cls=stream points=3 n0=8 n1=64 n2=512 m0=26 m1=250 m2=1630 slope_milli=3143 intercept_milli=23429 r2_micro=969640 sx=584 sxx=266304 sy=1906 syy=2720076 sxy=850768 slope_status=computed
+SLOPE fit2 ch=vdot cls=stream points=2 n0=64 n1=512 slope_milli=3080
+SLOPE monotonic ch=vdot cls=stream m0=26 m1=250 m2=1630 increasing=yes
+SLOPE check ch=vdot cls=stream result_v8=0x00000008 result_v15=0x00000008 want=0x00000008 want_vl4=0x00000012 match=OK not_vl4=yes
+SLOPE point ch=b2 cls=resident n=8 rounds=3 median=86 min=86 max=86 cyc=86,86,86
+SLOPE point ch=b2 cls=resident n=64 rounds=3 median=740 min=717 max=892 cyc=892,740,717
+SLOPE point ch=b2 cls=resident n=512 rounds=3 median=5655 min=5645 max=5794 cyc=5794,5655,5645
+SLOPE fit ch=b2 cls=resident points=3 n0=8 n1=64 n2=512 m0=86 m1=740 m2=5655 slope_milli=11019 intercept_milli=15214 r2_micro=994642 sx=584 sxx=266304 sy=6481 syy=32534021 sxy=2943408 slope_status=computed
+SLOPE fit2 ch=b2 cls=resident points=2 n0=64 n1=512 slope_milli=10971
+SLOPE monotonic ch=b2 cls=resident m0=86 m1=740 m2=5655 increasing=yes
+SLOPE check ch=b2 cls=resident result=0x00000008 want=0x00000008 want_vl4=0x00000012 match=OK not_vl4=yes
+SLOPE point ch=b2 cls=stream n=8 rounds=3 median=119 min=119 max=121 cyc=121,119,119
+SLOPE point ch=b2 cls=stream n=64 rounds=3 median=987 min=937 max=1138 cyc=1138,987,937
+SLOPE point ch=b2 cls=stream n=512 rounds=3 median=7519 min=7467 max=7625 cyc=7625,7519,7467
+SLOPE fit ch=b2 cls=stream points=3 n0=8 n1=64 n2=512 m0=119 m1=987 m2=7519 slope_milli=14643 intercept_milli=24429 r2_micro=993526 sx=584 sxx=266304 sy=8625 syy=57523691 sxy=3913848 slope_status=computed
+SLOPE fit2 ch=b2 cls=stream points=2 n0=64 n1=512 slope_milli=14580
+SLOPE monotonic ch=b2 cls=stream m0=119 m1=987 m2=7519 increasing=yes
+SLOPE check ch=b2 cls=stream result=0x00000008 want=0x00000008 want_vl4=0x00000012 match=OK not_vl4=yes
+SLOPE summary enc=OK vl=OK discriminates=yes selfcheck=OK not_vl4=yes slope_positive=yes monotonic=yes fit_computed=yes
+SLOPE verdict=ALL_OK groups=4 points=12 rounds_per_point=3
+===== DONE status=通过  =====

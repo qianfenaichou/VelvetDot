@@ -1,0 +1,23 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P2-yosys-formal",
+  "script": "scripts/25-rtl-lint.sh",
+  "status": "通过",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126761068",
+  "started_at": "2026-11-04T11:30:51+0800",
+  "ended_at": "2026-11-04T11:30:55+0800",
+  "tool": {"verilator": "Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5"},
+  "rtl_dir": "/public/home/**********/core/src/XiangShan/build/rtl",
+  "criteria": [
+    {"name": "verilator_available", "expected": "PATH 上有 verilator（~/tools/verilator）", "actual": "Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5", "status": "达标"},
+    {"name": "lint_files_present:VdotReduce", "expected": "闭包文件存在", "actual": "VdotReduce.sv CSA_Nto2With3to2MainPipeline_5.sv CSA4to2_15.sv", "status": "达标"},
+    {"name": "lint_files_present:VIMac64b", "expected": "闭包文件存在", "actual": "VIMac64b.sv", "status": "达标"},
+    {"name": "lint_exit0", "expected": "两个 top 的 verilator --lint-only 均退出码 0", "actual": "失败组数=0", "status": "达标"},
+    {"name": "lint_no_error", "expected": "输出 %Error 合计 0 行", "actual": "%Error=0", "status": "达标"}
+  ],
+  "metrics": [
+    {"top": "VdotReduce", "rc": "0", "errors": "0", "warnings": "0", "raw_log": "/public/home/**********/core/results/lint/25-verilator-VdotReduce-20261104T113051.log"},
+    {"top": "VIMac64b", "rc": "0", "errors": "0", "warnings": "0", "raw_log": "/public/home/**********/core/results/lint/25-verilator-VIMac64b-20261104T113051.log"}
+  ]
+}
