@@ -70,6 +70,9 @@ target/
 #   ⑤ results/difftest/llm/run-*/perf_llm_attn*.log.gz —— LLM 算子级基准（清单外独立测量）
 #      两轮作业的逐用例日志 gzip（各 ~150 KB），随三轴数字与拟合一起入库。
 !results/difftest/llm/run-*/*.log.gz
+#   ⑥ results/difftest/perf-repeat/*.cases/*.log.gz —— 4 次独立重复的逐用例日志 gzip
+#      （16 份、共 2.3 MB），用于复核 4 次重复的中位数与极差；原始 `.log` 仍按 `*.log.*` 忽略。
+!results/difftest/perf-repeat/*.cases/*.log.gz
 # results/ 不忽略：results/*.json 是单一事实源，results/*.log 是操作日志证据
 # my_submission.txt 只在本地生成（内含 repo-url，加密成 submission.asc 后上传），不入库
 /my_submission.txt
