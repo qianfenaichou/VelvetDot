@@ -296,9 +296,9 @@ yosys -p 'read_verilog -sv <top>.sv; synth -top <top>; flatten; stat -json; stat
 
 ---
 
-## 4. 证据附录（精选证据 + 指针）
+## 4. 证据附录（精选证据）
 
-> 只收录与算法/验证直接相关的原文摘录（`文件:行`）；完整证据台账见文末指针。
+> 只收录与算法/验证直接相关的原文摘录（`文件:行`）。
 
 ### A-1｜`VIMac64b` 的 Booth radix-4 与 8 个完整积
 

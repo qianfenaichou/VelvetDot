@@ -449,9 +449,9 @@ grep -rn '__RISCV64_VREG_H__' repos/NEMU/src/
 
 1. 本文 TBD 条目 ≤15：正文 `grep -n 'TBD:' design/CODING-STD.md | grep -v 'grep -n' | wc -l` 输出 ≤15（当前 12），与 §9 表 12 行一一对应（只匹配精确 `[TBD]`；`[TBD: …]` 的数量由本条的 grep 命令约束）。
 2. 任一提交都能用其 `Verified:` 段的命令复跑，且 `git rev-parse --short HEAD` 与记录的 hash 一致。
-2. 新 Scala 文件满足 `scalastyle-config.xml` 的 800 行 / 120 列 / 50 行方法 / 8 参数 / 无 Tab / 尾换行。
-3. 新 C 文件带 Mulan PSL v2 头、`__RISCV64_<FILE>_H__` guard、2 空格缩进；非法路径用 `longjmp_exception(EX_II)`。
-4. 每处改动都有对应任务记录与证据路径；`results/` 中每条结果显式标注 `通过/失败/未运行`。
+3. 新 Scala 文件满足 `scalastyle-config.xml` 的 800 行 / 120 列 / 50 行方法 / 8 参数 / 无 Tab / 尾换行。
+4. 新 C 文件带 Mulan PSL v2 头、`__RISCV64_<FILE>_H__` guard、2 空格缩进；非法路径用 `longjmp_exception(EX_II)`。
+5. 每处改动都有对应任务记录与证据路径；`results/` 中每条结果显式标注 `通过/失败/未运行`。
 
 ---
 

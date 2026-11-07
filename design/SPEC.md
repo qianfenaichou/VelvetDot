@@ -309,9 +309,9 @@ Any instruction encoding that violates the overlap constraints is reserved.
 
 ---
 
-## 4. 证据附录（精选证据 + 指针）
+## 4. 证据附录（精选证据）
 
-> 本节只收录与 SPEC 直接相关的原文摘录（`文件:行`）；完整证据台账见文末指针。
+> 本节只收录与 SPEC 直接相关的原文摘录（`文件:行`）。
 
 ### A-1｜K=8 与 K=16 的官方材料差异
 

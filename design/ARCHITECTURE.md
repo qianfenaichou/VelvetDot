@@ -321,9 +321,9 @@ diff -q repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64
 
 ---
 
-## 10. 证据附录（精选证据 + 指针）
+## 10. 证据附录（精选证据）
 
-> 只收录与微架构直接相关的原文摘录（`文件:行`）；完整证据台账见文末指针。
+> 只收录与微架构直接相关的原文摘录（`文件:行`）。
 
 ### A-1｜`sum_wo` 就是 8 个完整积
 
