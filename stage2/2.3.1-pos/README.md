@@ -1,6 +1,6 @@
 # 2.3.1 正数点积测试
 
-**结论：当前 30 例清单整份 `--full` 已全部通过（昆山作业 `126676734`，2026-11-03 14:22:46→14:51:47，`status=通过`、`30/30`、`regression_delta=0`），本类 4 例 `vdot_pos1`/`vdot_pos2`/`vdot_pos3`/`vdot_rand` 全部 `通过`（`GOOD TRAP=1`、`ABORT=0`），且各自的自检通过串在日志里实命中：`CASE vdot_posN: MATCH`、`RAND_SUMMARY groups=1024 mism=0 ab_bad=0`。此前 `112401` 的 `vdot_rand` 失败已由 13:04 的用例修复 + 13:37 镜像重建解决。现行清单已扩到 31 行：第 31 例 `perf_base_chain`（`perf` 类，不属本类）于 2026-11-04 由作业 `126750763` 以 `perf_base_chain_min.bin` 单独实测（`verdict=ALL_OK`、`L_base_chain=16`，min 口径；全量镜像作业 `126749121` 超时 rc=124），本类 4 例仍以 `142246` 的 30/30 为准，两者不混引。**
+**结论：当前 30 例清单整份 `--full` 已全部通过（昆山作业 `126676734`，2026-11-03 14:22:46→14:51:47，`status=通过`、`30/30`、`regression_delta=0`），本类 4 例 `vdot_pos1`/`vdot_pos2`/`vdot_pos3`/`vdot_rand` 全部 `通过`（`GOOD TRAP=1`、`ABORT=0`），且各自的自检通过串在日志里实命中：`CASE vdot_posN: MATCH`、`RAND_SUMMARY groups=1024 mism=0 ab_bad=0`。此前 `112401` 的 `vdot_rand` 失败已由 13:04 的用例修复 + 13:37 镜像重建解决。清单曾短暂加入 `perf_base_chain` 成 31 行，现行 `design/verify/cases/manifest.tsv` 为 30 行（`sha256 a90d1071…`）：该例（`perf` 类，不属本类）于 2026-11-04 由作业 `126750763` 以 `perf_base_chain_min.bin` 单独实测（`verdict=ALL_OK`、`L_base_chain=16`，min 口径；全量镜像作业 `126749121` 超时 rc=124），本类 4 例仍以 `142246` 的 30/30 为准，两者不混引。**
 
 对应官方条目：`docx/02-赛题与评分细则.md:55`「2.3.1 正数点积测试：基于香山仿真环境，验证正数输入的点积结果」。
 

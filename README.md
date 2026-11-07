@@ -8,12 +8,13 @@
 patches/       10 个补丁：9 个功能与单测 + 1 个跨拍重定时
 design/        规格、微架构、算法、编码规范；verify/ 为参考模型、用例与 miter
 core-package/  批量脚本与落位手册（rsync 到 $CORE_DIR）
-results/       实测产物：difftest、yosys、formal、lint、wave、coverage
+results/       实测产物：difftest、perf 重复、yosys、formal、lint、wave、coverage
 stage1–3/      三阶段材料
-docx/          赛题原文与评分细则（versions.env 为版本锚点）
+docx/          赛题原文与评分细则
+versions.env   上游版本锚点
 ```
 
-基线为 XiangShan `a4eeaab`（`kunminghu-v2`）与 NEMU `a683e0b`；docx 编号项 12 项均有产物（见文末索引），形式验证只到数据通路、三个视频位未产出，缺口写在已知限制。主回归 30/30。
+基线为 XiangShan `a4eeaab`（`kunminghu-v2`）与 NEMU `a683e0b`；docx 编号项 12 项均有产物（见文末索引），形式验证只到数据通路、三个视频位未产出，缺口写在已知限制。主回归 30/30；扩容 224 例在 2026-11-08 全量通过（224/224），与主清单合计 254 个镜像；同日 30 例复跑未生成结果，见实测结果表。
 
 ## 指令规格
 
@@ -36,11 +37,12 @@ docx/          赛题原文与评分细则（versions.env 为版本锚点）
 
 | 项 | 结果 | 证据（作业号） |
 |---|---|---|
-| 30 例整份 `--full` | 30/30 通过，`regression_delta=0`，9/9 判据达标 | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638） |
-| 扩容 129 例（清单外） | 129/129 通过，负例 41/41，G0 捕获 2/2 | [`94-extra-20261107T104230.json`](results/difftest/94-extra-20261107T104230.json)（127137640） |
+| 30 例整份 `--full` | 30/30 通过，`regression_delta=0`，9/9 判据达标（2026-11-07） | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638） |
+| 扩容 224 例（清单外；与 30 例合计 254 个镜像） | 224/224 通过，负例 57/57，自检串 162/162，G0 捕获 2/2，8/8 判据达标 | [`94-extra-20261108T014445.json`](results/difftest/extra/94-extra-20261108T014445.json)（127194011） |
+| 30 例整份 `--full`（2026-11-08 复跑） | 未完成：退出码 1，未生成结果 JSON，`sacct` 无对应作业记录 | 无产物 |
 | 参考模型自检 | 1142 例通过，三套独立算法交叉 | `python3 design/verify/vdot_model_test.py`（本地，秒级） |
 
-第一张表第 1–2 行来自两次作业，第 3 行是本地命令；功能判据见 `core-package/scripts/20-run-difftest.sh:14-21`，正例须 `HIT GOOD TRAP`、`ABORT=0` 且命中用例自检串，负例须双侧一致陷入非法。三类数字口径不同：功能是 pass/fail 计数，面积是综合后的 cell 数与拓扑级数，延迟是 `rdcycle` 周期。
+第一张表第 1–2 行来自两次作业，第 3 行是 2026-11-08 的 30 例复跑（无产物），第 4 行是本地命令；功能判据见 `core-package/scripts/20-run-difftest.sh:14-21`，正例须 `HIT GOOD TRAP`、`ABORT=0` 且命中用例自检串，负例须双侧一致陷入非法。三类数字口径不同：功能是 pass/fail 计数，面积是综合后的 cell 数与拓扑级数，延迟是 `rdcycle` 周期。
 
 面积用 Yosys 0.48 综合，只统计 vdot 数据通路模块，不含 wrapper `VIMacU` 其余部分与工艺库；K1 与 P-2 是同日两次作业的不同镜像，只作同工具内的相对比较。两份 stat 件不带作业号，其 `num_cells` 与对应 `40-area-*.json` 的 `metrics[]` 同值；该 JSON 的 `stat_json` 仍指向 11-01 的旧件 `vdot.stat.json`（481 cells、DFF 19，与 500 矛盾），因此本表直接引 `vdot-p2` / `vdot-k1` 两份原始 stat 件。
 
@@ -51,13 +53,14 @@ docx/          赛题原文与评分细则（versions.env 为版本锚点）
 | `VIMac64b` | 42,783 cells，100 级 | 11-04 与两次 11-07 作业同值 | [`40-area-20261107T104238.json`](results/yosys/40-area-20261107T104238.json)、[`40-area-20261104T094144.json`](results/yosys/40-area-20261104T094144.json)（126752216） |
 | miter 正控 / 负控 | `SUCCESS` / `FAIL` | 只证 `vdot_dp` 数据通路 | [`50-miter-20261104T093531.json`](results/formal/50-miter-20261104T093531.json)（126751660） |
 
-延迟与吞吐来自同一组 perf 用例：`L_vdot` 是依赖链 cyc，`T_steady` 是 cyc/dot，两者相除没有物理含义，不是加速比。同属每点周期的 `B1`/`B2` 与 `T_steady` 才能相除得出每点开销倍数 6 / 9，延迟侧可报的比值则是基线链每指令归一 `(16/3) ÷ 4 ≈ 1.33×`（[b3 日志](results/difftest/b3/91-b3-20261104T115624.log)，口径见 [`stage3/3.3/report.md`](stage3/3.3/report.md) §4.3）。基线是「用已有向量指令组合实现同等功能」的自设序列，官方细则未规定条数与计时窗口。
+延迟与吞吐来自同一组 perf 用例：`L_vdot` 是依赖链 cyc，`T_steady` 是 cyc/dot，两者相除没有物理含义，不是加速比。同属每点周期的 `B1`/`B2` 与 `T_steady` 才能相除得出每点开销倍数 6 / 9，延迟侧可报的比值则是基线链每指令归一 `(16/3) ÷ 4 ≈ 1.33×`（[b3 日志](results/difftest/b3/91-b3-20261104T115624.log)，口径见 [`stage3/3.3/report.md`](stage3/3.3/report.md) §4.3）。基线是「用已有向量指令组合实现同等功能」的自设序列，官方细则未规定条数与计时窗口。2026-11-08 以 4 次独立重复复核该比值（作业 127196036）：`L_vdot` 四次均为 4，中位数 4、极差 0，`(16/3)/4 = 1.333333`（整数打印口径 `5/4 = 1.25`），口径与限定见 [`perf-repeat.md`](stage3/3.3/sections/perf-repeat.md) §2.5。
 
 | 口径 | 值 | 含义 | 证据（作业号） |
 |---|---|---|---|
 | `L_vdot` | 4 cyc | `vd==vs2` 的依赖链延迟；对照链 `L_vmacc` 4、`L_vadd` 3 | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638）`metrics[]` |
 | `T_steady` | 1 cyc/dot | 8 个独立 `vd` 的背靠背吞吐 | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638）`metrics[]` |
 | `B1` / `B2` | 6 / 9 cyc/dot | B1 = `vwmul.vv + vwredsum.vs`；B2 = `vwmul.vv + vwadd.vx + vredsum.vs`（`design/verify/perf/perf_base.c:2-3`） | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638）`metrics[]` |
+| 4 次重复（2026-11-08） | `L_vdot` 4,4,4,4；中位数 4、极差 0 | 4 个独立 emu 进程；`T_steady`/`B1`/`B2`/`L_vadd`/`L_vmacc` 极差同为 0；模型周期，非置信区间 | [`99-perf-repeat-4x-20261108.json`](results/difftest/perf-repeat/99-perf-repeat-4x-20261108.json)（127196036） |
 
 ## 设计要点
 
@@ -106,14 +109,14 @@ sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difft
 
 ## 已知限制
 
-1. 验证覆盖不完整：形式验证只到 `vdot_dp` 数据通路（miter 的 scope 不覆盖流水、发射与旁路），译码与 wrapper 改动只由 difftest 与 Chisel 单测覆盖；lint 在默认告警集下两 top 0 warning，`-Wall` 下 13 条 `UNUSEDSIGNAL`（VdotReduce 1 + VIMac64b 12）、rc=1，未逐条修复。规避：改动后必跑 30 例回归，并把 miter 顶层扩到 wrapper 列入后续。
+1. 验证覆盖不完整：形式验证只到 `vdot_dp` 数据通路（miter 的 scope 不覆盖流水、发射与旁路），译码与 wrapper 改动只由 difftest 与 Chisel 单测覆盖；lint 在默认告警集下两 top 0 warning，`-Wall` 下 13 条 `UNUSEDSIGNAL`（VdotReduce 1 + VIMac64b 12）、rc=1，未逐条修复。规避：改动后必跑 30 例主清单与 224 例扩容清单，并把 miter 顶层扩到 wrapper 列入后续。
 2. 补丁按 `a4eeaab` 基线的检出生成、应用顺序有依赖，编码核对也基于 riscv-opcodes `f24ac23` 快照。换基线或上游重新分配 `001110/010` 时结果不可直接沿用；规避是先跑 `git apply --check`，必要时重跑 `design/verify/encoding-gate.py` 并改走 [`design/SPEC.md`](design/SPEC.md) §2.4 的回退池。
 3. 30 例复现依赖集群 SLURM 分区 `kshcnormal`、`nexus-am` 源码树与 xPack `riscv64-unknown-elf-gcc 13.2.0`（版本记录见 `results/env/00-env-20261105T092724.tools.tsv`）。`nexus-am` 仓库不含（上游为 `https://github.com/OpenXiangShan/nexus-am`，本工作区未固定 commit），缺任一项时第 4 步会停在前置检查（`build_all.sh:21` 对 `AM_HOME` 硬退出、`10-build-emu.sh:167-170` 对两棵源码树 `fail_unrun`），此时只能用 `results/` 下的既有产物核对结论。
 4. 官方要求的三个视频位未产出：`recording/` 下只有分镜脚本，没有视频文件。截图与文档不能顶替录屏，视频项提交前不完整；规避是按该目录三份分镜脚本补录后再提交。
 
 ## 交付物索引
 
-编号对应 [`docx/02-赛题与评分细则.md`](docx/02-赛题与评分细则.md)，设计与验证正文见下表之后的四份文档。
+编号对应 [`docx/02-赛题与评分细则.md`](docx/02-赛题与评分细则.md)，设计与验证正文见下表之后的四份设计文档与材料索引。
 
 | 编号 | 内容 | 位置 |
 |---|---|---|
@@ -132,9 +135,13 @@ sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difft
 
 - [`design/SPEC.md`](design/SPEC.md)：语义、编码与非法判定；[`design/ARCHITECTURE.md`](design/ARCHITECTURE.md)：微架构、RTL 落点、2 拍时序
 - [`design/ALGORITHM.md`](design/ALGORITHM.md)：19 位归约推导与测量定义；[`design/CODING-STD.md`](design/CODING-STD.md)：Chisel 与 C 代码规范
+- 用例清单：[`design/verify/cases/manifest.tsv`](design/verify/cases/manifest.tsv)（30 行）与 [`manifest.extra.tsv`](design/verify/cases/manifest.extra.tsv)（224 行）
+- [`stage3/3.3/sections/perf-repeat.md`](stage3/3.3/sections/perf-repeat.md)：4 次重复的逐值表、中位数/极差与加速比分母；[`co-sim.md`](stage3/3.3/sections/co-sim.md)：协同验证机制图与 DIFFTEST 参数表；[`tri-consistency.md`](stage3/3.3/sections/tri-consistency.md)：三端用例对照
 
 ## 上游版本与致谢
 
-本工作基于香山昆明湖 V2（`a4eeaab`）与 YunSuan 向量实现（`9559211`，其 `rocket-chip` 子模块为 `46f1efe`），参考模型基于 NEMU（`a683e0b`），编码空间核对使用 riscv-opcodes 快照 `f24ac23`，并感谢 OpenXiangShan 社区维护这三个上游项目。结果产物对应 2026-11-01 基线，当前工作区检出已前移到实施 HEAD（`913ddd3` / `8942811` / `a9dca53`）。上游各组件的著作权与许可归其各自项目所有，版本锚点写在 [`versions.env`](versions.env)。更新日期：2026/11/07。
+本工作基于香山昆明湖 V2（`a4eeaab`）与 YunSuan 向量实现（`9559211`，其 `rocket-chip` 子模块为 `46f1efe`），参考模型基于 NEMU（`a683e0b`），编码空间核对使用 riscv-opcodes 快照 `f24ac23`，并感谢 OpenXiangShan 社区维护这三个上游项目。结果产物对应 2026-11-01 基线，当前工作区检出已前移到实施 HEAD（`913ddd3` / `8942811` / `a9dca53`）。上游各组件的著作权与许可归其各自项目所有，版本锚点写在 [`versions.env`](versions.env)。更新日期：2026/11/08。
 
-<p align="center"><a href="assets/velvetdot-keyvisual.png"><img src="assets/velvetdot-keyvisual.png" alt="VelvetDot key visual" width="320"></a> <a href="assets/velvetdot-poster.png"><img src="assets/velvetdot-poster.png" alt="VelvetDot poster" width="320"></a></p>
+![VelvetDot key visual](assets/velvetdot-keyvisual.png)
+
+![VelvetDot poster](assets/velvetdot-poster.png)

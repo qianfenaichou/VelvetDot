@@ -144,23 +144,26 @@ F28 是 **bin 级** coverpoint（`vd`/`vs1`/`vs2` 各 32 个 bin），单例只�
 
 ---
 
-## 4. `manifest.extra.tsv` 命中表（129 例扩容套件，独立清单）
+## 4. `manifest.extra.tsv` 命中表（**224 例**扩容套件，独立清单）
 
-> 口径：extra 套件**不进 30 例主清单**（主清单是官方回归口径的冻结件，`sha256 a90d1071…`）。本节的命中判定**只用二进制编码扫描**（【静态】`extra-static-scan.tsv`，129/129 文件扫到 vdot 编码）；**实跑状态见 §5**——作业 `127031933` 已跑出 129/129 通过（2026-11-06）。
+> 口径：extra 套件**不进 30 例主清单**（主清单是官方回归口径的冻结件，`sha256 a90d1071…`）。本节的命中判定**只用二进制编码扫描**（【静态】`extra-static-scan.tsv`）；**实跑状态**——作业 **`127194011`** 已跑出 **224/224** 通过（2026-11-08，8/8 criteria、`EXTRA_CROSSCHECK verdict=MATCH`；上一轮 129/129 的作业 `127031933` 为历史）。
+>
+> **扫描快照与覆盖边界（2026-11-08 如实记）**：`extra-static-scan.tsv` 是 **129 例快照**（129 行数据、129/129 文件扫到 vdot 编码），**只覆盖原 129 例**；新增 95 例的 `.bin` 未取回本地（本地 `design/verify/cases/extra/*.bin` = 129 个、`*.c` = 224 个），故 **95 例的编码扫描【未运行】**。下面 4.2 表的分子/分母因此仍以 **/129** 记，**不是 /224**；引用时必须带「129 例静态扫描快照」限定，不得把它读成 224 例的命中率。
 
-### 4.1 套件构成（`design/verify/cases/manifest.extra.tsv`，129 数据行）
+### 4.1 套件构成（`design/verify/cases/manifest.extra.tsv`，**224 数据行**；本地 `sha256 9e72b97b…`）
 
-| 类 | 例数 | 族（`cover.extra.tsv` 的 family 列） |
+| 类 | 例数 | 族（`cover.extra.tsv` 的 family 列，本轮实读） |
 |---|---|---|
 | `vdot-base` | 7 | base：正/负/边界/vl 扫描/vta-vma/旧 vd |
-| `vdot-ov` | 30 | overlap：vs2=vd 10 例、vs1=vd 10 例、vs1=vs2 10 例（各配 pos/neg/mixodd/bmax/bmin/zero/ext/asym/lanehi/rand 数据模式） |
-| `vdot-pl` | 48 | back2back 5 / bubble 5 / raw-chain 5 / wb-port 4 / wb-port-vdot 2 / cancel 4 / illegal-interleave 6 / mix-issue 4 / hi96 3 / old-vd 4 / bb+bubble 2 / loop 4 |
-| `negative` | 41 | illegal：SEW/LMUL/vm0/vstart/vill/VS 六类必要条件矩阵与交叉组合 |
+| `vdot-ov` | 56 | overlap：原 30（vs2=vd 10 / vs1=vd 10 / vs1=vs2 10，各配 10 种数据模式）**+ 新增 26**：alias3 9 / alias-wb 5 / alias-vl 4 / alias-lanehi 4 / alias-hi96 4 |
+| `vdot-pl` | 98 | 原 48：back2back 5 / bubble 5 / raw-chain 5 / wb-port 4 / wb-port-vdot 2 / cancel 4 / illegal-interleave 6 / mix-issue 4 / hi96 3 / old-vd 4 / bb+bubble 2 / loop 4；**新增 50**：vd-reuse 7 / rotate 6 / cross-class 6 / bb-distinct 5 / waw-x 5 / war 5 / vtype-imm 5 / vl-imm 5 / raw-mid 4 / raw-cross 2 |
+| `negative` | 57 | illegal：SEW/LMUL/vm0/vstart/vill/VS 六类必要条件矩阵与交叉组合（原 41 **+ 新增 16**，同族 `family=illegal`） |
+| `negative-legal`（新增类） | 3 | negative-control：构造非法前置但按合法路径执行的对照例 |
 | `g0` | 2 | g0：重叠与背靠背各一条「期望值故意错 1 bit」反例 |
 | `vdot-rand10k` | 1 | rand10k：固定种子 20261106，10000 组 |
-| **合计** | **129** | |
+| **合计** | **224** | |
 
-### 4.2 逐 CP 命中（extra 129 例）
+### 4.2 逐 CP 命中（**extra 129 例静态扫描快照**；新增 95 例未重扫【未运行】）
 
 
 | CP | 名称 | 命中例数 | 例（前 5） | 判定依据 | extra 侧结论 |
@@ -195,7 +198,7 @@ F28 是 **bin 级** coverpoint（`vd`/`vs1`/`vs2` 各 32 个 bin），单例只�
 | F28 | 寄存器空间 | 129/129 | xb_pos_lanehi, xb_neg_all, xb_bound_max, xb_bound_min, xb_vl_sweep… | 全表并集（vd 10 / vs1 5 / vs2 5） | 部分 |
 | F29 | 符号组合 | 86/129 | xb_pos_lanehi, xb_neg_all, xb_bound_max, xb_bound_min, xb_vl_sweep… | 非 negative/g0（pos/neg/mixodd/bmax/bmin 数据模式） | 补上 |
 
-> extra 侧命中**只由二进制编码扫描判定**（`extra-static-scan.tsv`：129/129 文件均扫到 vdot 编码，0 个「无 vdot」）；`cid` 前缀约定（`xo_`=overlap、`xb_`=base、`xp_`=pipeline、`xn_`=negative、`xg0_`=g0、`vdot_rand10k`）用于把编码事实映射到 coverpoint，**不是**运行日志证据。
+> extra 侧命中**只由二进制编码扫描判定**（`extra-static-scan.tsv` 的 **129 例快照**：129/129 文件均扫到 vdot 编码，0 个「无 vdot」；新增 95 例未重扫，见 4.1 前的边界说明）；`cid` 前缀约定（`xo_`=overlap、`xb_`=base、`xp_`=pipeline、`xn_`=negative、`xg0_`=g0、`vdot_rand10k`）用于把编码事实映射到 coverpoint，**不是**运行日志证据。
 >
 > **trap 域计数口径（2026-11-07 修正）**：`xp_ilv_vstart`/`xp_ilv_vill`/`xp_ilv_lmul_back` 属 `vdot-pl` 正向流水族，实跑日志为 `GOOD=1 ABORT=0 BAD=0`（`results/difftest/extra/94-extra-20261106T143635.log:71,72,75`），是**合法执行**，不计入 trap 域；F02/F07/F19 已各剔除 1 例（15→14、6→5、8→7）。F17 按「cid 含 e16/e32/e64」口径复算为 **16**（旧写 17 与判定口径不符）。
 
@@ -207,7 +210,7 @@ F28 是 **bin 级** coverpoint（`vd`/`vs1`/`vs2` 各 32 个 bin），单例只�
 | F13 `vd==vs1` thin（1 例） | `xo_vs1_*` 10 例 + 交叉 5 例 | 同上，`vd_eq_vs1=yes` 共 15 例 |
 | F14 `vd==vs2` partial（仅 `--no-diff`） | `xo_vs2_*` 10 例（difftest 路径，`94-run-extra.sh` 带 `--diff`） | 同上，`vd_eq_vs2=yes` 共 10 例 |
 
-> **F15/F13/F14 的 extra 例已拿到「整套通过」的实跑结论（2026-11-06 终态）**：`94-extra-20261106T143635`（作业 `127031933`）`status=通过`、`cases_pass=129/129`、8/8 criteria `达标`（含 `golden_crosscheck=达标`）；`xo_v12_*` 10 例、`xo_vs1_*` 10 例、`xo_vs2_*` 10 例在 `.cases.tsv` 第 3 列全部为「通过」。**但 extra 仍不进 30 例主清单**：本节只声明「用例已构造且已实跑通过」，不把 extra 的通过数并入 30 例矩阵；F15 在 30 例内仍记 gap（§5 G1）。
+> **F15/F13/F14 的 extra 例已拿到「整套通过」的实跑结论（2026-11-08 终态）**：`94-extra-20261108T014445`（作业 `127194011`）`status=通过`、**`selected=executed=pass=224`**、8/8 criteria `达标`（含 `golden_crosscheck=达标`）；这些补强例（`xo_v12_*` / `xo_vs1_*` / `xo_vs2_*` 各 10 例）在整套里随 224/224 通过（**逐例 `cases.tsv` 本轮未取回本地**，只回传 JSON，故「逐例通过」按 `pass=224` 与清单行数推得）。**但 extra 仍不进 30 例主清单**：本节只声明「用例已构造且已实跑通过」，不把 extra 的通过数并入 30 例矩阵；F15 在 30 例内仍记 gap（§5 G1）。上一轮 129/129（`127031933`）为历史。
 
 ---
 
@@ -215,9 +218,9 @@ F28 是 **bin 级** coverpoint（`vd`/`vs1`/`vs2` 各 32 个 bin），单例只�
 
 | # | 缺口 | 现状 | 补测建议（最小改动） | 预计成本 |
 |---|---|---|---|---|
-| G1 | **F15 `vs1==vs2`** | 30 例 0 命中；extra `xo_v12_*` 10 例已随整套 129/129 通过（`127031933`） | 若要把 F15 从 gap 升为 covered，需在 30 例主清单内加例（extra 不进官方清单）；否则报告按 gap 披露 | 0.2 机时（主清单加例） |
+| G1 | **F15 `vs1==vs2`** | 30 例 0 命中；extra `xo_v12_*` 10 例已随整套 **224/224** 通过（`127194011`；历史 129/129 `127031933`） | 若要把 F15 从 gap 升为 covered，需在 30 例主清单内加例（extra 不进官方清单）；否则报告按 gap 披露 | 0.2 机时（主清单加例） |
 | G2 | **F28 寄存器空间** | vd 16/32、vs1 5/32、vs2 3/32；合法域 vs1 只有 v1 | 新增 1 条 `vd/vs1/vs2 ∈ {0,1,15,16,31}` 的扫描例（避开无意重叠 bin），走 extra 清单 | 0.1 机时 |
-| G3 | **F14 只有 `--no-diff` 样本**（30 例内） | extra `xo_vs2_*` 10 例走 difftest 且已随 129/129 通过；30 例内仍只有 `--no-diff` 样本 | 在 30 例主清单内补 1 例 difftest 路径，或报告按 partial 披露 | 0.1 机时 |
+| G3 | **F14 只有 `--no-diff` 样本**（30 例内） | extra `xo_vs2_*` 10 例走 difftest 且已随 **224/224** 通过（`127194011`）；30 例内仍只有 `--no-diff` 样本 | 在 30 例主清单内补 1 例 difftest 路径，或报告按 partial 披露 | 0.1 机时 |
 | G4 | **F03 `vl_max`（VLMAX=16）** | 30 例由 `vdot_rand` 的 `li t1,16` 命中；extra 的 `xb_vl_sweep` 只到 vl=8 | 在 `xb_vl_sweep` 加 `vl=16` 一档（或在 `vdot_rand` 保持现状并把 F03 记为 thin） | 0.1 机时 |
 | G5 | **F25 `vxsat`** | 仅 30 例的 `vdot_matrix` 1 例 | extra 加 1 条「先 `csrw vxsat,1` 再 vdot 再读回」 | 0.1 机时 |
 | G6 | **F05/F08/F09/F10/F13/F24/F25 只在 `vdot_matrix`** | 单点依赖，回归漏跑即重新落入 gap | 覆盖率跑必须全选 30 例（`95-coverage.sh` 已按 manifest 全选，不裁剪） | 0 |
@@ -225,7 +228,7 @@ F28 是 **bin 级** coverpoint（`vd`/`vs1`/`vs2` 各 32 个 bin），单例只�
 | G8 | **结构覆盖（RTL line/toggle）** | **【未运行（实跑受阻）】**：toggle 覆盖 100 条指令即 3.3 GB dat；覆盖构建 + `--diff` 退出段 rc=139 | 改 line-only 覆盖重建后重跑（§6.3；修复实验作业 `127128086` 结果待收） | 已耗 3.3 机时；重跑预计 2–3 机时 |
 | G9 | ACT4 `cr_vtype_agnostic` / `mask_enabled` / `cp_masking_edges` | **结构性不可达**（vdot 合法编码强制 vm=1） | 报告写 N/A；用 F10（vta×vma）与 F11/F12 替代，**不要伪造 ACT4 cross 命中** | 0 |
 | G10 | ACT4 无 `vstart≠0` / `vill=1` / `VS=OFF` 的 trap bin | 用自定义 F02/F07/F20 覆盖 | 报告注明「ACT4 模板扩展」 | 0 |
-| G11 | 分数 LMUL（mf8/mf4/mf2） | 30 例未测；extra `xn_lmul_mf8/mf4/mf2` 已随整套 129/129 通过（`127031933`） | 无（extra 已闭合；30 例内仍不覆盖） | 0 |
+| G11 | 分数 LMUL（mf8/mf4/mf2） | 30 例未测；extra `xn_lmul_mf8/mf4/mf2` 已随整套 224/224 通过（`127194011`；历史 129/129 `127031933`） | 无（extra 已闭合；30 例内仍不覆盖） | 0 |
 
 ---
 

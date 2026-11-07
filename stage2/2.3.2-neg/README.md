@@ -1,6 +1,6 @@
 # 2.3.2 负数点积测试
 
-**结论：该次 30 例清单整份 `--full` 已全部通过（昆山作业 `126676734`，2026-11-03 14:22:46→14:51:47，`status=通过`、`30/30`、`regression_delta=0`；**现清单已扩到 31 行——2026-11-04 新增 `perf_base_chain`：全量镜像未进入 `--full`（作业 `126749121` 600 s 超时、rc=124、只完成 round 0），但 min 镜像已由作业 `126750763` 单独实测（`verdict=ALL_OK`、`L_base_chain=16`，min 口径）；故 `--full` 口径仍是 30/31。**），本类 5 例 `vdot_neg1` + `vdot_neg_odd1/3/5/7` 全部 `通过`（`GOOD TRAP=1`、`ABORT=0`），每例日志实命中 `CASE vdot_neg*: MATCH`——即「奇数负 lane 数 1/3/5/7」判据首次拿到实测证据。`vdot_neg2`/`vdot_neg3` 已不在当前用例集，只作历史对照。**
+**结论：该次 30 例清单整份 `--full` 已全部通过（昆山作业 `126676734`，2026-11-03 14:22:46→14:51:47，`status=通过`、`30/30`、`regression_delta=0`；**清单曾短暂加入 `perf_base_chain` 成 31 行，现行 `design/verify/cases/manifest.tsv` 为 30 行（`sha256 a90d1071…`）；该例全量镜像未进入 `--full`（作业 `126749121` 600 s 超时、rc=124、只完成 round 0），但 min 镜像已由作业 `126750763` 单独实测（`verdict=ALL_OK`、`L_base_chain=16`，min 口径）；故 `--full` 口径是 30/30。**），本类 5 例 `vdot_neg1` + `vdot_neg_odd1/3/5/7` 全部 `通过`（`GOOD TRAP=1`、`ABORT=0`），每例日志实命中 `CASE vdot_neg*: MATCH`——即「奇数负 lane 数 1/3/5/7」判据首次拿到实测证据。`vdot_neg2`/`vdot_neg3` 已不在当前用例集，只作历史对照。**
 
 对应官方条目：`docx/02-赛题与评分细则.md:56`「2.3.2 负数点积测试：基于香山仿真环境，验证含负数输入的点积结果」。
 
@@ -25,7 +25,7 @@
 | `vdot_neg2` | 7 / 7 | `126538619` `126540844` `126541295` `126542079` `126536502` `126536746` `126537392`（**均已不是当前用例集**） |
 | `vdot_neg3` | 7 / 7 | 同上（**均已不是当前用例集**） |
 
-权威作业 = `126676734` / `runs/20-full-20261103T142246.json`（`status=通过`、30/30、`regression_delta=0`、`no_empty_green=达标`）。该 JSON 的 `manifest.rows=30` 对应**当时**的 30 行清单；现行 `manifest.tsv` 为 31 行（第 31 例 `perf_base_chain` 全量镜像未跑；min 镜像 `126750763` 已单独实测 `L_base_chain=16`，min 口径），两者不可混引。
+权威作业 = `126676734` / `runs/20-full-20261103T142246.json`（`status=通过`、30/30、`regression_delta=0`、`no_empty_green=达标`）。该 JSON 的 `manifest.rows=30` 对应**当时**的 30 行清单；清单曾短暂为 31 行（`perf_base_chain` 全量镜像未跑；min 镜像 `126750763` 已单独实测 `L_base_chain=16`，min 口径），现行 `manifest.tsv` 为 30 行（`sha256 a90d1071…`），两者不可混引。
 
 ### 2.1 本类 5 例在 `142246` 的判据行（原样摘录，见 `cases/*.key.txt`）
 
