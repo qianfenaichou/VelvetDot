@@ -1,0 +1,46 @@
+From a3d68d00da741f05a936b88a76c282a0cbd279cd Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH 2/3] X15: export sum_wo / walOut / fireS1 from VIMac64b in one
+ shot
+
+All three taps are exported by a single port change so the vdot reduction can be
+wired without touching this shared module again (design/ARCHITECTURE.md X15).
+No behaviour change for existing vimac instructions: outputs only, nothing in
+the datapath is rerouted. vmac regression still to be run (kunshan emu).
+---
+ .../scala/yunsuan/vector/vectorIMAC/VIMac64b.scala    | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64b.scala b/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64b.scala
+index 16864ed..cde1f57 100644
+--- a/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64b.scala
++++ b/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64b.scala
+@@ -27,6 +27,14 @@ class VIMac64b extends Module {
+ 
+     val vd = Output(UInt(64.W))
+     val vxsat = Output(UInt(8.W))
++
++    // [vdot X15] 三信号同次导出，供 K=8 点积归约取用（切换取哪一路只改 wrapper，不再动本模块）：
++    //   sum_wo  = walOut 打拍前的 8×16b 部分和（tap0 接法用这一路 + fireS1）
++    //   walOut  = 打拍后的 128b（3 拍/更晚拍的取数口）
++    //   fireS1  = 第一级 fire（使能唯一来源，见 design/CODING-STD.md §3.4）
++    val sum_wo = Output(Vec(8, UInt(16.W)))
++    val walOut = Output(UInt(128.W))
++    val fireS1 = Output(Bool())
+   })
+ 
+   val fire = io.fire
+@@ -206,6 +214,9 @@ class VIMac64b extends Module {
+    */
+   val walOut = Wire(UInt(128.W))
+   walOut := RegEnable(sum_wo.asUInt, fireS1)
++  io.sum_wo := sum_wo
++  io.walOut := walOut
++  io.fireS1 := fireS1
+   val sewS2 = RegEnable(sewS1, fireS1)
+   val highHalfS2 = RegEnable(highHalfS1, fireS1)
+   val widenS2 = RegEnable(widenS1, fireS1)
+-- 
+2.43.0
+

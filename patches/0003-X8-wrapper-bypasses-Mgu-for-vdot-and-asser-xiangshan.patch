@@ -1,0 +1,80 @@
+From 60152242cffa17585cb5f3e0b5ba5edc9fe1fb81 Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH 3/4] X8: wrapper bypasses Mgu for vdot and asserts the vdot
+ contract
+
+Instantiate VdotReduce driven by vimacs(0) (low 64-bit lanes 0-7); outIsVdot is
+taken from outCtrl.fuOpType (output stage) so back-to-back mixed streams cannot
+leak; res.data = Mux(outIsVdot, vdotReduce.io.vd, mgu.io.out.vd).
+fireS1 is only ever a port connection (grep -c 'vimacs(0).io.fireS1' == 1).
+Asserts: vd[127:32] zero (M06), output valid never held without ready (M07).
+Bumped yunsuan to X6/X7 + X15 + X-new.
+---
+ .../xiangshan/backend/fu/wrapper/VIMacU.scala | 21 +++++++++++++++++--
+ yunsuan                                       |  2 +-
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala b/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala
+index 27eb801..bd92e27 100644
+--- a/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala
++++ b/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala
+@@ -13,7 +13,7 @@ import yunsuan.VialuFixType
+ import yunsuan.encoding.Opcode.VimacOpcode
+ import yunsuan.encoding.{VdType, Vs1IntType, Vs2IntType}
+ import yunsuan.{OpType, VimacType}
+-import yunsuan.vector.mac.VIMac64b
++import yunsuan.vector.mac.{VIMac64b, VdotReduce}
+ 
+ class VIMacSrcTypeModule extends VecSrcTypeModule {
+ 
+@@ -63,6 +63,7 @@ class VIMacU(cfg: FuConfig)(implicit p: Parameters) extends VecPipedFuncUnit(cfg
+   private val oldVdSplit  = Module(new VecDataSplitModule(dataWidth, dataWidthOfDataModule))
+   private val vimacs = Seq.fill(numVecModule)(Module(new VIMac64b))
+   private val mgu = Module(new Mgu(dataWidth))
++  private val vdotReduce = Module(new VdotReduce()) // [vdot X-new] K=8 归约（tap0 接法）
+ 
+   /**
+     * [[typeMod]]'s in connection
+@@ -120,6 +121,14 @@ class VIMacU(cfg: FuConfig)(implicit p: Parameters) extends VecPipedFuncUnit(cfg
+       mod.io.isFixP      := VimacOpcode.isFixP(opcode)
+   }
+ 
++  /**
++    * [vdot] 只取 vimacs(0)（低 64 位 = lane 0-7）的 sum_wo/fireS1；
++    * fireS1 一律来自 VIMac64b 端口本身，禁止在此用 io.in.valid / RegNext 重建
++    * （design/CODING-STD.md §3.4）。
++    */
++  vdotReduce.io.sum_wo := vimacs(0).io.sum_wo
++  vdotReduce.io.fireS1 := vimacs(0).io.fireS1
++
+   /**
+     * [[mgu]]'s in connection
+     */
+@@ -145,7 +154,15 @@ class VIMacU(cfg: FuConfig)(implicit p: Parameters) extends VecPipedFuncUnit(cfg
+   mgu.io.in.info.dstMask := 0.B
+   mgu.io.in.isIndexedVls := false.B
+ 
+-  io.out.bits.res.data := mgu.io.out.vd
++  // [vdot] 旁路 Mgu：vdot 的 vd[127:32] 必须恒零，Mgu 的 tail/agnostic 语义给不出 0。
++  // outIsVdot 取 outCtrl（输出级 ctrl），不取输入级，否则背靠背混合流会串指令。
++  private val outIsVdot = outCtrl.fuOpType === VimacType.vdot
++  io.out.bits.res.data := Mux(outIsVdot, vdotReduce.io.vd, mgu.io.out.vd)
+   io.out.bits.res.vxsat.get := (outVxsat & mgu.io.out.active).orR
+   io.out.bits.ctrl.exceptionVec.get(ExceptionNO.illegalInstr) := mgu.io.out.illegal
++
++  // [vdot] M06：高 96 位恒零；M07：反压哨兵（valid 不得在无 ready 时保持）
++  assert(!io.out.valid || !outIsVdot || (PopCount(io.out.bits.res.data(VLEN - 1, 32)) === 0.U),
++    "VIMacU: vdot.vv must write zeros to vd[127:32]")
++  assert(!io.out.valid || io.out.ready, "VIMacU: output valid held without ready (backpressure discipline)")
+ }
+diff --git a/yunsuan b/yunsuan
+index 9559211..83059b5 160000
+--- a/yunsuan
++++ b/yunsuan
+@@ -1 +1 @@
+-Subproject commit 955921186e34bb8915806582a238181a6dc3435c
++Subproject commit 83059b57c3524800649f43c5a729c52a6b12790c
+-- 
+2.43.0
+
