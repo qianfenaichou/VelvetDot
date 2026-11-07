@@ -1,192 +1,140 @@
-# vdot.vv · 香山昆明湖 V2 的 K=8 int8 点积向量指令
+# vdot.vv：香山 V2 的 K=8 int8 点积
 
-<p align="center"><img src="assets/velvetdot-keyvisual.png" alt="VelvetDot key visual" width="720"></p>
+`vdot.vv` 是 RISC-V 向量扩展（RVV）的自定义指令，在 SEW=8、LMUL=1、K=8 下单条完成 8 个 int8 元素的点积；K=8 指每条指令固定处理 lane 0–7 的 8 个 int8 元素。19 位有符号结果符号扩展后写回 `vd[31:0]`，`vd[127:32]` 恒为零，不读旧 vd（[`design/SPEC.md`](design/SPEC.md) §1）。
 
-`vdot.vv` 是一条 RISC-V 向量扩展（RVV）自定义指令：单条指令完成 **8 个 int8 元素的点积**（SEW=8、LMUL=1、K=8 单结果），把 19 位内部累加结果符号扩展后写回向量寄存器 `vd` 的低 32 位，`vd` 的高 96 位恒为零。本仓库包含该指令的规格、Chisel RTL 实现、NEMU 参考模型、Python 金模型、协同仿真用例，以及三阶段的测试与性能分析材料。
+仓库含指令规格、Chisel RTL 与 NEMU 改动、Python 参考模型（golden model）、协同仿真用例，以及三阶段的测试与性能材料。
 
-目标场景是 INT8 量化推理中的点积密集算子。`design/verify/cases/perf_llm_attn.c:1-30` 按 llama.cpp `ggml_vec_dot_q8_0_q8_0` 的 block 内层点积同形构造 attention QK 基准：QK=32 的 block 由 4 个 K=8 子块组成，head_dim=64 时为 8 个子块。
+```
+patches/       10 个补丁：9 个功能与单测 + 1 个跨拍重定时
+design/        规格、微架构、算法、编码规范；verify/ 为参考模型、用例与 miter
+core-package/  批量脚本与落位手册（rsync 到 $CORE_DIR）
+results/       实测产物：difftest、yosys、formal、lint、wave、coverage
+stage1–3/      三阶段材料
+docx/          赛题原文与评分细则（versions.env 为版本锚点）
+```
+
+基线为 XiangShan `a4eeaab`（`kunminghu-v2`）与 NEMU `a683e0b`；docx 编号项 12 项均有产物（见文末索引），形式验证只到数据通路、三个视频位未产出，缺口写在已知限制。主回归 30/30。
 
 ## 指令规格
+
+下表是 RTL、NEMU 与参考模型三端必须对齐的定义。
 
 | 项 | 定义 |
 |---|---|
 | 指令 | `vdot.vv vd, vs2, vs1`（OPMVV，无掩码） |
-| 语义 | `S = Σ(i=0..7) sext19( sext8(vs1[i]) × sext8(vs2[i]) )` |
-| 参与元素 | 仅 vs1/vs2 的低 64 位（lane 0–7）；高 64 位不参与 |
+| 语义 | `S = Σ(i=0..7) sext19( sext8(vs1[i]) × sext8(vs2[i]) )`，只取 vs1/vs2 低 64 位（lane 0–7） |
 | 内部位宽 | 19 位有符号；最坏 `8×(−128)×(−128) = 131072`，超出 18 位有符号上限 131071 |
 | 写回 | `vd[31:0] = sext32(S)`，`vd[127:32] = 0`；不读旧 vd，`vxsat` 不变，`vl`/`vta`/`vma` 不影响结果 |
 | 合法条件 | `SEW=8 ∧ LMUL=1 ∧ vm=1 ∧ vstart=0 ∧ vill=0 ∧ mstatus.VS≠OFF`，任一不成立即非法；非法判定优先于 `vl=0` 全写 |
-| 编码 | opcode `1010111` / funct3 `010` / funct6 `001110` / vm `1` |
-| 机器码示例 | `vdot.vv v3, v2, v1` = `0x3A20A1D7` |
+| 编码 | opcode `1010111` / funct3 `010` / funct6 `001110` / vm `1`；`vdot.vv v3, v2, v1` = `0x3A20A1D7` |
 
-规格全文见 [`design/SPEC.md`](design/SPEC.md)。编码空间据 `design/SPEC.md` §2.1 与复核记录 [`stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md`](stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md)：在 riscv-opcodes 快照 `f24ac23` 的 funct3=010 / opcode=0x57 空间内，`001110` 空闲；同一空间的 `0x0C` 已被 Zvbc `vclmul.vv` 占用，故未采用。
+编码空间按 riscv-opcodes 快照 `f24ac23` 核对：同一空间的 `001100`（`0x0C`）已被 Zvbc `vclmul.vv` 占用，`001110` 在 ratified 与 unratified 全库中空闲。规格全文见 [`design/SPEC.md`](design/SPEC.md)，核对记录见 [`stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md`](stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md)。
 
-## 特性
+## 实测结果
 
-- **复用既有向量乘法通路。** 不新增乘法阵列，也不改动共用的 `VimacCfg`：`VIMac64b` 在 SEW=8 下已算出 8 个 16 位积（`sum_wo`），本设计只补一级跨 lane 水平归约——新增 `VdotReduce`（4:2 压缩树 + 19 位进位传播加法），在 `VIMacU` wrapper 层以输出 Mux 旁路 Mgu（向量写回末尾的掩码/尾部合并单元，负责按 `vta`/`vma` 合并掩码与旧值，见 `design/ARCHITECTURE.md` §2.2）。
-- **面积与时序开销可控。** Yosys 0.48 综合：`VdotReduce` 500 cells、最长路径 14 级；跨拍寄存器重定时前为 481 cells / 22 级。`VIMac64b` 本体 42,783 cells，两版同值。测量口径（范围与定义）为仅 vdot 数据通路模块，不含 VIMacU 其余部分与工艺库。
-- **沿用 2 拍执行契约。** 归约结果与 `walOut` 同拍寄存（`io.fireS1` 使能），对齐 `VimacCfg.latency = CertainLatency(2)` 的既有 2 拍配置；实测依赖链 `L_vdot = 4` cyc，与 `vmacc.vv` 相同。
-- **恒定写回，无尾/掩码处理。** 高 96 位恒零、不读旧 vd，与 `vl`、`vta`、`vma` 无关；写回路径不依赖 Mgu，也不使用 `set_vreg_tail` 一类清零手段。
-- **非法判定在译码层。** 六条必要条件由译码链联合判定：编码 `BitPat` 钉死 `vm=1`（rocket-chip `Instructions.scala`），`VecExceptionGen` 判 SEW / LMUL / vstart / vill，`DecodeUnit.scala:908` 拦截 `mstatus.VS=OFF`；`Mgu.illegal` 恒为 false，不能依赖 FU 报错。NEMU 侧同口径。
-- **三端同口径、测试可判定。** RTL、NEMU、Python 金模型使用同一组语义；difftest 要求向量寄存器参与比较、正例必须命中用例自检串、负例必须双侧一致陷入非法，以避免测试空跑（看起来通过、实际未验证）。
-- **金模型三算法交叉。** `vdot_model_test.py` 以三套独立算法（19 位模型 / 位级 16 位积加 sext19 / 任意精度求和）逐例比对，共 1142 例：覆盖定向边界（`131072`、`129032`、`−130048`、零、`±127`、`−128`、奇数个负 lane）、固定种子 42 的随机 1000 组、非法集合，以及 `vl`/`vta`/`vma` 不变性。
+三张表分列功能回归、面积与形式验证、延迟与吞吐。
 
-## 仓库结构
+| 项 | 结果 | 证据（作业号） |
+|---|---|---|
+| 30 例整份 `--full` | 30/30 通过，`regression_delta=0`，9/9 判据达标 | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638） |
+| 扩容 129 例（清单外） | 129/129 通过，负例 41/41，G0 捕获 2/2 | [`94-extra-20261107T104230.json`](results/difftest/94-extra-20261107T104230.json)（127137640） |
+| 参考模型自检 | 1142 例通过，三套独立算法交叉 | `python3 design/verify/vdot_model_test.py`（本地，秒级） |
 
-```
-patches/            10 个补丁：9 个功能/单测补丁 + 1 个跨拍重定时补丁（P-2）
-design/
-  SPEC.md           指令语义、编码、非法判定
-  ARCHITECTURE.md   微架构、8 处 RTL 改动点、2 拍时序、Mgu 旁路
-  ALGORITHM.md      19 位归约推导、金模型与用例算法、性能测量定义
-  CODING-STD.md     Chisel / C 代码规范
-  verify/           金模型、1142 例断言测试、用例生成与清单、编码校验、形式 miter、面积脚本
-core-package/       集群执行脚本（18 个）与部署/运行手册 README.md
-results/            实测产物：difftest、yosys 面积、formal、lint、wave、coverage
-stage1/             阶段一 1.1 环境验证 / 1.2 操作日志 / 1.3 向量加法执行过程
-stage2/             阶段二 2.1 设计文档 / 2.2 RTL / 2.3.1–2.3.3 正、负、边界测试
-stage3/             阶段三 3.1.1 NEMU / 3.1.2 协同仿真 / 3.2 基线 / 3.3 延迟分析
-docx/               赛题原文与评分细则
-versions.env        版本锚点：XiangShan / YunSuan / NEMU 的基线 commit
-```
+第一张表第 1–2 行来自两次作业，第 3 行是本地命令；功能判据见 `core-package/scripts/20-run-difftest.sh:14-21`，正例须 `HIT GOOD TRAP`、`ABORT=0` 且命中用例自检串，负例须双侧一致陷入非法。三类数字口径不同：功能是 pass/fail 计数，面积是综合后的 cell 数与拓扑级数，延迟是 `rdcycle` 周期。
 
-上游源码树不在本仓库内（`repos/` 与 `out/`、`downloads/` 一并被 `.gitignore` 排除），按下方复现步骤克隆。
+面积用 Yosys 0.48 综合，只统计 vdot 数据通路模块，不含 wrapper `VIMacU` 其余部分与工艺库；K1 与 P-2 是同日两次作业的不同镜像，只作同工具内的相对比较。两份 stat 件不带作业号，其 `num_cells` 与对应 `40-area-*.json` 的 `metrics[]` 同值；该 JSON 的 `stat_json` 仍指向 11-01 的旧件 `vdot.stat.json`（481 cells、DFF 19，与 500 矛盾），因此本表直接引 `vdot-p2` / `vdot-k1` 两份原始 stat 件。
+
+| 项 | 结果 | 口径 | 证据（作业号） |
+|---|---|---|---|
+| `VdotReduce`（P-2） | 500 cells，14 级，DFF 38 | P-2 = 把 `(sum, carry)` 跨 `fireS1` 寄存的进位保存重定时版（`patches/0005-…`） | [`vdot-p2.stat.json`](results/yosys/vdot-p2.stat.json)、[`vdot-p2.ltp.txt`](results/yosys/vdot-p2.ltp.txt)、[`40-area-20261107T104238.json`](results/yosys/40-area-20261107T104238.json)（127137643） |
+| `VdotReduce`（K1） | 481 cells，22 级，DFF 19 | K1 = 未重定时版 | [`vdot-k1.stat.json`](results/yosys/vdot-k1.stat.json)、[`vdot-k1.ltp.txt`](results/yosys/vdot-k1.ltp.txt)、[`40-area-20261107T095404.json`](results/yosys/40-area-20261107T095404.json)（127135437） |
+| `VIMac64b` | 42,783 cells，100 级 | 11-04 与两次 11-07 作业同值 | [`40-area-20261107T104238.json`](results/yosys/40-area-20261107T104238.json)、[`40-area-20261104T094144.json`](results/yosys/40-area-20261104T094144.json)（126752216） |
+| miter 正控 / 负控 | `SUCCESS` / `FAIL` | 只证 `vdot_dp` 数据通路 | [`50-miter-20261104T093531.json`](results/formal/50-miter-20261104T093531.json)（126751660） |
+
+延迟与吞吐来自同一组 perf 用例：`L_vdot` 是依赖链 cyc，`T_steady` 是 cyc/dot，两者相除没有物理含义，不是加速比。同属每点周期的 `B1`/`B2` 与 `T_steady` 才能相除得出每点开销倍数 6 / 9，延迟侧可报的比值则是基线链每指令归一 `(16/3) ÷ 4 ≈ 1.33×`（[b3 日志](results/difftest/b3/91-b3-20261104T115624.log)，口径见 [`stage3/3.3/report.md`](stage3/3.3/report.md) §4.3）。基线是「用已有向量指令组合实现同等功能」的自设序列，官方细则未规定条数与计时窗口。
+
+| 口径 | 值 | 含义 | 证据（作业号） |
+|---|---|---|---|
+| `L_vdot` | 4 cyc | `vd==vs2` 的依赖链延迟；对照链 `L_vmacc` 4、`L_vadd` 3 | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638）`metrics[]` |
+| `T_steady` | 1 cyc/dot | 8 个独立 `vd` 的背靠背吞吐 | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638）`metrics[]` |
+| `B1` / `B2` | 6 / 9 cyc/dot | B1 = `vwmul.vv + vwredsum.vs`；B2 = `vwmul.vv + vwadd.vx + vredsum.vs`（`design/verify/perf/perf_base.c:2-3`） | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638）`metrics[]` |
+
+## 设计要点
+
+- 复用 `VIMac64b` 在 SEW=8 下已算出的 8 个 16 位积 `sum_wo`，不新增乘法阵列。只补一级 8→1 归约：4:2 压缩树加 19 位 CPA（`VdotReduce.scala`），共用的 `VimacCfg` 未改动。
+- 归约结果用 `VIMac64b` 显式导出的 `fireS1` 寄存，与 `walOut` 同拍，沿用 `CertainLatency(2)`。跨拍重定时把 481 cells / 22 级改为 500 cells / 14 级、DFF 19 增到 38，`L_vdot` 仍为 4 cyc。
+- wrapper 用输出 Mux 旁路 Mgu（`Mux(outIsVdot, vdotReduce.io.vd, mgu.io.out.vd)`，`outIsVdot` 取 `outCtrl.fuOpType`），因为 Mgu 的 tail 会回带旧 vd 或写 `0xFF`（`repos/XiangShan/src/main/scala/xiangshan/backend/fu/vector/Mgu.scala:83,90-92`，见 [`design/ARCHITECTURE.md`](design/ARCHITECTURE.md) §2.5）。改动落在 `repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala`；同目录 `fu/vector/VIMacU.scala` 是死文件，不含 vdot。
+- 非法判定放在译码层：`isVdot && (SEW =/= 0.U || LMUL =/= 4.U)`，其中 `vsew=0`↔SEW=8、`vlmul=000`↔LMUL=1，与规格表不矛盾；`vill`、`vstart≠0`、`mstatus.VS=OFF` 各自成项，因为 `Mgu.illegal` 恒为 false（`Mgu.scala:131`），不能依赖 FU 报错。
+- RTL、NEMU、参考模型三处实现同一语义。
 
 ## 复现
 
-### 1. 取上游源码
-
-| 仓 | 基线 | 上游 |
-|---|---|---|
-| XiangShan | `a4eeaab`（`kunminghu-v2`） | <https://github.com/OpenXiangShan/XiangShan> |
-| YunSuan（XiangShan 子模块） | `9559211` | <https://github.com/OpenXiangShan/YunSuan> |
-| rocket-chip（XiangShan 子模块） | `46f1efe` | <https://github.com/OpenXiangShan/rocket-chip> |
-| NEMU | `a683e0b` | <https://github.com/OpenXiangShan/NEMU> |
+四步按顺序执行，成功标志写在代码块内；第 4 步的落位方法见 [`core-package/README.md`](core-package/README.md) §1，命令里的 `kunshan` 是 SSH 别名。第 3 步已在本地重跑通过，第 1、2、4 步未在本次文档更新中重跑，输出取自 `results/` 下的作业产物。
 
 ```sh
-git clone https://github.com/OpenXiangShan/XiangShan.git repos/XiangShan
-git -C repos/XiangShan checkout a4eeaab
+git clone https://github.com/OpenXiangShan/XiangShan.git repos/XiangShan   # 1) 取上游源码（分钟级）
+git -C repos/XiangShan checkout a4eeaab   # 成功标志：rev-parse --short HEAD 输出 a4eeaab，退出码 0
 git -C repos/XiangShan submodule update --init --recursive   # yunsuan 9559211、rocket-chip 46f1efe
 git clone https://github.com/OpenXiangShan/NEMU.git repos/NEMU
 git -C repos/NEMU checkout a683e0b
-```
-
-构建工具链（mill、JDK、Verilator、RISC-V GCC）按上游仓库要求安装；`core-package/` 下的批量脚本按 SLURM 集群编写，落位与模块加载见 [`core-package/README.md`](core-package/README.md)。
-
-### 2. 应用补丁
-
-```sh
-# 叶子仓先行：rocket-chip / yunsuan
+# 2) 应用 10 个补丁（秒级）→ 成功标志：10 条命令退出码均为 0；先叶子仓（rocket-chip、yunsuan）后主仓，最后 NEMU
+# 主仓补丁含子模块指针行，已初始化子模块时会打印 warning: unable to rmdir 'yunsuan': 目录非空 并返回 0，改动照常应用
 git -C repos/XiangShan/rocket-chip apply -p1 "$PWD/patches/0001-X1-add-VDOT_VV-custom-encoding-funct6-001-rocketchip.patch"
-
 git -C repos/XiangShan/yunsuan apply -p1 "$PWD/patches/0001-X6-X7-VimacOpcode.vdot-3-b111-and-VimacType.-yunsuan.patch"
 git -C repos/XiangShan/yunsuan apply -p1 "$PWD/patches/0002-X15-export-sum_wo-walOut-fireS1-from-VIMac64-yunsuan.patch"
 git -C repos/XiangShan/yunsuan apply -p1 "$PWD/patches/0003-X-new-VdotReduce-K-8-int8-dot-product-reduct-yunsuan.patch"
 git -C repos/XiangShan/yunsuan apply -p1 "$PWD/patches/0005-X-new-P-2-VdotReduce-carry-save-retiming-yunsuan.patch"
-
-# 主仓：译码、非法判定、wrapper、Chisel 单测（含子模块指针行）
 git -C repos/XiangShan apply -p1 "$PWD/patches/0001-X1-X2-decode-VDOT_VV-as-OPMVV-F-vimac-Vima-xiangshan.patch"
 git -C repos/XiangShan apply -p1 "$PWD/patches/0002-X14-vdot-legality-predicate-in-VecExceptio-xiangshan.patch"
 git -C repos/XiangShan apply -p1 "$PWD/patches/0003-X8-wrapper-bypasses-Mgu-for-vdot-and-asser-xiangshan.patch"
 git -C repos/XiangShan apply -p1 "$PWD/patches/0004-tests-VdotReduce-Chisel-B-19-200-xiangshan.patch"
-
-# NEMU 参考模型
 git -C repos/NEMU apply -p1 "$PWD/patches/0001-N1-N2-N3-vdot.vv-reference-model-decode-entry-E-nemu.patch"
-```
-
-三点注意事项：
-
-- 补丁路径用绝对路径。`git -C <dir> apply` 会把相对路径解析到 `<dir>` 内，写成 `patches/…` 会直接报「无法打开补丁」并返回 128。
-- `0005` 必须跟在 `0003` 之后：两者修改同一文件 `VdotReduce.scala`，顺序反了会冲突。
-- 主仓补丁含 `rocket-chip` / `yunsuan` 子模块指针行。在已初始化子模块的检出中，`git apply` 会打印 `warning: unable to rmdir 'yunsuan': 目录非空` 并返回 0，文件改动照常应用。
-
-上述 10 个补丁在 pin 的基线上前向应用，逐仓干净落地（各仓独立 worktree 实测）。
-
-### 3. 金模型自检（本地，秒级）
-
-```sh
-python3 design/verify/vdot_model_test.py
-# ALL TESTS PASSED (1142 cases)      退出码 0
-```
-
-金模型也可直接作为库调用：
-
-```python
-import sys; sys.path.insert(0, "design/verify")
-import vdot_model
-
-vdot_model.encode_vdot_vv(3, 2, 1)                            # 0x3a20a1d7
-vdot_model.vdot_vv(0x0101010101010101, 0x0101010101010101)    # 0x8（8 个 lane，每 lane 1×1）
-```
-
-### 4. 30 例协同仿真
-
-脚本以 `CORE_DIR` 为落位根目录（默认 `/public/home/$USER/core`），落位方法见 `core-package/README.md` §1。
-
-```sh
-export CORE_DIR="${CORE_DIR:-/public/home/$USER/core}"
-
-# 4.1 构建 30 例镜像与探针（需 riscv64-unknown-elf-gcc 与 nexus-am 源码树）
+python3 design/verify/vdot_model_test.py   # 3) 参考模型自检（秒级）→ ALL TESTS PASSED (1142 cases)，退出码 0
+export CORE_DIR="${CORE_DIR:-/public/home/$USER/core}"   # 4) 30 例协同仿真（小时级），落位根目录
+rsync -av core-package/ kunshan:/public/home/$USER/core/   # 4.0 落位：脚本
+rsync -av --exclude build --exclude target repos/XiangShan repos/NEMU kunshan:/public/home/$USER/core/src/   # 4.0 落位：源码树（子模块需先 init）
+ssh kunshan 'test -f /public/home/$USER/core/scripts/00-env-check.sh && test -d /public/home/$USER/core/src/XiangShan'   # 返回 0 才算落位完成
 AM_HOME=/path/to/nexus-am HOST_IP="$(hostname -I | awk '{print $1}')" \
-  bash design/verify/cases/build_all.sh design/verify/cases
-
-# 4.2 展开清单：把 @IMG_DIR@ 替换为镜像绝对路径
-mkdir -p "$CORE_DIR/test"
+  bash design/verify/cases/build_all.sh design/verify/cases   # 4.1 构建 30 例镜像与探针（需 riscv64-unknown-elf-gcc 与 nexus-am 源码树）
+mkdir -p "$CORE_DIR/test"   # 4.2 展开清单：@IMG_DIR@ → 镜像绝对路径
 bash design/verify/cases/make_manifest.sh "$PWD/design/verify/cases" > "$CORE_DIR/test/manifest.tsv"
-
-# 4.3 构建香山 emu 与 NEMU 参照 .so
-sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/10-build-emu.sh --src-root "$CORE_DIR/src"
-
-# 4.4 跑完整清单（30 例，含随机 1024 组、期望值反例与性能测量）
-sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difftest.sh --full
+sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/10-build-emu.sh --src-root "$CORE_DIR/src"   # 4.3 构建 emu 与参照 .so
+sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difftest.sh --full   # 4.4 → status=通过、cases_pass=30/30，退出码 0；emu 构建与 30 例回归各约 30–36 分钟
 ```
 
-判据见 `core-package/scripts/20-run-difftest.sh:14-21`：正例须 `HIT GOOD TRAP`、`ABORT=0` 且命中用例自检串；负例须双侧一致陷入非法；`cases_all_ran` 与 `cases_pass` 均要求 30/30。用例清单为 [`design/verify/cases/manifest.tsv`](design/verify/cases/manifest.tsv)（30 数据行，sha256 `a90d1071…`）。
+补丁路径用绝对路径：`git -C <dir> apply` 会把相对路径解析到 `<dir>` 内，写成 `patches/…` 会报「无法打开补丁」并返回 128；`0005` 必须跟在 `0003` 之后，两者修改同一文件 `VdotReduce.scala`。用例清单为 [`design/verify/cases/manifest.tsv`](design/verify/cases/manifest.tsv)（30 数据行，sha256 `a90d1071…`），它是 `@IMG_DIR@` 源清单，实跑前由 `make_manifest.sh` 展开成绝对路径版本（`20-full` 记录的 `manifest.sha256` 为 `e12470e6…`），两者哈希不同属预期。
 
-> 本节命令按仓库脚本与 2026-11 的实跑记录整理，未在本次文档更新中重跑（本机无 RISC-V 工具链、mill 与 Verilator）。下方结果均取自 `results/` 下的作业产物。
+## 已知限制
 
-## 实测结果
+1. 验证覆盖不完整：形式验证只到 `vdot_dp` 数据通路（miter 的 scope 不覆盖流水、发射与旁路），译码与 wrapper 改动只由 difftest 与 Chisel 单测覆盖；lint 在默认告警集下两 top 0 warning，`-Wall` 下 13 条 `UNUSEDSIGNAL`（VdotReduce 1 + VIMac64b 12）、rc=1，未逐条修复。规避：改动后必跑 30 例回归，并把 miter 顶层扩到 wrapper 列入后续。
+2. 补丁按 `a4eeaab` 基线的检出生成、应用顺序有依赖，编码核对也基于 riscv-opcodes `f24ac23` 快照。换基线或上游重新分配 `001110/010` 时结果不可直接沿用；规避是先跑 `git apply --check`，必要时重跑 `design/verify/encoding-gate.py` 并改走 [`design/SPEC.md`](design/SPEC.md) §2.4 的回退池。
+3. 30 例复现依赖集群 SLURM 分区 `kshcnormal`、`nexus-am` 源码树与 xPack `riscv64-unknown-elf-gcc 13.2.0`（版本记录见 `results/env/00-env-20261105T092724.tools.tsv`）。`nexus-am` 仓库不含（上游为 `https://github.com/OpenXiangShan/nexus-am`，本工作区未固定 commit），缺任一项时第 4 步会停在前置检查（`build_all.sh:21` 对 `AM_HOME` 硬退出、`10-build-emu.sh:167-170` 对两棵源码树 `fail_unrun`），此时只能用 `results/` 下的既有产物核对结论。
+4. 官方要求的三个视频位未产出：`recording/` 下只有分镜脚本，没有视频文件。截图与文档不能顶替录屏，视频项提交前不完整；规避是按该目录三份分镜脚本补录后再提交。
 
-| 项目 | 结果 | 证据 |
-|---|---|---|
-| 30 例功能回归 | 30/30 通过，`regression_delta=0` | `results/difftest/20-full-20261107T104227.json` |
-| 扩容用例 | 129/129 通过，负例 41/41 | `results/difftest/94-extra-20261107T104230.json` |
-| 金模型 | 1142 例通过（三算法交叉） | `python3 design/verify/vdot_model_test.py` |
-| 面积（Yosys 0.48） | `VdotReduce` 500 cells / 最长路径 14 级 | `results/yosys/40-area-20261107T104238.json` |
-| 形式验证 | miter 正控 `SUCCESS`、负控 `FAIL`（仅数据通路） | `results/formal/50-miter-20261104T093531.json` |
-| 依赖延迟 | `L_vdot = 4` cyc（`L_vmacc = 4`、`L_vadd = 3`） | `results/difftest/20-full-20261107T104227.json` → `metrics[]` |
-| 背靠背吞吐 | `T_steady = 1` cyc/dot | 同上 |
-| 基线组合每点开销 | `B1 = 6`、`B2 = 9` cyc/dot（内部自设的测量定义） | 同上；定义见 `stage3/3.3/report.md` §1 |
+## 交付物索引
 
-性能数字的测量定义互不可替代：`L_*` 是依赖链延迟，`T_steady` 与 `B1`/`B2` 是每点周期，两类不可混用；基线为"用已有向量指令组合实现同等功能"的自设序列（`vwmul.vv + vwredsum.vs` 与 `vwmul.vv + vwadd.vx + vredsum.vs`），非官方规定的测量定义。
-
-## 项目海报
-
-<p align="center"><img src="assets/velvetdot-poster.png" alt="VelvetDot poster" width="600"></p>
-
-原图见 [`assets/velvetdot-poster.png`](assets/velvetdot-poster.png)。
-
-## 材料索引
-
-官方 12 项交付物的位置（编号对应 [`docx/02-赛题与评分细则.md`](docx/02-赛题与评分细则.md)）：
+编号对应 [`docx/02-赛题与评分细则.md`](docx/02-赛题与评分细则.md)，设计与验证正文见下表之后的四份文档。
 
 | 编号 | 内容 | 位置 |
 |---|---|---|
-| 1.1 | 环境部署验证 | `stage1/1.1-env/` |
-| 1.2 | 部署与操作日志 | `stage1/1.2-log/timeline.md` |
-| 1.3 | 向量加法执行过程（波形分析） | `stage1/1.3-vadd/` |
-| 2.1 | 指令设计文档 | `stage2/2.1-design/` |
-| 2.2 | RTL 实现 | `stage2/2.2-rtl/`（9 个基线补丁；P-2 重定时补丁另存 `patches/0005-X-new-P-2-…`） |
-| 2.3.1 | 正数点积测试 | `stage2/2.3.1-pos/` |
-| 2.3.2 | 负数点积测试 | `stage2/2.3.2-neg/` |
-| 2.3.3 | 边界值测试 | `stage2/2.3.3-bound/` |
-| 3.1.1 | NEMU 指令扩展 | `stage3/3.1.1-nemu/` |
-| 3.1.2 | NEMU 与 RTL 协同仿真 | `stage3/3.1.2-difftest/` |
-| 3.2 | 基线组合指令实现 | `stage3/3.2-baseline/` |
-| 3.3 | 延迟与加速分析报告 | `stage3/3.3/report.md` |
+| 1.1 | 环境部署验证 | [`stage1/1.1-env/`](stage1/1.1-env/) |
+| 1.2 | 部署与操作日志 | [`stage1/1.2-log/timeline.md`](stage1/1.2-log/timeline.md) |
+| 1.3 | 向量加法执行过程（波形分析） | [`stage1/1.3-vadd/`](stage1/1.3-vadd/) |
+| 2.1 | 指令设计文档 | [`stage2/2.1-design/`](stage2/2.1-design/) |
+| 2.2 | RTL 实现（9 个基线补丁；重定时补丁另存 `patches/0005-…`） | [`stage2/2.2-rtl/`](stage2/2.2-rtl/) |
+| 2.3.1 | 正数点积测试 | [`stage2/2.3.1-pos/`](stage2/2.3.1-pos/) |
+| 2.3.2 | 负数点积测试 | [`stage2/2.3.2-neg/`](stage2/2.3.2-neg/) |
+| 2.3.3 | 边界值测试 | [`stage2/2.3.3-bound/`](stage2/2.3.3-bound/) |
+| 3.1.1 | NEMU 指令扩展 | [`stage3/3.1.1-nemu/`](stage3/3.1.1-nemu/) |
+| 3.1.2 | NEMU 与 RTL 协同仿真 | [`stage3/3.1.2-difftest/`](stage3/3.1.2-difftest/) |
+| 3.2 | 基线组合指令实现 | [`stage3/3.2-baseline/`](stage3/3.2-baseline/) |
+| 3.3 | 延迟与加速分析报告 | [`stage3/3.3/report.md`](stage3/3.3/report.md) |
 
-设计与验证正文：[`design/SPEC.md`](design/SPEC.md)、[`design/ARCHITECTURE.md`](design/ARCHITECTURE.md)、[`design/ALGORITHM.md`](design/ALGORITHM.md)、[`design/CODING-STD.md`](design/CODING-STD.md)。
+- [`design/SPEC.md`](design/SPEC.md)：语义、编码与非法判定；[`design/ARCHITECTURE.md`](design/ARCHITECTURE.md)：微架构、RTL 落点、2 拍时序
+- [`design/ALGORITHM.md`](design/ALGORITHM.md)：19 位归约推导与测量定义；[`design/CODING-STD.md`](design/CODING-STD.md)：Chisel 与 C 代码规范
 
-## 上游与致谢
+## 上游版本与致谢
 
-本工作基于香山（XiangShan）昆明湖 V2 与 YunSuan 向量实现，参考模型基于 NEMU；编码空间核对使用 riscv-opcodes 快照 `f24ac23`。上游各组件的著作权与许可归其各自项目所有。
+本工作基于香山昆明湖 V2（`a4eeaab`）与 YunSuan 向量实现（`9559211`，其 `rocket-chip` 子模块为 `46f1efe`），参考模型基于 NEMU（`a683e0b`），编码空间核对使用 riscv-opcodes 快照 `f24ac23`，并感谢 OpenXiangShan 社区维护这三个上游项目。结果产物对应 2026-11-01 基线，当前工作区检出已前移到实施 HEAD（`913ddd3` / `8942811` / `a9dca53`）。上游各组件的著作权与许可归其各自项目所有，版本锚点写在 [`versions.env`](versions.env)。更新日期：2026/11/07。
+
+<p align="center"><a href="assets/velvetdot-keyvisual.png"><img src="assets/velvetdot-keyvisual.png" alt="VelvetDot key visual" width="320"></a> <a href="assets/velvetdot-poster.png"><img src="assets/velvetdot-poster.png" alt="VelvetDot poster" width="320"></a></p>
