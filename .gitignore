@@ -1,0 +1,131 @@
+# 根工作区 Git 安全基线（仅本地基线提交，不做外部发布）
+# 说明：本文件只排除非交付物；允许纳入基线的路径为
+#   AGENTS.md, design/, core-package/, docx/, research/, tasks/, .gitignore
+
+# ---- 外部克隆仓库与工具会话（排除；对外复现入口 = patches/，P-2 见 0005-…） ----
+/repos/
+/.zcode/
+/node_modules/
+/out/
+# 外部下载件（论文 PDF 等，非交付物；本文件首行声明的允许路径不含 downloads/）
+/downloads/
+
+# ---- 编辑器 / 操作系统临时文件 ----
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# ---- Python / 构建产物 ----
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+/build/
+dist/
+target/
+*.o
+*.a
+*.so
+*.d
+*.class
+*.jar
+*.dSYM/
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+
+# ---- 仿真 / 综合产物 ----
+*.vcd
+*.fst
+*.fsdb
+*.jou
+*.log.*
+/logs/
+# ---- 交付证据例外（2026-11-06） ----
+# 下面两类**不是**临时仿真产物而是交付件，必须能入库（否则「交付件存在」只在工作区成立）：
+#   ① stage2/2.2-rtl/wave/*.key.vcd —— vdot.vv 自身波形的窄窗关键信号摘录（14 KB）；
+#   ② stage3/3.1.2-difftest/full-logs-*/*.log.gz —— 30 例逐用例日志的 gzip 归档（4 MB）；
+#   ③ results/difftest/cases-112035/*.log.gz —— 2026-11-05 smoke（24 例）逐用例日志的
+#      gzip 归档（3.2 MB）。原状态是「JSON 的 cases[].log 指向远端、本地只有 1 份可复核」，
+#      归档回传后 24/24 可本地独立复算（见 design/HANDOFF.md §10 同日条）。
+# 路径钉死，不放宽全局 *.vcd / *.log.*（避免把真·临时产物一起带进库）。
+# 注意：同一目录下的裸 `.log`（137 MB）**不被忽略**，`git add -A` 会一并暂存；若交付介质不容
+# 137 MB，请只 `git add` 那 30 个 `.gz`（README 已写明两种形态）。
+!stage2/2.2-rtl/wave/*.key.vcd
+!stage3/3.1.2-difftest/full-logs-*/*.log.gz
+!results/difftest/cases-112035/*.log.gz
+#   ④ results/difftest/kernel/run-*/perf_kernel_cmp.*.log.gz —— 内核级对比（清单外独立测量）
+#      两轮成功作业的逐用例日志 gzip（各 160 KB，共 320 KB），随 `18/11`、`16/7` 一起入库。
+!results/difftest/kernel/run-*/*.log.gz
+#   ⑤ results/difftest/llm/run-*/perf_llm_attn*.log.gz —— LLM 算子级基准（清单外独立测量）
+#      两轮作业的逐用例日志 gzip（各 ~150 KB），随三轴数字与拟合一起入库。
+!results/difftest/llm/run-*/*.log.gz
+# results/ 不忽略：results/*.json 是单一事实源，results/*.log 是操作日志证据
+# my_submission.txt 只在本地生成（内含 repo-url，加密成 submission.asc 后上传），不入库
+/my_submission.txt
+
+# ---- 私钥材料（只排除密钥文件本身） ----
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+id_ecdsa
+id_dsa
+.ssh/
+
+# ---- 本地凭据 ----
+.env
+.env.*
+!.env.example
+.netrc
+_netrc
+*.secret
+*.token
+credentials.json
+credentials.yml
+credentials.yaml
+client_secret*.json
+service-account*.json
+secrets/
+.aws/
+.azure/
+.config/gcloud/
+
+# ---- 个人工作件（不入交付历史） ----
+# 协作说明 / 任务票 / 汇报录音 / 调研 / 过程性设计与工作流产物。
+AGENTS.md
+/tasks/
+/recording/
+/research/
+/design/_recon/
+/design/_review/
+/design/_workflow/
+/design/_plan/
+/design/hpc/
+/design/HANDOFF.md
+/design/DOC-SYSTEM.md
+/design/INDEX.md
+/design/HARD-DESIGN.md
+/design/L0-DESIGN-DECISIONS.md
+/design/L0-REVISION-NOTES.md
+/design/00-REPORT.md
+/core-package/plan.md
+/core-package/verify/check.js
+/design/verify/check.js
+/design/verify/check-v3.js
