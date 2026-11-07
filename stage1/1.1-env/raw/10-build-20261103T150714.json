@@ -1,0 +1,27 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P0-emu",
+  "script": "scripts/10-build-emu.sh",
+  "status": "通过",
+  "platform": "kshcnormal",
+  "slurm_job_id": "126681977",
+  "started_at": "2026-11-03T15:07:14+0800",
+  "ended_at": "2026-11-03T15:07:58+0800",
+  "machine_hours_planned": 3.0,
+  "versions": {"xiangshan": "a4eeaab", "yunsuan": "9559211", "nemu": "a683e0b"},
+  "hello_evidence": "yes",
+  "smoke_image": "hello:hello_identity.bin",
+  "smoke_log": "/public/home/**********/core/results/emu/10-smoke-20261103T150714.log",
+  "emu_threads": "8",
+  "jvm_xmx": "40G",
+  "criteria": [
+    {"name": "version_pin", "expected": "XiangShan a4eeaab / yunsuan 9559211 / NEMU a683e0b", "actual": "a4eeaab / 9559211 / a683e0b", "status": "达标"},
+    {"name": "nemu_ref_so", "expected": "/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so 存在", "actual": "/public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so", "status": "达标"},
+    {"name": "nm_exec_vdot", "expected": "nm 命中 exec_vdot >= 1 行", "actual": "命中 2 行", "status": "达标"},
+    {"name": "build_emu", "expected": "make emu 退出码 0 且 build/emu 可执行", "actual": "rc=0 /public/home/**********/core/src/XiangShan/build/emu", "status": "达标"},
+    {"name": "smoke_good_trap", "expected": "日志含 HIT GOOD TRAP", "actual": "命中 1 次", "status": "达标"},
+    {"name": "smoke_no_abort", "expected": "无 ABORT / 无 HIT BAD TRAP", "actual": "ABORT=0 BAD=0", "status": "达标"},
+    {"name": "smoke_hello_identity", "expected": "日志含 1.1 身份串（hello xiangshan, I am <团队名>, IP: <真实 IP>）", "actual": "命中：hello xiangshan, I am XinXiangXiangRong, IP: 10.1.11.2（team=XinXiangXiangRong ip=10.1.11.2）", "status": "达标"}
+  ],
+  "artifacts": ["/public/home/**********/core/results/emu/10-build-20261103T150714.log"]
+}

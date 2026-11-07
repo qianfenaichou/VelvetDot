@@ -1,0 +1,10 @@
+[2026-11-03 06:24:32] ===== slurm_script mode=full max_instr=200000000 timeout=1800s =====
+[2026-11-03 06:24:32] 已 source /public/home/**********/tools/env.sh
+[2026-11-03 06:29:24]   case vadd-microbench [vadd] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 06:29:51]   case vdot_pos1 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 06:30:20]   case vdot_neg1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 06:30:49]   case vdot_bound1 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 06:31:12]   case vdot_g0_badexp [g0] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 06:32:21]   case vdot_mix [vdot-mix] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 06:32:22] 结果 JSON：/public/home/**********/core/results/difftest/20-full-20261103T062432.json
+[2026-11-03 06:32:22] 判据：存在未运行项（6/6；未运行用例 0 个），不得记通过

@@ -1,0 +1,58 @@
+# 1.1 终端输出摘录（摘录，非全文）
+#
+# 说明：集群账号与节点名以 <account> / <node> 占位，原始值见所引日志原件。
+#
+# ===== 当前（2026-11-04 换入；作业 126758114 / 节点 <node> / IP 10.1.3.35）=====
+# 全文 = stage1/1.1-env/raw/nodeip-20261104T105314/10-smoke-20261104T105328.log
+#     sha256=e4bea3c950286751735342cb4c246d437ea0ddc39639979d7366d7b24d6b0e0b  size=4754877 B  lines=29873
+# 生成：本机读取原文件按行号逐行打印（\e = ESC 控制字符原样标注）；「… 省略 …」为摘录标记，非原始行；
+#       账号与节点名以 <account> / <node> 占位替换，其余字符逐字保留。
+# 作业：昆山 126758114（节点 <node>）；IP 由执行节点 hostname -I 第一个字段注入
+#       （见 raw/nodeip-20261104T105314/30-hello-nodeip-20261104T105314.log:2-4）
+
+## A. 身份串（官方 1.1 判据：hello xiangshan, I am <团队标识>, IP）
+     1 | emu compiled at Nov  3 2026, 16:19:22
+     2 | [INFO] init for constantin: loaded from init.
+     3 | hello xiangshan, I am XinXiangXiangRong, IP: 10.1.3.35
+
+## B. 运行收尾：镜像路径 / 参考模型 / HIT GOOD TRAP（第 29844-29850 行）
+#    注：第 29849 行首是 PERF 行被 ANSI 复位码截断的残片（原样保留，未清洗）
+ 29844 | The image is /public/home/<account>/core/.upload/nodeimg/hello_identity.bin
+ 29845 | The reference model is /public/home/<account>/core/src/NEMU/build/riscv64-nemu-interpreter-so
+ 29846 | The first instruction of core 0 has commited. Difftest enabled. 
+ 29847 | Core 0: \e[32mHIT GOOD TRAP at pc = 0x8000015c
+ 29848 | \e[0m\e[35mCore-0 instrCnt = 1,775, cycleCnt = 14,024, IPC = 0.126569
+ 29849 | \e[0m29] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+ 29850 | [PERF ][time=               14029] SimTop.cpu.l_soc.l3cacheOpt.slices_2.mshrAlloc: mshr_latency_max,                    0
+       | … 省略第 29851-29870 行（PERF 计数器输出）…
+
+## C. 收尾统计（第 29871-29873 行）
+ 29871 | [PERF ][time=               14029] SimTop.cpu.l_soc.l3cacheOpt.slices_3.mshrAlloc: mshr_latency_max,                    0
+ 29872 | \e[34mSeed=0 Guest cycle spent: 14,030 (this will be different from cycleCnt if emu loads a snapshot)
+ 29873 | \e[0m\e[34mHost time spent: 22,952ms
+
+## D. 节点 IP 取用（raw/nodeip-20261104T105314/30-hello-nodeip-20261104T105314.log，第 2-10 行）
+     2 | [2026-11-04 10:53:15] hostname=<node> partition=kshcnormal nodelist=<node>
+     3 | [2026-11-04 10:53:15] hostname -I 输出：10.1.3.35 11.1.3.35 173.1.111.0 173.1.111.1 
+     4 | [2026-11-04 10:53:15] NODE_IP = 10.1.3.35（IP 来源口径：执行节点 hostname -I 第一个字段；与构建机 IP 无关——即使两者同值，口径仍是「取执行节点」）
+     5 | [2026-11-04 10:53:15] 交叉编译器：riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 13.2.0（包装器加 -mabi=lp64，理由见脚本头）
+     6 | [2026-11-04 10:53:15] ccwrap 已就绪：/public/home/<account>/core/.upload/ccwrap-20261104T105314（-mabi=lp64；AM 的 riscv64.mk 不带 -mabi，xpack 默认 ilp32）
+     7 | [2026-11-04 10:53:15] 应用 Makefile：HOST_IP=10.1.3.35（CFLAGS += -DTARGET_IP）
+     8 | [2026-11-04 10:53:16] 已清空 AM 静态库缓存（am/build、libs/klib/build），整棵树按 -mabi=lp64 重编
+     9 | [2026-11-04 10:53:28] 节点内重建：5720 字节 md5=ef1540e40b010d98601556eac51c204c
+    10 | [2026-11-04 10:53:28] 镜像内含 IP 字符串 10.1.3.35：是
+
+## E. 判据核对（本机实测命令，2026-11-04 执行；命令与输出见 README §6.0）
+# grep -c "hello xiangshan, I am XinXiangXiangRong, IP: 10.1.3.35" → 1（全文仅 1 处命中）
+# grep -c "WARN hello_identity"                                    → 0（无 0.0.0.0 占位告警）
+# grep -c "HIT GOOD TRAP"                                       → 1
+# grep -cE "ABORT|HIT BAD TRAP"                                  → 0
+
+# ===== 历史对照（作业 126681977 / 节点 <node> / IP 10.1.11.2；**不是当前结论**）=====
+# 全文 = stage1/1.1-env/raw/10-smoke-20261103T150714.log
+#     sha256=f70fe719d8dfd1654e0d7946b4ecacf0b862b211a30de42df969dc0a9c9927ba  size=4754877 B  lines=29873
+# 与当前（作业 126758114）的差异：身份串 IP 为 10.1.11.2；Host time spent 为 16,784ms；镜像 md5 为 0086e33b…
+# 保留原因：证明「同一份源码 / 同一构建链、只换注入 IP」的等价性（两镜像 cmp -l 仅 4 字节不同，偏移 4942-4945）
+ 历史第 3 行 | hello xiangshan, I am XinXiangXiangRong, IP: 10.1.11.2
+ 历史第 29847 行 | Core 0: \e[32mHIT GOOD TRAP at pc = 0x8000015c
+ 历史第 29873 行 | \e[0m\e[34mHost time spent: 16,784ms

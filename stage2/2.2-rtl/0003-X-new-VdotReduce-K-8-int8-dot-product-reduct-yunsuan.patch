@@ -1,0 +1,70 @@
+From 83059b57c3524800649f43c5a729c52a6b12790c Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH 3/3] X-new: VdotReduce - K=8 int8 dot-product reduction tap
+ (4:2 + CPA)
+
+Consumes VIMac64b sum_wo (8x signed 16-bit products), sign-extends each to 19
+bits, compresses with CSA_Nto2With3to2MainPipeline(8,19,pipeLevel=0), closes with
+a plain 19-bit carry-propagate adder and formats Cat(96'b0, sext32(S)).
+Registered on io.fireS1 so it lands in the same cycle as walOut (2-cycle latency).
+Compile check: mill -i xiangshan.compile rc=0.
+---
+ .../vector/vectorIMAC/VdotReduce.scala        | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+ create mode 100644 src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+
+diff --git a/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala b/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+new file mode 100644
+index 0000000..4fbaff5
+--- /dev/null
++++ b/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+@@ -0,0 +1,45 @@
++package yunsuan.vector.mac
++
++import chisel3._
++import chisel3.util._
++import yunsuan.vector.CSA_Nto2With3to2MainPipeline
++
++/** [vdot X-new] K=8 int8 dot-product reduction tap.
++  *
++  * Consumes the 8 x 16-bit **signed** products that [[VIMac64b]] produces at the end of
++  * its first stage (`io.sum_wo`, exported by X15), sign-extends each to 19 bits
++  * (never zero-extend: the worst case 8 * (-128) * (-128) = 131072 does not fit in
++  * 18-bit signed), compresses them with the in-tree 4:2 CSA pipeline
++  * (`pipeLevel = 0`, i.e. purely combinational), closes it with a plain 19-bit CPA and
++  * formats the result as `Cat(96'b0, sext32(S))`.
++  *
++  * Timing: registered on `io.fireS1`, the very same enable that latches `VIMac64b.io.walOut`,
++  * so the vdot result is aligned with the 2-cycle `VimacCfg` latency. The enable must come
++  * from the VIMac64b port itself (see design/CODING-STD.md 3.4); the wrapper only connects it.
++  */
++class VdotReduce(k: Int = 8, width: Int = 19) extends Module {
++  val io = IO(new Bundle {
++    val sum_wo = Input(Vec(k, UInt(16.W)))
++    val fireS1 = Input(Bool())
++    val vd = Output(UInt(128.W))
++  })
++
++  require(k == 8 && width == 19, "VdotReduce is specified for K=8 int8 lanes and a 19-bit accumulator")
++
++  // 16-bit signed products -> 19-bit signed operands
++  private val operands = VecInit(io.sum_wo.map(p => p.asSInt.pad(width).asUInt))
++
++  // 8 -> 4 -> 2 compression, combinational (pipeLevel = 0)
++  private val tree = Module(new CSA_Nto2With3to2MainPipeline(k, width, pipeLevel = 0))
++  tree.io.fire := io.fireS1 // unused with pipeLevel = 0; connected for form
++  tree.io.in := operands
++
++  // last-level carry-propagate adder: plain '+', 19-bit result (range [-130048, 131072])
++  private val cpa = tree.io.out_sum +& tree.io.out_car
++  private val s19 = cpa(width - 1, 0)
++
++  // write-back formatting: vd[31:0] = sext32(S), vd[127:32] = 0 (independent of vta/vma/tail)
++  private val result = Cat(0.U(96.W), s19.asSInt.pad(32).asUInt)
++
++  io.vd := RegEnable(result, io.fireS1)
++}
+-- 
+2.43.0
+

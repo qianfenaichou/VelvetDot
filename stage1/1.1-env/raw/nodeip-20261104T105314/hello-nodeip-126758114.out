@@ -1,0 +1,93 @@
+[2026-11-04 10:53:14] ===== 30-hello-nodeip v2 开始 job=126758114 =====
+[2026-11-04 10:53:15] hostname=a03r2n14 partition=kshcnormal nodelist=a03r2n14
+[2026-11-04 10:53:15] hostname -I 输出：10.1.3.35 11.1.3.35 173.1.111.0 173.1.111.1 
+[2026-11-04 10:53:15] NODE_IP = 10.1.3.35（IP 来源口径：执行节点 hostname -I 第一个字段；与构建机 IP 无关——即使两者同值，口径仍是「取执行节点」）
+[2026-11-04 10:53:15] 交叉编译器：riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC x86_64) 13.2.0（包装器加 -mabi=lp64，理由见脚本头）
+[2026-11-04 10:53:15] ccwrap 已就绪：/public/home/**********/core/.upload/ccwrap-20261104T105314（-mabi=lp64；AM 的 riscv64.mk 不带 -mabi，xpack 默认 ilp32）
+[2026-11-04 10:53:15] 应用 Makefile：HOST_IP=10.1.3.35（CFLAGS += -DTARGET_IP）
+[2026-11-04 10:53:16] 已清空 AM 静态库缓存（am/build、libs/klib/build），整棵树按 -mabi=lp64 重编
+make: 进入目录“/public/home/**********/core/src/nexus-am/apps/hello_identity”
+# Building hello_identity [riscv64-xs] with AM_HOME {/public/home/**********/core/src/nexus-am}
++ CC main.c
+make[1]: 进入目录“/public/home/**********/core/src/nexus-am”
+make[2]: 进入目录“/public/home/**********/core/src/nexus-am/am”
+# Building lib-am [riscv64-xs]
++ CC src/noop/isa/riscv/trm.c
++ AS src/nemu/common/mainargs.S
++ CC src/noop/isa/riscv/perf.c
++ CC src/noop/common/uartlite.c
++ CC src/noop/common/serial-16550.c
++ CC src/nemu/isa/riscv/cte.c
++ AS src/nemu/isa/riscv/trap.S
++ CC src/nemu/isa/riscv/cte64.c
++ AS src/nemu/isa/riscv/mtime.S
++ CC src/nemu/isa/riscv/vme.c
++ CC src/xs/common/ioe.c
++ CC src/noop/common/input.c
++ CC src/noop/common/timer.c
++ CC src/noop/isa/riscv/instr.c
++ CC src/xs/isa/riscv/mpe.c
++ CC src/xs/isa/riscv/clint.c
++ CC src/xs/isa/riscv/pmp.c
++ CC src/xs/isa/riscv/plic.c
++ CC src/xs/isa/riscv/pma.c
++ CC src/xs/isa/riscv/cache.c
++ AS src/nemu/isa/riscv/boot/start.S
++ AR -> build/am-riscv64-xs.a
+make[2]: 离开目录“/public/home/**********/core/src/nexus-am/am”
+make[1]: 离开目录“/public/home/**********/core/src/nexus-am”
+make[1]: 进入目录“/public/home/**********/core/src/nexus-am/libs/klib”
+# Building lib-klib [riscv64-xs]
++ CC src/printf.c
++ CC src/stdlib.c
++ CC src/string.c
++ CC src/atomic.c
++ CC src/cpp.c
++ CC src/int64.c
++ CC src/io.c
++ AR -> build/klib-riscv64-xs.a
+make[1]: 离开目录“/public/home/**********/core/src/nexus-am/libs/klib”
+# Creating binary image [riscv64-xs]
++ LD -> build/hello_identity-riscv64-xs.elf
++ OBJCOPY -> build/hello_identity-riscv64-xs.bin
+make: 离开目录“/public/home/**********/core/src/nexus-am/apps/hello_identity”
+[2026-11-04 10:53:28] 节点内重建：5720 字节 md5=ef1540e40b010d98601556eac51c204c
+[2026-11-04 10:53:28] 镜像内含 IP 字符串 10.1.3.35：是
+[2026-11-04 10:53:28] ===== 10-build-emu.sh jobs=32 jvm_xmx=40G dry_run=0 =====
+[2026-11-04 10:53:29] 已 source /public/home/**********/tools/env.sh
+[2026-11-04 10:53:30] 版本：XiangShan=a4eeaab yunsuan=9559211 NEMU=a683e0b（锁定值见 design/HANDOFF.md §2）
+[2026-11-04 10:53:31] verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5 EMU_THREADS=8
+[2026-11-04 10:53:31] NOOP_HOME=/public/home/**********/core/src/XiangShan NEMU_HOME=/public/home/**********/core/src/NEMU AM_HOME=/public/home/**********/core/src/nexus-am
+[2026-11-04 10:53:31] == 构建 NEMU ref .so ==
+make: 进入目录“/public/home/**********/core/src/NEMU”
+Makefile:40: You have set CONFIG_FLASH_IMG_PATH option, but the specified path '""' does not exist!
+make: 离开目录“/public/home/**********/core/src/NEMU”
+[2026-11-04 10:53:37] NEMU defconfig: riscv64-xs-kmhv2-ref_defconfig
+make: 进入目录“/public/home/**********/core/src/NEMU”
+Makefile:40: You have set CONFIG_FLASH_IMG_PATH option, but the specified path '""' does not exist!
++ g++ /public/home/**********/core/src/NEMU/build/riscv64-nemu-interpreter-so
+make: 离开目录“/public/home/**********/core/src/NEMU”
+[2026-11-04 10:53:52] == 构建 emu：make emu -j32 EMU_THREADS=8 JVM_XMX=40G ==
+make: 进入目录“/public/home/**********/core/src/XiangShan”
+make -C ./difftest emu-mk NUM_CORES=1 RTL_SUFFIX=sv RTL_INCLUDE=""
+make[1]: 进入目录“/public/home/**********/core/src/XiangShan/difftest”
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+make[1]: 对“emu-mk”无需做任何事。
+make[1]: 离开目录“/public/home/**********/core/src/XiangShan/difftest”
+make -C ./difftest emu NUM_CORES=1 RTL_SUFFIX=sv
+make[1]: 进入目录“/public/home/**********/core/src/XiangShan/difftest”
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+make[2]: 进入目录“/public/home/**********/core/src/XiangShan/difftest”
+readlink: 缺少操作数
+Try 'readlink --help' for more information.
+make[2]: 离开目录“/public/home/**********/core/src/XiangShan/difftest”
+make[1]: 离开目录“/public/home/**********/core/src/XiangShan/difftest”
+make: 离开目录“/public/home/**********/core/src/XiangShan”
+[2026-11-04 10:53:59] --image 为 hello 类镜像（hello:hello_identity.bin）：按 1.1 证据处理（hello_evidence=yes）；身份串判据见下（要求团队标识 + 真实 IP）
+[2026-11-04 10:53:59] == 冒烟运行：/public/home/**********/core/.upload/nodeimg/hello_identity.bin（label=hello:hello_identity.bin）==
+[2026-11-04 10:54:23] 冒烟结果：rc=0 HIT_GOOD_TRAP=1 HIT_BAD_TRAP=0 ABORT=0
+[2026-11-04 10:54:23] 结果 JSON：/public/home/**********/core/results/emu/10-build-20261104T105328.json
+[2026-11-04 10:54:23] 判据：构建与冒烟达标（镜像标签=hello:hello_identity.bin）
+[2026-11-04 10:54:23] 判据：节点内 IP 重建 + 冒烟达标（NODE_IP=10.1.3.35，镜像 md5=ef1540e40b010d98601556eac51c204c）

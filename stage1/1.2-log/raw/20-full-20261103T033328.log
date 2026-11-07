@@ -1,0 +1,18 @@
+[2026-11-03 03:33:28] ===== slurm_script mode=full max_instr=200000000 timeout=1800s =====
+[2026-11-03 03:33:28] 已 source /public/home/**********/tools/env.sh
+[2026-11-03 03:35:08]   case perf_vadd [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:35:08]   metric perf_vadd: L_vadd=3
+[2026-11-03 03:35:08]   metric perf_vadd: L_vadd_mean=3
+[2026-11-03 03:35:08]   metric perf_vadd: L_vadd_loop=5
+[2026-11-03 03:37:39]   case perf_vmacc [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:37:39]   metric perf_vmacc: L_vmacc=4
+[2026-11-03 03:37:39]   metric perf_vmacc: L_vmacc_mean=4
+[2026-11-03 03:37:39]   metric perf_vmacc: L_vmacc_loop=6
+[2026-11-03 03:42:42]   case perf_vdot [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 03:42:42]   metric perf_vdot: L_vdot=4
+[2026-11-03 03:42:42]   metric perf_vdot: L_vdot_mean=4
+[2026-11-03 03:42:42]   metric perf_vdot: L_vdot_loop=6
+[2026-11-03 03:42:42]   metric perf_vdot: T_steady=1
+[2026-11-03 03:42:42]   metric perf_vdot: T_kernel=290
+[2026-11-03 03:42:42] 结果 JSON：/public/home/**********/core/results/difftest/20-full-20261103T033328.json
+[2026-11-03 03:42:42] 判据：存在未运行项（3/3；未运行用例 0 个），不得记通过

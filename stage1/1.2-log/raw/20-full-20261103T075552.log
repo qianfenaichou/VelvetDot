@@ -1,0 +1,19 @@
+[2026-11-03 07:55:52] ===== slurm_script mode=full max_instr=200000000 timeout=1800s =====
+[2026-11-03 07:55:52] 已 source /public/home/**********/tools/env.sh
+[2026-11-03 07:58:17]   case perf_vadd [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 07:58:17]   metric perf_vadd: L_vadd=3
+[2026-11-03 07:58:17]   metric perf_vadd: L_vadd_mean=3
+[2026-11-03 07:58:17]   metric perf_vadd: L_vadd_loop=5
+[2026-11-03 08:00:08]   case perf_vmacc [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 08:00:08]   metric perf_vmacc: L_vmacc=4
+[2026-11-03 08:00:08]   metric perf_vmacc: L_vmacc_mean=4
+[2026-11-03 08:00:08]   metric perf_vmacc: L_vmacc_loop=6
+[2026-11-03 08:05:27]   case perf_vdot [perf] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 08:05:27]   metric perf_vdot: L_vdot=4
+[2026-11-03 08:05:27]   metric perf_vdot: L_vdot_mean=4
+[2026-11-03 08:05:27]   metric perf_vdot: L_vdot_loop=6
+[2026-11-03 08:05:27]   metric perf_vdot: T_steady=1
+[2026-11-03 08:05:27]   metric perf_vdot: T_kernel=290
+[2026-11-03 08:05:54]   case vdot_g0_badexp [g0] -> 通过 (GOOD=1 ABORT=0 BAD=0 rc=0)
+[2026-11-03 08:05:54] 结果 JSON：/public/home/**********/core/results/difftest/20-full-20261103T075552.json
+[2026-11-03 08:05:54] 判据：达标（4/4）

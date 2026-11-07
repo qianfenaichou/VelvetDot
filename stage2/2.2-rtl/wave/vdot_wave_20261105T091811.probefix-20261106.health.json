@@ -1,0 +1,103 @@
+{
+  "schema": "vdot-wave-health/1",
+  "vcd": "/tmp/w.vcd",
+  "vcd_bytes": 131077177,
+  "vcd_sha256": "ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470",
+  "excerpt": "vdot_wave_20261105T091811.probefix-20261106.key.vcd",
+  "excerpt_bytes": 14474,
+  "timescale": "1ps",
+  "vars": 1357193,
+  "scopes": 16331,
+  "time_min": 8365,
+  "time_max": 8577,
+  "samples": 213,
+  "excerpt_window": [
+    8377,
+    8577
+  ],
+  "instr": "0x3A20A1D7",
+  "anchor_time": 8417,
+  "anchor_slot": 2,
+  "decode_hits": [
+    [
+      8365,
+      3,
+      false
+    ],
+    [
+      8414,
+      4,
+      false
+    ],
+    [
+      8417,
+      2,
+      true
+    ]
+  ],
+  "expect_low32": "0x00008780",
+  "result_time": 8500,
+  "wb_time": 8500,
+  "wb_res_data": "0x00000000000000000000000000008780",
+  "fuoptype_at_exec": "0x067",
+  "signals_picked": 49,
+  "signals_missing": [],
+  "aliased_label_groups": [
+    [
+      "exu_in_fuOpType",
+      "vimac_fuOpType"
+    ]
+  ],
+  "clock_note": "clock 为采样域时钟：每拍一个时间戳、每拍 dump 一次 ⇒ 摘录里恒为 1、窗口内变化 0 次；GTKWave 中不会翻转，属采样语义而非缺驱动",
+  "checks": [
+    {
+      "name": "header_ok",
+      "expected": "timescale 可解析且 vars/scopes 非零",
+      "actual": "timescale=1ps vars=1357193 scopes=16331",
+      "pass": true
+    },
+    {
+      "name": "instr_hit",
+      "expected": "0x3A20A1D7 在译码级 valid=1 命中",
+      "actual": "anchor_time=8417 slot=2（全 VCD 候选 3 次）",
+      "pass": true
+    },
+    {
+      "name": "fuoptype_exec",
+      "expected": "Vimac io_in_bits_ctrl_fuOpType == 0x067",
+      "actual": "0x067",
+      "pass": true
+    },
+    {
+      "name": "result_low32",
+      "expected": "锚点之后 vdotReduce/io_vd 低 32 位 == 0x00008780",
+      "actual": "t=8500",
+      "pass": true
+    },
+    {
+      "name": "high96_zero",
+      "expected": "写回 res_data[127:32] == 0",
+      "actual": "t=8500 res_data=0x00000000000000000000000000008780",
+      "pass": true
+    },
+    {
+      "name": "wb_after_anchor",
+      "expected": "写回拍 > 译码锚点",
+      "actual": "wb=8500 anchor=8417",
+      "pass": true
+    },
+    {
+      "name": "ts_range",
+      "expected": "VCD 时间戳范围 [min,max]",
+      "actual": "[8365,8577] 采样点=213；摘录窗口=[8377,8577]",
+      "pass": true
+    },
+    {
+      "name": "excerpt_verify",
+      "expected": "摘录回读逐拍与源 VCD 一致（且每个有值信号都被覆盖）",
+      "actual": "checked=9849/9849 mismatches=0 unseeded=0",
+      "pass": true
+    }
+  ],
+  "verdict": "OK"
+}

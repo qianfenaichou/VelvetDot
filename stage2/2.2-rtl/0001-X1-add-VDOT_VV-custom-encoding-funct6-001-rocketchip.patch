@@ -1,0 +1,29 @@
+From c4d7616998a813d85bdeccdb9aa09ebf877aefac Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH] X1: add VDOT_VV custom encoding (funct6=001110, funct3=010,
+ vm=1 fixed)
+
+vdot.vv for CIE-2026. BitPat pins the vm bit to 1 so the masked form does not
+decode (illegal), matching NEMU's vopmvv table entry and the golden model.
+Machine code 0x3A20A1D7; encoding gate: design/verify/encoding-gate.py PASS.
+---
+ src/main/scala/rocket/Instructions.scala | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/main/scala/rocket/Instructions.scala b/src/main/scala/rocket/Instructions.scala
+index 7b46aca..f4a25a0 100644
+--- a/src/main/scala/rocket/Instructions.scala
++++ b/src/main/scala/rocket/Instructions.scala
+@@ -455,6 +455,8 @@ object Instructions {
+   def VDIV_VX            = BitPat("b100001???????????110?????1010111")
+   def VDIVU_VV           = BitPat("b100000???????????010?????1010111")
+   def VDIVU_VX           = BitPat("b100000???????????110?????1010111")
++  // custom (CIE): vdot.vv — funct6=001110, funct3=010(OPMVV), vm=1 fixed (masked form not命中 → illegal)
++  def VDOT_VV            = BitPat("b0011101??????????010?????1010111")
+   def VFADD_VF           = BitPat("b000000???????????101?????1010111")
+   def VFADD_VV           = BitPat("b000000???????????001?????1010111")
+   def VFCLASS_V          = BitPat("b010011??????10000001?????1010111")
+-- 
+2.43.0
+

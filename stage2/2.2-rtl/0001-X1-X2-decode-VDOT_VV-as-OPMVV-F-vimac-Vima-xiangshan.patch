@@ -1,0 +1,38 @@
+From 8f1aeb39f72b31efecfa4c79be35eba60566d828 Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 18:55:31 +0800
+Subject: [PATCH 1/4] X1/X2: decode VDOT_VV as OPMVV(F, vimac, VimacType.vdot,
+ VEC_VVV)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+vdRen=F makes src3=X (old vd is not read). Bumped rocket-chip to the X1 commit.
+grep -rn VDOT_VV rocket-chip src → 2 hits.
+---
+ rocket-chip                                              | 2 +-
+ src/main/scala/xiangshan/backend/decode/VecDecoder.scala | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/rocket-chip b/rocket-chip
+index 46f1efe..c4d7616 160000
+--- a/rocket-chip
++++ b/rocket-chip
+@@ -1 +1 @@
+-Subproject commit 46f1efefa1ff431bffe3262e4830bc50316842f4
++Subproject commit c4d7616998a813d85bdeccdb9aa09ebf877aefac
+diff --git a/src/main/scala/xiangshan/backend/decode/VecDecoder.scala b/src/main/scala/xiangshan/backend/decode/VecDecoder.scala
+index 3764191..c5c41d7 100644
+--- a/src/main/scala/xiangshan/backend/decode/VecDecoder.scala
++++ b/src/main/scala/xiangshan/backend/decode/VecDecoder.scala
+@@ -382,6 +382,7 @@ object VecDecoder extends DecodeConstants {
+ 
+     VMACC_VV     -> OPMVV(T, FuType.vimac, VimacType.vmacc, F, T, F, UopSplitType.VEC_VVV),
+     VMADD_VV     -> OPMVV(T, FuType.vimac, VimacType.vmadd, F, T, F, UopSplitType.VEC_VVV),
++    VDOT_VV      -> OPMVV(F, FuType.vimac, VimacType.vdot, F, T, F, UopSplitType.VEC_VVV), // custom: vdRen=F ⇒ src3=X (不读旧 vd)
+     VMAND_MM     -> OPMVV(T, FuType.vialuF, VialuFixType.vmand_mm, F, T, F, UopSplitType.dummy),
+     VMANDN_MM    -> OPMVV(T, FuType.vialuF, VialuFixType.vmandn_mm, F, T, F, UopSplitType.dummy),
+     VMNAND_MM    -> OPMVV(T, FuType.vialuF, VialuFixType.vmnand_mm, F, T, F, UopSplitType.dummy),
+-- 
+2.43.0
+

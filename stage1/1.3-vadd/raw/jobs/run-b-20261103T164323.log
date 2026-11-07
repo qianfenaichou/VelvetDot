@@ -1,0 +1,15 @@
+emu compiled at Nov  3 2026, 16:19:22
+[INFO] init for constantin: loaded from init.
+WAVE_MARK c0=8424 c1=8426 vl=8
+WAVE_RESULT vout=11 22 33 44 55 66 77 88
+WAVE verdict=OK
+Using simulated 1048576B flash
+dump wave to /public/home/**********/core/results/wave/vadd_wave_20261103T164323.vcd...
+Core  0's Commit SHA is: a4eeaabb4c, dirty: 1
+Using simulated 8386560MB RAM
+The image is /public/home/**********/core/results/wave/vadd_wave.bin
+Core 0: [32mHIT GOOD TRAP at pc = 0x8000024a
+[0m[35mCore-0 instrCnt = 4,959, cycleCnt = 17,887, IPC = 0.277240
+[0m[34mSeed=0 Guest cycle spent: 17,893 (this will be different from cycleCnt if emu loads a snapshot)
+[0m[34mHost time spent: 25,706ms
+[0m

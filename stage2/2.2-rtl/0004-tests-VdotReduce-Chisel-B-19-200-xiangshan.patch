@@ -1,0 +1,161 @@
+From 913ddd395925ede4dca23e027cf8178c8ed2b0b9 Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sun, 1 Nov 2026 20:18:25 +0800
+Subject: [PATCH 4/4] =?UTF-8?q?tests:=20VdotReduce=20Chisel=20=E5=8D=95?=
+ =?UTF-8?q?=E6=B5=8B=EF=BC=88=E6=9C=9F=E6=9C=9B=E5=80=BC=E6=9D=A5=E8=87=AA?=
+ =?UTF-8?q?=E7=8B=AC=E7=AB=8B=E7=AE=97=E6=B3=95=20B=EF=BC=8C=E5=90=AB=2019?=
+ =?UTF-8?q?=20=E4=BD=8D=E8=BE=B9=E7=95=8C=E4=B8=8E=20200=20=E7=BB=84?=
+ =?UTF-8?q?=E9=9A=8F=E6=9C=BA=EF=BC=89?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+实测（昆山登录节点，Verilator 5.053 后端）：
+  mill -i xiangshan.test.testOnly "yunsuan.vectortest.mac.VdotReduceSpec"
+  → Suites: completed 1, aborted 0 / Tests: succeeded 3, failed 0 / SPEC_RC=0
+覆盖：全 -128→S=131072（19 位上边界）、最小负和 -130048 补码、奇数负 lane 1/3/5/7、
+交错极值、一侧全零、固定种子 42 的 200 组随机、fireS1 拉低时保持上一次结果。
+期望值用逐项 int64 累加（不经归约树），不重跑被测公式（CODING-STD §5.1）。
+---
+ .../vectortest/mac/VdotReduceSpec.scala       | 129 ++++++++++++++++++
+ 1 file changed, 129 insertions(+)
+ create mode 100644 src/test/scala/yunsuan/vectortest/mac/VdotReduceSpec.scala
+
+diff --git a/src/test/scala/yunsuan/vectortest/mac/VdotReduceSpec.scala b/src/test/scala/yunsuan/vectortest/mac/VdotReduceSpec.scala
+new file mode 100644
+index 0000000..7b2a47b
+--- /dev/null
++++ b/src/test/scala/yunsuan/vectortest/mac/VdotReduceSpec.scala
+@@ -0,0 +1,129 @@
++package yunsuan.vectortest.mac
++
++import chisel3._
++import chisel3.util._
++import chiseltest._
++import org.scalatest.flatspec.AnyFlatSpec
++import yunsuan.vector.mac._
++
++/** VdotReduce（X-new）单元测试。
++  *
++  * 期望值来自**独立实现**（算法 B：逐项 int64 累加，不经归约树），
++  * 不重跑被测公式 —— design/CODING-STD.md §5.1 的 tautological 禁令。
++  * 用例集合对应 design/ALGORITHM.md §3.2：全 -128（19 位上边界）、最小负和、
++  * 奇数负 lane（1/3/5/7）、交错极值、零，以及固定种子 42 的 200 组随机。
++  * 每次只开一个仿真（一个 test 块内循环），避免逐例重复编译仿真模型。
++  */
++object VdotReduceGolden {
++  /** 算法 B：8 个 int8 逐位相乘后用 int64 累加，再按 32 位补码截断 = vd[31:0] */
++  def goldenU64(lanes: Seq[Long]): BigInt = {
++    require(lanes.length == 8)
++    var acc: Long = 0L
++    for (l <- lanes) acc += l
++    BigInt(acc) & 0xFFFFFFFFL
++  }
++
++  /** 每个 lane 的 int8×int8 积（有符号，未截断）—— 期望值的原始项 */
++  def lanesOf(a: Seq[Int], b: Seq[Int]): Seq[Long] =
++    (a zip b).map { case (x, y) => x.toByte.toLong * y.toByte.toLong }
++
++  /** VIMac64b 交给本模块的 8×16b 补码积 */
++  def products(a: Seq[Int], b: Seq[Int]): Seq[Int] =
++    ((a zip b).map { case (x, y) => x.toByte.toInt * y.toByte.toInt }).map(_ & 0xFFFF)
++}
++
++class VdotReduceSpec extends AnyFlatSpec with ChiselScalatestTester {
++  import VdotReduceGolden._
++
++  private case class Case(a: Seq[Int], b: Seq[Int])
++
++  private val directed = Seq(
++    // 19 位上边界：全 -128 → S = 131072
++    Case(Seq.fill(8)(-128), Seq.fill(8)(-128)),
++    // 全 +127 → 129032
++    Case(Seq.fill(8)(127), Seq.fill(8)(127)),
++    // 最小负和 -130048
++    Case(Seq(-128, -128, -128, -128, 127, 127, 127, 127),
++         Seq(127, 127, 127, 127, -128, -128, -128, -128)),
++    // 交错极值
++    Case(Seq(-128, 127, -128, 127, -128, 127, -128, 127),
++         Seq(127, -128, 127, -128, -1, 1, 1, -1)),
++    // 一侧全零
++    Case(Seq.fill(8)(0), Seq(127, -128, 1, -1, 5, -5, 100, -100)),
++    // ±1 与 ±128 混布（专抓符号扩展 bug）
++    Case(Seq(1, -1, 1, -1, 126, -127, 126, -127),
++         Seq(1, 1, -1, -1, -128, -128, 127, 127))
++  ) ++ Seq(1, 3, 5, 7).map { neg =>
++    // 奇数个负 lane
++    Case((0 until 8).map(i => if (i < neg) -7 else 5),
++         (0 until 8).map(i => if (i < neg) 3 else -11))
++  }
++
++  private val randomCases: Seq[Case] = {
++    val rnd = new scala.util.Random(42)
++    Seq.fill(200)(Case(Seq.fill(8)(rnd.nextInt(256) - 128), Seq.fill(8)(rnd.nextInt(256) - 128)))
++  }
++
++  private def feed(dut: VdotReduce, c: Case): Unit = {
++    val prods = products(c.a, c.b)
++    for (i <- 0 until 8) dut.io.sum_wo(i).poke(prods(i).U(16.W))
++  }
++
++  behavior of "VdotReduce (K=8 int8 dot-product tap, X-new)"
++
++  it should "把 directed 用例算成 Cat(96'b0, sext32(S)) 且与算法 B 逐位一致" in {
++    test(new VdotReduce()) { dut =>
++      dut.io.fireS1.poke(false.B)
++      for (c <- directed) {
++        val expect = goldenU64(lanesOf(c.a, c.b))
++        feed(dut, c)
++        dut.io.fireS1.poke(true.B)
++        dut.clock.step(1)
++        dut.io.fireS1.poke(false.B)
++        dut.clock.step(1)
++        dut.io.vd.expect(expect)
++        assert(dut.io.vd.peek().litValue >> 32 == BigInt(0), s"高 96 位非零: $c")
++      }
++      // 三个关键数字再显式点验（不依赖被测实现）
++      feed(dut, directed.head); dut.io.fireS1.poke(true.B); dut.clock.step(1)
++      dut.io.vd.expect(BigInt(131072))           // 全 -128 → 19 位上边界
++      dut.io.fireS1.poke(false.B)
++      feed(dut, directed(2)); dut.io.fireS1.poke(true.B); dut.clock.step(1)
++      dut.io.vd.expect(BigInt((1L << 32) - 130048)) // 最小负和的 32 位补码
++      dut.io.fireS1.poke(false.B)
++    }
++  }
++
++  it should "固定种子 42 的 200 组随机与算法 B 一致" in {
++    test(new VdotReduce()) { dut =>
++      dut.io.fireS1.poke(false.B)
++      for (c <- randomCases) {
++        val expect = goldenU64(lanesOf(c.a, c.b))
++        feed(dut, c)
++        dut.io.fireS1.poke(true.B)
++        dut.clock.step(1)
++        dut.io.fireS1.poke(false.B)
++        dut.clock.step(1)
++        dut.io.vd.expect(expect)
++      }
++    }
++  }
++
++  it should "fireS1 拉低时保持上一次结果（使能只能来自 X15 端口线）" in {
++    test(new VdotReduce()) { dut =>
++      feed(dut, Case(Seq.fill(8)(3), Seq.fill(8)(4)))
++      dut.io.fireS1.poke(true.B)
++      dut.clock.step(1)
++      dut.io.fireS1.poke(false.B)
++      dut.io.vd.expect(BigInt(8 * 3 * 4))
++      // 换操作数但不给使能：输出必须不变（背靠背/气泡场景的正确性根据）
++      feed(dut, Case(Seq.fill(8)(100), Seq.fill(8)(100)))
++      dut.clock.step(3)
++      dut.io.vd.expect(BigInt(8 * 3 * 4))
++      dut.io.fireS1.poke(true.B)
++      dut.clock.step(1)
++      dut.io.fireS1.poke(false.B)
++      dut.io.vd.expect(BigInt(8 * 100 * 100))
++    }
++  }
++}
+-- 
+2.43.0
+

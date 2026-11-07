@@ -1,0 +1,5 @@
+vadd-microbench	vadd	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vadd-microbench.20261103T032337.log
+vdot_pos1	vdot-pos	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_pos1.20261103T032337.log
+vdot_neg1	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg1.20261103T032337.log
+vdot_bound1	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound1.20261103T032337.log
+vdot_mix	vdot-mix	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_mix.20261103T032337.log

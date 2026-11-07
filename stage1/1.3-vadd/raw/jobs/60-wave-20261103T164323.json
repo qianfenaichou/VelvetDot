@@ -1,0 +1,11 @@
+schema: vadd-wave/1
+runid: 20261103T164323
+job_id: 126690786
+host: a05r3n15
+stage_rc: A=0 B=0 C=0 D=0 E=0
+failed_stage: none
+window: c0=8424 c1=8426 begin=8364 end=8576
+vcd: /public/home/**********/core/results/wave/vadd_wave_20261103T164323.vcd
+vcd_bytes: 129174550
+vcd_sha256: 1db875132829b41d13de76664046057a79ac6ce9ea37c42a9ed9d8902547a70b
+end: 2026-11-03T16:44:57+0800

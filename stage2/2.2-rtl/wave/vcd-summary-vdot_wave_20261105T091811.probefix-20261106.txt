@@ -1,0 +1,27 @@
+===== vdot 波形体检 =====
+vcd            : /tmp/w.vcd (131077177 B)
+vcd_sha256     : ef0a6fdb66762b8d5493a0d68eb18672c7d9377325d2a8bbede598f62eb80470
+timescale      : 1ps
+vars / scopes  : 1357193 / 16331
+时间戳范围     : [8365, 8577] 采样点=213
+摘录窗口       : [8377, 8577]
+指令机器码     : 0x3A20A1D7  锚点拍=8417 槽=2（候选 3 次）
+执行级 fuOpType: 0x067（期望 0x067）
+结果拍         : 8500
+写回拍/res_data: 8500 / 0x00000000000000000000000000008780
+摘录信号       : 取到 49 个，缺失 0 个
+别名组         : 1 组（同一 VCD 标识符 = 同一条网线，值必然相同、非独立观测点）
+  [ALIAS] exu_in_fuOpType + vimac_fuOpType
+时钟口径       : clock 为采样域时钟：每拍一个时间戳、每拍 dump 一次 ⇒ 摘录里恒为 1、窗口内变化 0 次；GTKWave 中不会翻转，属采样语义而非缺驱动
+摘录文件       : vdot_wave_20261105T091811.probefix-20261106.key.vcd (14474 B)
+
+[PASS] header_ok        期望=timescale 可解析且 vars/scopes 非零 | 实测=timescale=1ps vars=1357193 scopes=16331
+[PASS] instr_hit        期望=0x3A20A1D7 在译码级 valid=1 命中 | 实测=anchor_time=8417 slot=2（全 VCD 候选 3 次）
+[PASS] fuoptype_exec    期望=Vimac io_in_bits_ctrl_fuOpType == 0x067 | 实测=0x067
+[PASS] result_low32     期望=锚点之后 vdotReduce/io_vd 低 32 位 == 0x00008780 | 实测=t=8500
+[PASS] high96_zero      期望=写回 res_data[127:32] == 0 | 实测=t=8500 res_data=0x00000000000000000000000000008780
+[PASS] wb_after_anchor  期望=写回拍 > 译码锚点 | 实测=wb=8500 anchor=8417
+[PASS] ts_range         期望=VCD 时间戳范围 [min,max] | 实测=[8365,8577] 采样点=213；摘录窗口=[8377,8577]
+[PASS] excerpt_verify   期望=摘录回读逐拍与源 VCD 一致（且每个有值信号都被覆盖） | 实测=checked=9849/9849 mismatches=0 unseeded=0
+
+verdict=OK

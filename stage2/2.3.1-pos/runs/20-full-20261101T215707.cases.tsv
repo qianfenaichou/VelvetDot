@@ -1,0 +1,15 @@
+vadd-microbench	vadd	失败	0	0	0	/public/home/**********/core/results/difftest/cases/vadd-microbench.20261101T215707.log
+vdot_pos1	vdot-pos	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_pos1.20261101T215707.log
+vdot_pos2	vdot-pos	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_pos2.20261101T215707.log
+vdot_neg1	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg1.20261101T215707.log
+vdot_neg2	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg2.20261101T215707.log
+vdot_neg3	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg3.20261101T215707.log
+vdot_bound1	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound1.20261101T215707.log
+vdot_bound2	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound2.20261101T215707.log
+vdot_bound3	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound3.20261101T215707.log
+vdot_ill_sew	negative	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_sew.20261101T215707.log
+vdot_ill_lmul	negative	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_lmul.20261101T215707.log
+vdot_ill_lmul8	negative	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_lmul8.20261101T215707.log
+vdot_ill_vs	negative	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_vs.20261101T215707.log
+perf_vdot	perf	通过	1	0	0	/public/home/**********/core/results/difftest/cases/perf_vdot.20261101T215707.log
+perf_base	perf	通过	1	0	0	/public/home/**********/core/results/difftest/cases/perf_base.20261101T215707.log

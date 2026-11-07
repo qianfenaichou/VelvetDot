@@ -1,0 +1,12 @@
+vadd-microbench	vadd	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vadd-microbench.20261101T202437.log
+vdot_pos1	vdot-pos	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_pos1.20261101T202437.log
+vdot_pos2	vdot-pos	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_pos2.20261101T202437.log
+vdot_neg1	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg1.20261101T202437.log
+vdot_neg2	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg2.20261101T202437.log
+vdot_neg3	vdot-neg	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_neg3.20261101T202437.log
+vdot_bound1	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound1.20261101T202437.log
+vdot_bound2	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound2.20261101T202437.log
+vdot_bound3	vdot-bound	通过	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_bound3.20261101T202437.log
+vdot_ill_sew	negative	失败(空绿风险)	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_sew.20261101T202437.log
+vdot_ill_lmul	negative	失败(空绿风险)	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_lmul.20261101T202437.log
+vdot_ill_lmul8	negative	失败(空绿风险)	1	0	0	/public/home/**********/core/results/difftest/cases/vdot_ill_lmul8.20261101T202437.log
