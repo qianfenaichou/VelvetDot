@@ -105,7 +105,7 @@ assign io_vd = {96'h0, {13{cpa[18]}}, cpa};   // = Cat(96'h0, sext32(s19))，96+
 5. **构建系统陷阱（复现必读）**：`repos/XiangShan/Makefile:54` 的 `SCALA_FILE = $(shell find ./src/main/scala -name '*.scala')` **不覆盖 yunsuan 子模块**，所以只改子模块源码时 `make emu` 会报 `对"emu-mk"无需做任何事` 并**沿用旧 RTL**（本次首个作业 `127135545` 实测踩到，已 `scancel`、无证据价值）。复现本结果必须先 `rm -f build/rtl/SimTop.sv` 强制 re-elaborate，并在构建后 `grep sumS2 build/rtl/VdotReduce.sv` 校验。
 6. **共享树并发**：本次与覆盖率作业共用 `~/core/src`（`build/emu` 曾被 `95-coverage.sh` 移走）。为免二进制被并发重建替换，构建成功后立刻把 `build/emu`、NEMU `.so` 快照到 `~/core-p2/`，30 例与 extra 作业都用**快照**跑（`--emu/--ref-so` 显式指定）。
 7. **清单等价性**：昆山 30 例用的是 `manifest.p2-30.abs.tsv`——由冻结清单只做 `@IMG_DIR@ → /public/home/<account>/core/test/bin` 替换得到（`<account>` 为集群账号占位，执行时替换为实际账号）；数据行 `(cid, cls)` 投影与 `design/verify/cases/manifest.tsv` **完全一致**（两文件 `awk` 抽取后 sha256 同为 `c98eafcd…`），30 条镜像逐条 `test -f` 通过。
-8. **不做竞品比较**：本节不做跨队优劣断言；Gloria/Sun/qixuan 的公开材料只用于「已抽查材料中未见同一切法」的说明（对手公开材料的抽查记录），不进入本节的数字论证。
+8. **不做跨实现优劣比较**：本节不做跨队优劣断言，也不引用其它实现的数字进入本节的数字论证。
 9. **形式 miter 未跑【未运行】**：本次验证未要求 `50-formal-miter.sh`；且 P-2 把 `io.vd` 从「寄存器输出」改成「寄存器后组合」，miter 的 `-seq` 拍数需按 P-2 预登记的重定时口径重新校准后才能用，直接沿用旧结论不算证据。
 10. **共享树的后续影响（后续注意项）**：本次把 `~/core/src/XiangShan` 的 `build/rtl` 与 `build/emu` 更新成了 P-2 版本；覆盖率作业若要在同一棵树上继续跑，需先把 `VdotReduce.scala` 判回/重编到其所需版本，或直接用其自己的 `emu.nocov` 快照（`~/core-p2/` 下的 K1 源码备份 `VdotReduce.k1.bak.scala` 仅供回滚，未回写）。
 11. **机时（如实记）**：本项共 7 个作业，远端台账 `~/core/results/budget-log.tsv` 逐行合计 **2.315 node-h**（`127135437` 0.010 / `127135641` 0.604 / `127137599` 0.001 / `127137611` 0.002 / `127137643` 0.176 / `127137638` 0.498 / `127137640` 1.024），在预估的 3–4 h 验证预算内；其中两个失败作业（清单路径问题）合计 0.003 node-h。

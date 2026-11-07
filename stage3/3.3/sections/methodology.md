@@ -78,18 +78,18 @@
 
 **缺什么（G-D 缺省）**：2026-11-04 24:00 设了 G-D 缺省——E-0/E-2 实测与 vmac 回归未齐时锁定 tap0/K1，2 拍只写「设计目标/预算内候选」，不自动升 3 拍、不启 X16（`design/ARCHITECTURE.md:103`）。**具体缺项**：`S2_own`/`S3_own` 切段探针（`design/verify/area/gen_probes.sh` 未建，该目录本次实读**只有** `build_area_rtl.sh`）、Liberty、Yosys 工艺映射（`dfflibmap -liberty` + `abc -liberty`）、OpenSTA、SDC 与 `report_checks`。
 
-### B.3 可学的先例：rvpeak 的 ASAP7 + OpenSTA 与负 slack 如实报告（调研范围内）
+### B.3 可学的先例：外部公开材料的 ASAP7 + OpenSTA 与负 slack 如实报告（调研范围内）
 
-同类作品 rvpeak（`yeyumeng7799/cie2026-rvpeak-vdot_llm_xiangshan`，本次实读 `README.md` @ commit `01996d9f92eb`，第 88-110 行）给出了一个**可复用的范式**：
+一份外部公开参赛材料（本次实读 `README.md` @ commit `01996d9f92eb`，第 88-110 行）给出了一个**可复用的范式**：
 
-| 项 | rvpeak 的做法（原文数值） | 值得学的点 |
+| 项 | 该材料的做法（原文数值） | 值得学的点 |
 |---|---|---|
 | 工具链 | Yosys + OpenSTA + 固定版 OpenROAD-flow-scripts（`ORFS_ROOT` 指到 `0fcc4186e344f85167d97c1d67994bef01e89036`），脚本 `eda/run_eda.sh` | 工具版本固定，避免「换工具换结论」 |
 | 约束 | 333 ps 参考预算（≈ 3.003 GHz【推算：1/333 ps】） | 预算明写，读者可自行换算 |
 | 结果 | `VIMacU` 映射面积差 109.30626 µm²（约 1.73%）；预布局 STA 最差路径 **821.4327 ps**、路径裕量 **−488.4327 ps**（= 821.4327 − 333，本次复算一致） | **负 slack 照实写**，并声明「为后续优化提供模块级量化基线」 |
 | 边界声明 | 「该结果基于公开 ASAP7 库与局部实验约束」 | 明确是工艺代理 + 局部约束，不冒充目标工艺签核 |
 
-**我方与它的差距必须写明**：本仓**没有**做这一步（工具与工艺库都不在，见 B.5），所以本报告只能写「2 拍为设计目标」，**不能**写「已做 STA 且满足」。若后续补做，**负 slack 也照实写**，并按 rvpeak 的写法注记「工艺代理 + 局部约束 + 预布局」。
+**与它的差距必须写明**：本仓**没有**做这一步（工具与工艺库都不在，见 B.5），所以本报告只能写「2 拍为设计目标」，**不能**写「已做 STA 且满足」。若后续补做，**负 slack 也照实写**，并按该材料的写法注记「工艺代理 + 局部约束 + 预布局」。
 
 ### B.4 若要闭合：路线（本次未运行）
 
@@ -189,7 +189,7 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 | 8 | OpenROAD Flow Scripts | `flow/scripts/synth.tcl`、`flow/scripts/load.tcl` | https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/scripts/synth.tcl；https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/scripts/load.tcl | Yosys `write_verilog` → OpenSTA `read_verilog/link_design/read_sdc` 的标准先例 | 【实读】`gh api` 取回；`synth.tcl:347`、`load.tcl:33-34,42` 逐行核对 |
 | 9 | YosysHQ | Yosys 命令文档：`ltp`、`dfflibmap`、`write_verilog` | https://yosyshq.readthedocs.io/projects/yosys/en/latest/cmd/index_passes_status.html（`ltp`）；https://yosyshq.readthedocs.io/projects/yosys/en/latest/cmd/index_passes_techmap.html（`dfflibmap`） | `ltp` 只算单模块内拓扑级数（`-noff` 排除 FF）；`dfflibmap -liberty` 做 FF 映射；`write_verilog -noattr` 写网表 | 【实读】`ltp` 页 HTTP 200、文本逐字核对；`dfflibmap` 帮助文本在昆山 `yosys 0.48` 上实跑取回（`help dfflibmap` 原文见 B.4） |
 | 10 | Xu-Hao Chen, Si-Peng Hu, Hong-Chao Liu, Bo-Ran Liu, Dan Tang, Di Zhao | *Research on LLM Acceleration Using the High-Performance RISC-V Processor "Xiangshan" (Nanhu Version) Based on the Open-Source Matrix Instruction Set Extension (Vector Dot Product)*，arXiv:2409.00661 | https://arxiv.org/abs/2409.00661；PDF https://arxiv.org/pdf/2409.00661 | Nanhu-vdot 的「几乎不增功耗」= FPGA VU19P + Vivado 2020.2 + 最小配置：8.454→8.494 W、LUT +2.8%、FF +0.9%、BRAM 不变 | 【实读】PDF HTTP 200、741,721 B、10 页；`nanhu.txt:242-296` 逐字核对（含机箱/FPGA/工具链、资源表、功耗句） |
-| 11 | yeyumeng7799（中北大学） | *cie2026-rvpeak-vdot_llm_xiangshan* README §4「ASAP7 综合与预布局 STA」@ commit `01996d9f92eb` | https://github.com/yeyumeng7799/cie2026-rvpeak-vdot_llm_xiangshan | 本次对手调研所见**唯一**的 ASAP7 + OpenSTA 先例（范围限于该调研覆盖的参赛仓，不是全场普查）：面积差 109.30626 µm²（1.73%）、333 ps 预算、最差路径 821.4327 ps、**负 slack −488.4327 ps 如实报告** | 【实测】`gh api …/contents/README.md` 取回 136 行，`:88-110` 逐字核对；`gh api …/commits` 首条 sha = `01996d9f92eb` |
+| 11 | 外部公开参赛材料 | README §4「ASAP7 综合与预布局 STA」@ commit `01996d9f92eb` | 从略 | 本次调研范围内**仅见一例** ASAP7 + OpenSTA 先例（范围限于该调研覆盖的参赛仓，不是全量普查）：面积差 109.30626 µm²（1.73%）、333 ps 预算、最差路径 821.4327 ps、**负 slack −488.4327 ps 如实报告** | 【实测】`gh api …/contents/README.md` 取回 136 行，`:88-110` 逐字核对；`gh api …/commits` 首条 sha = `01996d9f92eb` |
 
 ---
 
@@ -203,7 +203,7 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 | 2 | 中位数 vs 均值 | 主指标 median=mean（3/4/4）；基线链 median=mean=16、8/8 轮一致；ladder 24/23；kernel 16/15 | 不能写「中位数是 Agner/K&J 的方法」；不能写「已做置信区间/统计显著」；不能只报中位数而隐藏 mean/min/max | `perf_vadd.c:80-112`；`91-b3-…log:5-13`；`93-kcmp-…log:14` |
 | 3 | `rdcycle` 读的可信度 | 可写「difftest 对 `mcycle..mhpmcounter31` 全部 skip，计数器语义不由 difftest 覆盖」；可写 #6852/#6501 的机制 | 不能写「30/30 通过 ⇒ 计数器读数一定对」；不能把单次 `min` 当干净样本；不能把 #6852 写成「官方口径」 | `Bundle.scala:365,369`；`NewCSR.scala:942-943,1140`；`Rob.scala:1544,1548`；`gh issue view 6852/6501` |
 | 4 | 2 拍时序 | 可写「设计目标 2 拍（`VimacCfg.latency=2`）」；可写「`ltp(VdotReduce)=22` vs `ltp(VIMac64b)=100` 是拓扑级数」；可写 G-D 缺省锁 tap0/K1 | 不能写「2 拍已收敛」「setup 满足」「22 级 < 100 级 ⇒ 满足 2 拍」「换算成 ps/GHz」 | `FuConfig.scala:563`；`40-area-20261104T094144.json`；`design/ARCHITECTURE.md:103`（2 拍预算与 G-D 缺省） |
-| 5 | STA | 可写「路线：`read_liberty → read_verilog → link_design → read_sdc → report_checks`」；可写 ORFS 先例与 rvpeak 的负 slack 范式 | 不能写「STA 已跑/已通过/已签核」；不能写「OpenSTA 已装」；不能写「用公开 PDK 签核」 | 本机 `command -v yosys sta openroad` → 无输出 `EXIT=1`；仓内 0 个 `.lib/.lef/.sdc/.db`；昆山探查见 `evidence/sta-toolcheck-20261106.txt` |
+| 5 | STA | 可写「路线：`read_liberty → read_verilog → link_design → read_sdc → report_checks`」；可写 ORFS 先例与外部公开材料的负 slack 范式 | 不能写「STA 已跑/已通过/已签核」；不能写「OpenSTA 已装」；不能写「用公开 PDK 签核」 | 本机 `command -v yosys sta openroad` → 无输出 `EXIT=1`；仓内 0 个 `.lib/.lef/.sdc/.db`；昆山探查见 `evidence/sta-toolcheck-20261106.txt` |
 | 6 | 面积 | 可写 `481/42,783=+1.12%`（全口径）、`458/41,945=+1.09%`（组合口径）、19 FF、`ltp=22` | 不能写「481 cells = 完整面积/硅面积」；不能换 μm²；不能把 cells 当功耗 | `40-area-20261104T094144.json`；`vdot.stat.json`；`vmac_only.stat.json` |
 | 7 | 功耗 | 可写「cell 占比 +1.12%」；可写「tap 对每条 vimac 都在算、都 latch，无操作数隔离」；可写 Nanhu-vdot 的 FPGA +0.5% 作为方向性参照 | 不能写「功耗仅增 1.12%」「几乎不增功耗」；不能写「Nanhu +0.5% ⇒ 本设计 +0.5%」；不能给 mW 数字 | `VIMacU.scala:129-130,159-160`；`VdotReduce.scala:44`；`ALGORITHM.md:114`；arXiv:2409.00661 |
 | 8 | 活动率/功耗工具 | 可写「OpenSTA `report_power` 需要 Liberty + 活动率（VCD/SAIF 或 `set_power_activity`，默认 0.1/0.5）」 | 不能写「已有可用活动率」；不能拿 `stage2/2.2-rtl/wave/` 的采样域 key VCD 当活动率证据 | OpenSTA Commands；`stage2/2.2-rtl/wave/vcd-summary-…probefix-20261106.txt`（窗口内 0 次翻转） |

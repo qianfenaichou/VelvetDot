@@ -154,7 +154,7 @@
 
 | 歧义 | 官方口径 | 本项目裁决 | 理由 |
 |---|---|---|---|
-| 结果位宽 | 未写死（SEW=8 的 vd[0] 装不下） | 32 位写 vd[31:0] | 自然容器，qixuan 同口径；19 位 S 符号扩展 |
+| 结果位宽 | 未写死（SEW=8 的 vd[0] 装不下） | 32 位写 vd[31:0] | 自然容器；19 位 S 符号扩展 |
 | 取哪 8 个元素 | "取 8 个 int8"（VLEN=128 有 16 个 byte lane） | 低 64 位 lane 0–7 | 最自然；用"高 64 位干扰"用例验证 lane 选择 |
 | 其余位 | 伪代码 vd[1..]=0 | 恒清零（旁路 Mgu） | Mgu 的 tail/agnostic 永不为 0（实测 `Mgu.scala:83,90-92`：tail 保留旧 vd、agnostic 写 0xFF），必须旁路 |
 | K=8 vs K=16 | 伪代码 K=8，宣讲页 K=16 | **主线 K=8**；K=16 只进扩展路线图 | 评分细则引用伪代码（docx/02 §三）；K=16 覆盖为 vdot16 扩展设计说明，不写扩展 RTL |
@@ -189,7 +189,7 @@
 
 ### 3.4 外部互证（三处语义裁决）
 
-> 目的：把 §3.1 的三处裁决（结果位宽与 lane 选择、`sext32` 写回与高 96 位清零、恒清零与 `vta`/`vma`/tail 无关）从"项目自行认定"变为可核的"外部一手引文 + 两家同校收敛（其一为跟帖确认，非独立多方）"。判定词只有四个：**支撑**（外部一手规范字面支持该裁决）、**相容**（不与规范冲突，但规范未规定）、**无外部依据**（纯项目裁决或算术推导）、**偏离基线**（外部规范字面相反，属「无外部依据」的强形式，答辩须显式声明偏离理由）。
+> 目的：把 §3.1 的三处裁决（结果位宽与 lane 选择、`sext32` 写回与高 96 位清零、恒清零与 `vta`/`vma`/tail 无关）从"项目自行认定"变为可核的"外部一手引文 + 同一学校的两份声明（其一为跟帖确认，非独立多方）"。判定词只有四个：**支撑**（外部一手规范字面支持该裁决）、**相容**（不与规范冲突，但规范未规定）、**无外部依据**（纯项目裁决或算术推导）、**偏离基线**（外部规范字面相反，属「无外部依据」的强形式，答辩须显式声明偏离理由）。
 > 引文来源：三个 fenced 块逐字取自 2026-11-06 的实际下载件（下载记录与 `grep` 行号已随引文保存）；上游一手文件为 `riscv/riscv-isa-manual` main @ `a5d2296` 的 `src/unpriv/vector-common.adoc`。
 
 #### 3.4.1 锚点 A｜RVV 归约的 `vl=0`：`norm:vreduction_vl_0`
@@ -233,11 +233,11 @@ Any instruction encoding that violates the overlap constraints is reserved.
 - main 稳定 URL：`https://github.com/riscv/riscv-isa-manual/blob/main/src/unpriv/vector-common.adoc#L3932`
 - 判定：**偏离基线**（字面冲突；靠「自定义编码全写指令」声明站住）。字面上，归约的 tail 跟随当前 tail agnostic/undisturbed 策略（即随 `vta` 变），与 §1.1「恒清零、与 `vta`/`vma`/tail 无关」相反；同伴 `norm:vmask_agn_op`（`:1063-1066`，锚点 `#The ... csr:vtype[]#` 的起止）对 masked-off 元素同样跟随 `vma`。站得住的理由只有两条：①本指令是**自定义编码的全写指令**，不属标准归约，通用 tail/mask 合并策略不适用；②官方伪代码 `vd[1..VLEN-1] = 0` 无条件清零（`docx/02-赛题与评分细则.md:24-33`）。**禁止**写成"RVV 标准允许与 `vta`/`vma` 无关"。
 
-#### 3.4.4 两家同校收敛（【公开说明】，非官方确认；非独立多方）
+#### 3.4.4 外部公开材料的三处同向声明（非官方确认；非独立多方）
 
-> 标注说明：本节全部是**参赛队的公开说明**。截至 2026-11-06 官方未答复：issue #126 `state=open`、`comments=1`，那 1 条评论也是参赛队（`Andrew111888`）。故这些原文**不构成规范依据**，只作"两家同校收敛（其一为跟帖确认），非独立多方"的旁证。引文块一律原样粘贴（保留原缩进与列表符号），用于机械比对。
+> 标注说明：本节全部是**外部公开材料的公开说明**。截至 2026-11-06 官方未答复：issue #126 `state=open`、`comments=1`，那 1 条评论也来自同一来源。故这些原文**不构成规范依据**，只作"同一学校的两份声明（其一为跟帖确认），非独立多方"的旁证。引文块一律原样粘贴（保留原缩进与列表符号），用于机械比对。
 
-**来源 1｜issue #126 正文（发起者 `mjie1227-afk`，香山芯锐；`2026-10-24T05:55:46Z`）——覆盖 ①②③**
+**来源 1｜issue #126 正文（外部公开材料；`2026-10-24T05:55:46Z`）——覆盖 ①②③**
 
 以下三段**不连续**（分别在该 issue 正文的第 32、33、28 行），各自逐字粘贴、不拼句：
 
@@ -259,14 +259,14 @@ Any instruction encoding that violates the overlap constraints is reserved.
    当前先检查合法性，再处理 vl=0，最后计算：合法非零 vl 时按结果布局覆盖整个 vd，不受 vta/vma 影响；合法 vl=0 保留整个旧 vd；非法情况不更新 vd。
 ```
 
-**来源 2｜issue #126 评论（`Andrew111888`，全栈漏洞队；`2026-11-05T05:19:34Z`）——覆盖 ①（低 64 位）与 ②**
+**来源 2｜issue #126 评论（另一份外部公开材料；`2026-11-05T05:19:34Z`）——覆盖 ①（低 64 位）与 ②**
 
 ```text
 - 仅取两源的低 8 对 signed int8，初值为 0，不累加旧 vd，高 64 位源数据不参与。
 - 精确和写入 vd[31:0]，vd[127:32] 清零；负数仅低 32 位采用补码。
 ```
 
-**来源 3｜芯锐仓 `specs/vdot-v0.1.json`（`mjie1227-afk/cie2026-xiangshanxinrui-vdot`，main @ `59dd91a`）——覆盖 ①②**
+**来源 3｜外部公开仓库 `specs/vdot-v0.1.json`（main @ `59dd91a`）——覆盖 ①②**
 
 ```json
     "accumulate_old_vd": false,
@@ -294,18 +294,18 @@ Any instruction encoding that violates the overlap constraints is reserved.
 ```
 
 - issue #126 稳定 URL：`https://github.com/OpenXiangShan/XiangShanLab/issues/126`（评论锚点 `#issuecomment-6650400501`）。
-- 芯锐仓稳定 URL：`https://github.com/mjie1227-afk/cie2026-xiangshanxinrui-vdot/blob/59dd91ab94f4dda3e6d597676ed3350ad5987a29/specs/vdot-v0.1.json`
-- **差异必须同时写**：芯锐对 `vl` 的裁决与本项目**不同**（其 `valid_vl_values` 为 0 与 8..16，`vl` 1–7 判非法，`vl=0` 保留旧 `vd`，见其 `vl_zero`/`vl_8_to_16` 字段）。故"互证"只覆盖 ①②③ 三处，**不覆盖 `vl` 口径**；本项目按 §1.1（`vl` 任意值全写）与之不同，答辩须主动区分。
+- 外部公开仓库稳定引用：`specs/vdot-v0.1.json` @ `59dd91ab94f4dda3e6d597676ed3350ad5987a29`（URL 从略）。
+- **差异必须同时写**：该外部公开仓库对 `vl` 的裁决与本项目**不同**（其 `valid_vl_values` 为 0 与 8..16，`vl` 1–7 判非法，`vl=0` 保留旧 `vd`，见其 `vl_zero`/`vl_8_to_16` 字段）。故"互证"只覆盖 ①②③ 三处，**不覆盖 `vl` 口径**；本项目按 §1.1（`vl` 任意值全写）与之不同，答辩须主动区分。
 
 #### 3.4.5 三处裁决的判定汇总
 
-| # | 裁决（正文锚点） | 一手外部锚点 | 判定 | 他队互证（两家同校，【公开说明】） |
+| # | 裁决（正文锚点） | 一手外部锚点 | 判定 | 外部声明互证（同校两份，非独立多方） |
 |---|---|---|---|---|
-| ① | **内部 19 位有符号 + 取低 64 位 lane 0–7**（§1.1、§1.4） | **本次调查范围**（RVV 批准手册 + `vqdot`/`SDOT`/`VPDPBUSD`/`TDPBSSD` 四份一手文件）内无规范使用 19 位；外部例子全是 32 位累加器（`vqdot`/`SDOT`/`VPDPBUSD`/`TDPBSSD`）。19 位来自算术：`8×(−128)×(−128)=131072 > 2^17−1=131071` | **无外部依据**（算术推导）；与外部 32 位容器惯例**相容** | issue #126 正文与芯锐 `minimum_signed_accumulator_bits=19`；全栈评论与芯锐 `source_element_indices=[0, 7]`（低 64 位、高 64 位不参与） |
-| ② | **`vd[31:0]=sext32(S)`、`vd[127:32]=0`；取低 8 对 int8**（§1.1、§1.2） | `norm:vreg_overlap_rsv`（§3.4.2）支撑 `vd==vs` 用例合法；32 位容器与 `vqdot`（**未批准提案**）的 "widening (with sign-extension) to 32 bits"（`riscv-dot-product` `insns/vqdot.adoc:37-48`）同一惯例，`SDOT`/`VPDPBUSD` 属**厂商 ISA**；"对最终和再 `sext32`"外部未逐字写 | **相容**（32 位容器属**惯例/提案，非规范字面支撑**；"再 `sext32` 一步"同为**相容**）；`vd==vs` 重叠合法性另由 `norm:vreg_overlap_rsv` 判**支撑**（仅限该条，不支撑容器位宽） | issue #126 正文与评论、芯锐 `result_bits=32`/`result_position=[31, 0]`/`zero_bits=[127, 32]` 逐值相同（两家同校收敛，其一为跟帖确认，非独立多方） |
-| ③ | **恒清零与 `vta`/`vma`/tail 无关**（§1.1、§3.1） | `norm:vreduction_tail_policy`（§3.4.3）字面相反；`norm:vmask_agn_op`（`:1063-1066`）同理；官方伪代码无条件清零只给方向 | **偏离基线**（字面冲突；靠"自定义编码全写指令"声明） | issue #126 正文"不受 vta/vma 影响"；芯锐 `vta_vma` 字段"custom whole-result policy overrides generic destination merging"（两家同校收敛，其一为跟帖确认，非独立多方） |
+| ① | **内部 19 位有符号 + 取低 64 位 lane 0–7**（§1.1、§1.4） | **本次调查范围**（RVV 批准手册 + `vqdot`/`SDOT`/`VPDPBUSD`/`TDPBSSD` 四份一手文件）内无规范使用 19 位；外部例子全是 32 位累加器（`vqdot`/`SDOT`/`VPDPBUSD`/`TDPBSSD`）。19 位来自算术：`8×(−128)×(−128)=131072 > 2^17−1=131071` | **无外部依据**（算术推导）；与外部 32 位容器惯例**相容** | issue #126 正文与外部规格文件 `minimum_signed_accumulator_bits=19`；该 issue 评论与同一规格文件 `source_element_indices=[0, 7]`（低 64 位、高 64 位不参与） |
+| ② | **`vd[31:0]=sext32(S)`、`vd[127:32]=0`；取低 8 对 int8**（§1.1、§1.2） | `norm:vreg_overlap_rsv`（§3.4.2）支撑 `vd==vs` 用例合法；32 位容器与 `vqdot`（**未批准提案**）的 "widening (with sign-extension) to 32 bits"（`riscv-dot-product` `insns/vqdot.adoc:37-48`）同一惯例，`SDOT`/`VPDPBUSD` 属**厂商 ISA**；"对最终和再 `sext32`"外部未逐字写 | **相容**（32 位容器属**惯例/提案，非规范字面支撑**；"再 `sext32` 一步"同为**相容**）；`vd==vs` 重叠合法性另由 `norm:vreg_overlap_rsv` 判**支撑**（仅限该条，不支撑容器位宽） | issue #126 正文与评论、外部规格文件 `result_bits=32`/`result_position=[31, 0]`/`zero_bits=[127, 32]` 逐值相同（同一学校的两份声明，其一为跟帖确认，非独立多方） |
+| ③ | **恒清零与 `vta`/`vma`/tail 无关**（§1.1、§3.1） | `norm:vreduction_tail_policy`（§3.4.3）字面相反；`norm:vmask_agn_op`（`:1063-1066`）同理；官方伪代码无条件清零只给方向 | **偏离基线**（字面冲突；靠"自定义编码全写指令"声明） | issue #126 正文"不受 vta/vma 影响"；外部规格文件 `vta_vma` 字段"custom whole-result policy overrides generic destination merging"（同一学校的两份声明，其一为跟帖确认，非独立多方） |
 
-> **判定上限（不许升级）**：三处里没有一处拿到"外部一手规范逐字规定"的**支撑**，例外只有 ② 里的 `vd==vs` 重叠合法性（`norm:vreg_overlap_rsv`，仅支撑该条用例合法，不支撑 32 位容器或清零语义）；32 位容器属惯例/提案（`vqdot` 未批准、`SDOT`/`VPDPBUSD` 厂商 ISA），只能判**相容**；③ 字面冲突，判**偏离基线**。"他队互证"全部是【公开说明】且只有两家同校（其一为跟帖确认），不得改写成"行业标准"、"官方确认"或"独立多方"。
+> **判定上限（不许升级）**：三处里没有一处拿到"外部一手规范逐字规定"的**支撑**，例外只有 ② 里的 `vd==vs` 重叠合法性（`norm:vreg_overlap_rsv`，仅支撑该条用例合法，不支撑 32 位容器或清零语义）；32 位容器属惯例/提案（`vqdot` 未批准、`SDOT`/`VPDPBUSD` 厂商 ISA），只能判**相容**；③ 字面冲突，判**偏离基线**。"外部声明互证"全部是【外部公开声明】且只有同一学校的两份（其一为跟帖确认），不得改写成"行业标准"、"官方确认"或"独立多方"。
 
 ---
 
@@ -362,7 +362,7 @@ vdot4a.vv         31..26=0x2c vm vs2 vs1 14..12=0x2 vd 6..0=0x57
 - **funct6/funct3 粒度会“共槽”**：例如 `VFCVT_*` 共享 `funct6=010010,funct3=001`，靠 rs1/rs2 区分；`VCPOP_M`/`VFIRST_M`/`VMV_X_S` 共享 `010000/010`。所以“某 funct6 是否空闲”只是第一层筛选，**最终必须按完整 25 位 BitPat 做重叠检查**。
 ```
 
-### A-7｜qixuan 的口径来自其 README（作者说明）
+### A-7｜一份外部公开实现的口径来自其 README（作者说明）
 
 ```
 其 README :88-89 说明“低 64 bit 8 个 int8 → vd[31:0]，vd[127:32] 清零；内部 20 bit、输出 32 bit”【作者说明】，但“香山集成”明确标注**未执行**。

@@ -211,7 +211,7 @@ diff -q repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64
 
 - `DecodeUnit.scala:1069`：`isDependOldVd := ... || isVma || ...`；`isVma` 由 `vmaInsts`（`:976-978`）驱动。
 - `vmaInsts` 只控制 `isDependOldVd` 这一 dispatch/issue 优化；对"全写 + 输出端清零"的实现，不登记并不导致清零错误。
-- 我们的 vdot 是全写指令：`vdRen=F` 使 `src3=X` 真不读旧 vd；清零由数据通路 `Cat(96'b0, ...)` 保证。
+- 本项目的 vdot 是全写指令：`vdRen=F` 使 `src3=X` 真不读旧 vd；清零由数据通路 `Cat(96'b0, ...)` 保证。
 
 ### 6.2 收益与代价
 
@@ -231,31 +231,32 @@ diff -q repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64
 
 ---
 
-## 7. 差异化与创新（答辩素材；对手事实取自各家公开仓库与公开日志）
+## 7. 设计要点与可审计差异（答辩素材）
 
-> 当前状态：本文档集是**设计包**，不是已完成的交付物；本节陈述"设计差异 + 证据到手后的验收方式"，不表示分数已获得，所有未实测数字一律写"目标/待测"。
+> 当前状态：本文档集是**设计包**，不是已完成的交付物；本节陈述本设计的取舍与"证据到手后的验收方式"，不表示分数已获得，所有未实测数字一律写"目标/待测"。
 
-### 7.1 四列对照
+### 7.1 设计定位
 
-| 维度 | 我们（设计目标） | Gloria（GEMwhu） | Sun（AsyncSys） | qixuan（qxriscv） |
-|---|---|---|---|---|
-| 语义口径 | 官方伪代码 K=8 单结果，`vd[31:0]=sext32(S)`、`vd[127:32]=0`；`vstart≠0` 非法；vl/vta/vma 见 SPEC §1.1 | 官方 K=8 语义，`ACCW=19`、`OUTW=32` | Zvdot4a/SiFive 风格多结果，每 32 位元素 4×int8 累加 | 官方 K=8（README 说明）；编码 `funct3=000/OPIVV`、funct6=111111 |
-| 微架构形态 | 复用 `VIMac64b` 的 `sum_wo` + 4:2 压缩树（8→4→2，2 段 3 实例）+ 19 位 CPA（§2） | 独立 `VDotU` 新 FU（ExeUnit_13），标准 8 lane 乘法 + CSA 树 | 新增 `VDot64b`，参数化三档精度 | 模块级设计（平台未集成） |
-| 香山集成证据 | 目标：XSTop 级 PATH + 全核日志（待测） | `PATH VDotU: XSTop -> ... -> ExeUnit_13` 与 `FULL_SOC_PASS` | VCS 全核 difftest 日志与 `HIT GOOD TRAP` | 香山平台证据为零；阶段一阻塞 |
-| 验证方法 | 19 位推导 + 混合符号奇数负 lane 定向用例 + Python/NEMU/RTL 三方对拍 + harness 负向自检 + 回归基线 JSON（§7.2 D-b） | 65 行全 PASS 全核日志（含非法/别名/vl 边界） | 三边界 + 3×100 随机组 | 模块级 1518 例 + 协同 1513 例 |
-| 形式验证 | 目标：`vdot_dp` 组合 miter + bug 注入演示（`design/ALGORITHM.md` §3.5） | 公开材料未见 | 公开材料未见 | 公开材料未见 |
-| 性能口径 | `L_vdot`（依赖链，主口径）/`T_steady`（稳态吞吐）/`T_kernel`（kernel 周期）三口径（`design/ALGORITHM.md` §3.4） | 252 次全核计时；独立点积 1.045–1.528 cyc/dot、依赖链 2.995× | GEMV 2.82×（README 与 pr_body 数字不一致） | 模块级 `latency_write=3`、`throughput 1 inst/cycle` |
-| 文档形态 | 设计文档集（SPEC/ARCHITECTURE/ALGORITHM）+ 可复跑校验脚本 | 按官方编号 10 份 PDF + 日志 | 文档 + 21 份原始日志 | IPD 五件套 + 13 节设计文档 |
-| 许可证/诚信 | 自有代码，不使用他人无许可证代码 | 仓库无 LICENSE | 仓库无 LICENSE；数字前后不一致 | 仓库无 LICENSE |
+本设计按三条可审计差异组织：复用现有 VIMac 通路（D-a）、可复核的验证方法学（D-b）、无假依赖的微架构（D-c）。三条都不依赖外部对照，验收方式见 §7.2。
 
-> 「我们」列是设计目标；未实测项不得写成已完成。对手列只写其公开材料中有据可查的事实。
+| 维度 | 本设计（设计目标/现状） |
+|---|---|
+| 语义口径 | 官方伪代码 K=8 单结果，`vd[31:0]=sext32(S)`、`vd[127:32]=0`；`vstart≠0` 非法；vl/vta/vma 见 SPEC §1.1 |
+| 微架构形态 | 复用 `VIMac64b` 的 `sum_wo` + 4:2 压缩树（8→4→2，2 段 3 实例）+ 19 位 CPA（§2） |
+| 香山集成证据 | 目标：XSTop 级 PATH + 全核日志（待测） |
+| 验证方法 | 19 位推导 + 混合符号奇数负 lane 定向用例 + Python/NEMU/RTL 三方对拍 + harness 负向自检 + 回归基线 JSON（§7.2 D-b） |
+| 形式验证 | 目标：`vdot_dp` 组合 miter + bug 注入演示（`design/ALGORITHM.md` §3.5） |
+| 性能口径 | `L_vdot`（依赖链，主口径）/`T_steady`（稳态吞吐）/`T_kernel`（kernel 周期）三口径（`design/ALGORITHM.md` §3.4） |
+| 文档形态 | 设计文档集（SPEC/ARCHITECTURE/ALGORITHM）+ 可复跑校验脚本 |
+| 许可证/诚信 | 自有代码，不使用他人无许可证代码 |
+
+> 未实测项不得写成已完成；表中事实以本仓设计文档与证据为准。
 
 ### 7.2 三条可审计差异（每条附"证据到手后如何验证"）
 
 **D-a 复用路线（可行性口径）**
 
-- 我们挂 `VIMac64b` 的 `sum_wo`，复用现有 VIMac 功能单元，直接命中评分原文"复用香山现有向量实现"的字面要求。
-- Gloria 新建独立 FU（`VDotU`，ExeUnit_13），复用论证弱于我们。
+- 本项挂 `VIMac64b` 的 `sum_wo`，复用现有 VIMac 功能单元，直接命中评分原文"复用香山现有向量实现"的字面要求。
 - **证据到手后如何验证**：`git diff` 只含 `VIMac64b` 端口 + 新归约模块，无新乘法阵列；vmac 回归 `regression_delta == 0`；同一 Yosys 脚本对 vmac-only / vdot 两版跑面积对比（`design/ALGORITHM.md` §3.5，O1）。
 
 **D-b 验证方法学**
@@ -265,21 +266,19 @@ diff -q repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VIMac64
 - 形式验证：`vdot_dp` 组合 miter + bug 注入演示（`design/ALGORITHM.md` §3.5）。
 - difftest harness 负向自检：故意把期望写错 1 bit，必须 ABORT（防"空绿"，`design/ALGORITHM.md` §3.1）。
 - 回归基线 `results/regression_baseline.json` + `regression_delta == 0`。
-- Gloria 公开材料无形式验证与 harness 自检。
 - **证据到手后如何验证**：上述五项各自产出脚本/日志/JSON；`scripts/check_results.py` 聚合校验，任一缺失即判 D-b 未达成。
 
 **D-c 无假依赖微架构**
 
 - `vdRen=F` + 不登记 `vmaInsts`，连续 vdot 背靠背吞吐目标 1 条/拍（待实测）。
-- 竞品公开材料均无此项。
 - **证据到手后如何验证**：N 条独立 vdot 的 `mcycle` 差分给出 `T_steady`；RAW 链用例验证写回正确；按 `design/ALGORITHM.md` §3.4 的三口径报告。
 
-### 7.3 为什么不是 Gloria / Sun
+### 7.3 设计取舍与非目标
 
-- **Gloria 是当前证据链标杆**：官方 K=8、`ACCW=19`、XSTop 层次 PATH、65 行全核 PASS、252 次计时、PR #128 已合并。我们的策略是**先在证据完整性上 match**（XSTop 级证据、全核日志、计时口径），再靠 D-a/D-b/D-c 三个维度超出；不使用绝对化措辞。
-- **Sun 的软肋**：语义偏离赛题伪代码（Zvdot4a 多结果）；数字前后不一致（2.40× vs 2.09×）；部分日志 dirty。
-- **qixuan**：文档最全，但香山平台证据为零、阶段一阻塞。
-- **目标表述**：**每一维不输、三维独有**；不使用绝对化措辞。
+- **K=8 单结果**：按官方伪代码口径实现；Zvdot4a 多结果语义不同，只作扩展路线图，不写扩展 RTL（`design/SPEC.md` §2.3、§3.2）。
+- **复用 `VIMac64b` 的 `sum_wo`**：不新建乘法阵列；A2 独立模块只作功能退路（§2.3），不改共享 `VimacCfg`（§3.2）。
+- **2 拍 tap0 为首选**：2 拍是设计目标，是否收敛以综合/STA 结果为准；没有 STA/liberty 时不写"已收敛"（§3.1、§8 R3）。
+- **不把未实测写成已完成**：本节与 §3.1 的"目标/待测"按 §8 风险登记逐条跟踪。
 
 > 其他答辩素材（非可审计差异）：编码治理见 `design/SPEC.md` §2.3–§2.6；扩展路线图见本文 §9（只做文档，不写扩展 RTL）。
 
@@ -399,5 +398,5 @@ private val vstartIllegal = isVArith && (io.vstart =/= 0.U)
 1. 文档体系检查通过：检查脚本随内部工程仓维护，不在本交付包内，退出码 0。
 2. 改动点表 8+3 的每个编号在源码中 `grep` 命中：`VDOT_VV`、`VimacType.vdot`、`VimacOpcode.vdot`、`exec_vdot`、X15 端口 `sum_wo` 与 `fireS1` 各一处；命令与输出存证据路径。
 3. §3.1 的 2 拍预算表在综合/STA 后产出实测值；未测前保持"待测"，不得写成已收敛。
-4. §7 四列对照表的每条事实都能在对手的公开仓库、日志或 README 中找到对应条目；D-a/D-b/D-c 各有一份证据文件路径。
+4. §7 每条设计声明都有本仓证据或明确的待测标记；D-a/D-b/D-c 各有一份证据文件路径。
 5. §8 的 R1–R13 逐条有状态（开放/已关闭/已降级）。

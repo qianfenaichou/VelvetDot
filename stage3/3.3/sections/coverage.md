@@ -64,11 +64,11 @@
 
 > `vs1`/`vs2` 的 v0/v4/v8 来自**非法编码**（`vdot_ill_sew` 的 `vd=vs1=vs2=v0`、`vdot_ill_lmul*` 的组基址）；**合法域**的 `vs1` 实际只有 `v1`，`vs2` 只有 `{2,10}`。这就是 F28 记 `partial` 而不是 `covered` 的原因。
 
-### B.5 与对手调研稿（§4.1）的差异
+### B.5 与调研稿（§4.1）的差异
 
 | 差异 | 调研稿 | 本文 | 原因 |
 |---|---|---|---|
-| 状态计数 | covered 20 / thin 7 / partial 1 / gap 1 | **covered 11 / thin 15 / partial 2 / gap 1** | 调研稿按「≥2 例**或** ≥1024 样本」判 covered，且把 4 个不发射 vdot 的例算进合法域；本文按「≥2 例**独立命中**」且这 4 例判 `na`。**更严，不更松** |
+| 状态计数 | covered 20 / thin 7 / partial 1 / gap 1 | **covered 11 / thin 15 / partial 2 / gap 1** | 调研稿按「≥2 例**或** ≥1024 样本」判 covered，且把 4 个不发射 vdot 的例算进合法域；本文按「≥2 例**独立命中**」且这 4 例判 `na`。**口径差异在此披露** |
 | F14 `vd==vs2` | covered | **partial** | 调研稿把 `perf_vdot` 的 `--no-diff` 自检算 covered；本文要求 difftest 比对 |
 | F28 寄存器空间 | vd 14/32、vs1 1/32、vs2 2/32 | vd 16/32、vs1 5/32、vs2 3/32 | 本文把 8 个负例的真实编码也计入索引空间 |
 
