@@ -1,0 +1,61 @@
+From 8942811a4613b814e68bc7ec9154e6492fd13c94 Mon Sep 17 00:00:00 2001
+From: qianfenaichou <174696874+qianfenaichou@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 11:51:15 +0800
+Subject: [PATCH] X-new P-2: carry-save retiming of VdotReduce (register
+ (sum,carry) pair, CPA+format in S3)
+
+- VdotReduce.scala: tree.out_sum/out_car now cross the fireS1 boundary (2x19=38 FF);
+  the 19-bit CPA and Cat(96'b0, sext32(S)) formatting move to the output cycle.
+- Ports/2-cycle contract/VIMac64b/VimacCfg unchanged.
+- Measured (Yosys 0.48, same script as 126752216): 481 -> 500 cells, ltp 22 -> 14,
+  DFFE_PP 19 -> 38; 30/30 difftest + extra 129/129 pass, L_vdot stays 4.
+---
+ .../vector/vectorIMAC/VdotReduce.scala        | 25 ++++++++++++++-----
+ 1 file changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala b/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+index 4fbaff5..62be95e 100644
+--- a/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
++++ b/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala
+@@ -13,6 +13,14 @@ import yunsuan.vector.CSA_Nto2With3to2MainPipeline
+   * (`pipeLevel = 0`, i.e. purely combinational), closes it with a plain 19-bit CPA and
+   * formats the result as `Cat(96'b0, sext32(S))`.
+   *
++  * P-2 carry-save retiming (候选 A): what crosses the
++  * `io.fireS1` register boundary is the tree's **redundant `(sum, carry)` pair** (2 x 19 =
++  * 38 FF), not the resolved sum. The 19-bit CPA and the `Cat(96'b0, sext32(S))` formatting
++  * therefore run in the output (S3) cycle and are muxed against Mgu there, while S2 keeps
++  * only the ~8-level tree cone. Cycle count is unchanged: these registers still update on
++  * `io.fireS1`, so `io.vd` is valid in exactly the same cycle as the old
++  * `RegEnable(result, io.fireS1)`; only the register width changes 19 -> 38.
++  *
+   * Timing: registered on `io.fireS1`, the very same enable that latches `VIMac64b.io.walOut`,
+   * so the vdot result is aligned with the 2-cycle `VimacCfg` latency. The enable must come
+   * from the VIMac64b port itself (see design/CODING-STD.md 3.4); the wrapper only connects it.
+@@ -34,12 +42,17 @@ class VdotReduce(k: Int = 8, width: Int = 19) extends Module {
+   tree.io.fire := io.fireS1 // unused with pipeLevel = 0; connected for form
+   tree.io.in := operands
+ 
+-  // last-level carry-propagate adder: plain '+', 19-bit result (range [-130048, 131072])
+-  private val cpa = tree.io.out_sum +& tree.io.out_car
+-  private val s19 = cpa(width - 1, 0)
++  // P-2: cut the pipeline on the redundant (sum, carry) pair at the fireS1 boundary
++  // (2 x 19 = 38 FF). Keeping the pair unresolved lets the 4:2 tree end the second stage
++  // at ~8 levels; the CPA and formatting below then sit in the output cycle, in parallel
++  // with Mgu (the wrapper muxes vdot/mgu at the output stage).
++  private val sumS2 = RegEnable(tree.io.out_sum, io.fireS1)
++  private val carryS2 = RegEnable(tree.io.out_car, io.fireS1)
+ 
+-  // write-back formatting: vd[31:0] = sext32(S), vd[127:32] = 0 (independent of vta/vma/tail)
+-  private val result = Cat(0.U(96.W), s19.asSInt.pad(32).asUInt)
++  // last-level carry-propagate adder (S3): plain '+', 19-bit result (range [-130048, 131072])
++  private val cpa = sumS2 +& carryS2
++  private val s19 = cpa(width - 1, 0)
+ 
+-  io.vd := RegEnable(result, io.fireS1)
++  // write-back formatting (S3): vd[31:0] = sext32(S), vd[127:32] = 0 (independent of vta/vma/tail)
++  io.vd := Cat(0.U(96.W), s19.asSInt.pad(32).asUInt)
+ }
+-- 
+2.43.0
+
