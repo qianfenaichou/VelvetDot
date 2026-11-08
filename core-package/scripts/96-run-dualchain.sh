@@ -15,7 +15,7 @@
 # 一个作业跑**两个镜像**（同一份源码的两次编译，不是两次运行同一镜像）：
 #   ① vdot_dualchain.bin     主镜像：八条链的差分中位数 + 16 条功能逐字节比对
 #      + 三条同口径对照臂（M9 本项 vdot 依赖链 / M10 标准 RVV 五指令链 / M11 空循环 control，
-#        复现 Gloria/GEMwhu 的「N=0/64/256/1024、3 重复、4 点 OLS 斜率」口径）
+#        复现外部公开材料的「N=0/64/256/1024、3 重复、4 点 OLS 斜率」口径）
 #   ② vdot_dualchain_g0.bin  G0 反例（-DDC_G0=1）：期望被人为翻转 1 bit，
 #      DUT/NEMU 仍逐位一致 ⇒ 必须 GOOD TRAP + 无 ABORT，但**必须**被用例内嵌自检判负
 #      （`CASE vdot_dualchain_g0: MISMATCH`）。这是「本包的空绿防护真的起作用」的机械证明。
