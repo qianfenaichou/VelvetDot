@@ -30,8 +30,6 @@
 | [`patches/`](patches/) | 从上游基线到实现的全部代码改动 | [`stage2/2.2-rtl/CHANGES.md`](stage2/2.2-rtl/CHANGES.md) |
 | [`results/`](results/) | 差分验证、性能、综合、时序、功耗、形式验证、覆盖的原始产物 | [`results/difftest/`](results/difftest/) |
 | [`core-package/`](core-package/README.md) | 集群调度脚本、环境探针、落位手册 | [`core-package/README.md`](core-package/README.md) |
-| [`docx/`](docx/02-赛题与评分细则.md) | 赛题原文与评分细则 | [`docx/02-赛题与评分细则.md`](docx/02-赛题与评分细则.md) |
-| [`docs/口播/`](docs/口播/01_阶段一操作.md) | 三段录屏的分镜表与逐字稿（成片未产出） | [`01_阶段一操作.md`](docs/口播/01_阶段一操作.md) |
 
 ## 实现与主要结果
 
@@ -70,7 +68,7 @@ sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difft
 
 ## 材料与证据入口
 
-- [`docs/README.md`](docs/README.md)：正文、附录与口播稿的入口，含评委二十分钟与一小时的两种阅读顺序
+- [`docs/README.md`](docs/README.md)：正文与附录的入口，含评委二十分钟与一小时的两种阅读顺序
 - [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)：一行一条证据，给出文件、它证明什么、生成方式与对应结论
 - [`VALIDATION.md`](VALIDATION.md)：每条结论的验证方式、结果、以及明确没做什么
 
