@@ -1,0 +1,7 @@
+# variant	top	clock_ps	worst_slack_ps	path_delay_ps	startpoint	endpoint	rc
+P2_VdotReduce	VdotReduce	700	-8.839	658.839	_1279_	io_vd[18]	0
+P2_VdotReduce	VdotReduce	750	41.161	658.839	_1279_	io_vd[18]	0
+P2_VdotReduce	VdotReduce	800	91.161	658.839	_1279_	io_vd[18]	0
+K1_VdotReduce	VdotReduce	1100	-24.836	1084.3	io_sum_wo_0[3]	_1197_	0
+K1_VdotReduce	VdotReduce	1200	75.164	1084.3	io_sum_wo_0[3]	_1197_	0
+K1_VdotReduce	VdotReduce	1300	175.164	1084.3	io_sum_wo_0[3]	_1197_	0

@@ -1,0 +1,8 @@
+# OpenSTA 3.2.0 report_power -digits 6; liberty=NangateOpenCellLibrary_typical.lib sha256=8d540a4d4cf6d09d27c87ad067857a9c0c2eeb023ab7a56e058cd3113db4e9b1
+# variant	top	mode	clock_ps	input_activity	input_duty	internal_W	switching_W	leakage_W	total_W	note
+K1_VdotReduce	VdotReduce	leakage-only	NA	0	0.5	0.000000e+00	0.000000e+00	1.778420e-05	1.778420e-05	leakage-only; no clock defined; set_power_activity -input -density 0 -duty 0.5
+K1_VdotReduce	VdotReduce	synthetic	1000	0.1	0.5	5.527636e-04	3.343002e-04	1.778420e-05	9.048480e-04	SYNTHETIC input activity 0.1/cycle duty 0.5 at 1 GHz reference; NOT a real workload
+P2_VdotReduce	VdotReduce	leakage-only	NA	0	0.5	0.000000e+00	0.000000e+00	1.974276e-05	1.974276e-05	leakage-only; no clock defined; set_power_activity -input -density 0 -duty 0.5
+P2_VdotReduce	VdotReduce	synthetic	1000	0.1	0.5	6.113455e-04	3.235936e-04	1.974309e-05	9.546821e-04	SYNTHETIC input activity 0.1/cycle duty 0.5 at 1 GHz reference; NOT a real workload
+VIMac64b	VIMac64b	leakage-only	NA	0	0.5	0.000000e+00	0.000000e+00	7.462668e-04	7.462668e-04	leakage-only; no clock defined; set_power_activity -input -density 0 -duty 0.5
+VIMac64b	VIMac64b	synthetic	1000	0.1	0.5	2.320141e-02	1.204664e-02	7.461944e-04	3.599424e-02	SYNTHETIC input activity 0.1/cycle duty 0.5 at 1 GHz reference; NOT a real workload

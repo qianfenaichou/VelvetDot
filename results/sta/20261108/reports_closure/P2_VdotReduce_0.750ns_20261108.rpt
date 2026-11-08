@@ -1,0 +1,43 @@
+Startpoint: _1279_ (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: io_vd[18] (output port clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+      Delay        Time   Description
+-----------------------------------------------------------------
+   0.000000    0.000000   clock core_clock (rise edge)
+   0.000000    0.000000   clock network delay (ideal)
+   0.000000    0.000000 ^ _1279_/CK (DFF_X1)
+   0.084149    0.084149 v _1279_/Q (DFF_X1)
+   0.059227    0.143376 v _0677_/Z (XOR2_X1)
+   0.046451    0.189827 ^ _0679_/ZN (AOI21_X1)
+   0.033883    0.223710 v _0692_/ZN (OAI211_X1)
+   0.027339    0.251049 ^ _0694_/ZN (NAND3_X1)
+   0.018420    0.269469 v _0698_/ZN (AOI21_X1)
+   0.050518    0.319987 ^ _0701_/ZN (AOI21_X1)
+   0.031490    0.351477 v _0705_/ZN (OAI21_X1)
+   0.045984    0.397461 ^ _0713_/ZN (OAI211_X1)
+   0.029116    0.426577 v _0722_/ZN (NAND3_X1)
+   0.026863    0.453440 ^ _0724_/ZN (NAND3_X1)
+   0.021182    0.474622 v _0733_/ZN (NAND3_X1)
+   0.026992    0.501614 ^ _0734_/ZN (OAI21_X1)
+   0.028167    0.529781 v _0736_/ZN (OAI21_X1)
+   0.045381    0.575162 ^ _0744_/ZN (OAI211_X1)
+   0.024021    0.599182 v _0750_/ZN (NAND3_X1)
+   0.022813    0.621996 ^ _0751_/ZN (OAI21_X1)
+   0.036843    0.658839 ^ _0753_/ZN (XNOR2_X1)
+   0.000000    0.658839 ^ io_vd[18] (out)
+               0.658839   data arrival time
+
+   0.750000    0.750000   clock core_clock (rise edge)
+   0.000000    0.750000   clock network delay (ideal)
+   0.000000    0.750000   clock reconvergence pessimism
+  -0.050000    0.700000   output external delay
+               0.700000   data required time
+-----------------------------------------------------------------
+               0.700000   data required time
+              -0.658839   data arrival time
+-----------------------------------------------------------------
+               0.041161   slack (MET)
+
+

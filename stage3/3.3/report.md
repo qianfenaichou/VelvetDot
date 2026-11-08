@@ -6,7 +6,7 @@
 2. **落点**：新增 `VdotReduce`（481 cells / ltp 22），复用 `VIMac64b` 已算出的 8 个 16 位积，wrapper 输出 Mux 旁路 Mgu，共享 `VimacCfg` 未改（§5、§5.1）。
 3. **验证**：30/30 在 K1（`126676734`）与 P-2（`127137638`）两棵树各跑一次、数值相同；扩容 224/224（`127194011`）⇒ 合计 254 个镜像；形式 miter 为 2–3 拍、零初值/定点驱动的**有界**检查（§4.12、§4.13、§7.4）。
 4. **性能**：`L_vdot=4` cyc；按官方 3.3 指标定义的组合链 latency 比 `16 / 4 = 4.0×`（基线序列自设；3 指令链 vs 单指令），另给每指令归一 `1.33×`（微架构口径），两者差异只来自分母是否按指令数归一（§4.3）。
-5. **面积/时序**：`VdotReduce` 481 cells = 单个 `VIMac64b` 42,783 cells 的 1.12%；STA 只到模块级、Nangate45 代理、预布局，K1 1084.3 ps / P-2 658.8 ps（两版起终点不同、不可相减），333/500 ps 下均违例、**时序未闭合**（§4.10.2、§5）。
+5. **面积/时序/功耗**：`VdotReduce` 481 cells = 单个 `VIMac64b` 42,783 cells 的 1.12%；STA 只到模块级、Nangate45 代理、预布局，K1 1084.3 ps / P-2 658.8 ps（两版起终点不同、不可相减），333/500 ps 下均违例；**闭合点扫描**给出 P-2 在 750 ps、K1 在 1200 ps 首次 slack ≥ 0（该口径下，非时序收敛）；功耗 leakage 实测 K1 17.78 µW / P-2 19.74 µW / `VIMac64b` 746 µW，dynamic 仅合成活动率（§4.10.2、§4.10.3、§5）。
 
 ## 目录（先读这五处）
 
@@ -901,9 +901,9 @@ python3 results/difftest/slope/calc_slope.py \
 
 ---
 
-#### 4.10.2 时序边界：2 拍仍是设计目标，代理工艺 STA 实测全部违例
+#### 4.10.2 时序边界：2 拍是设计目标，代理工艺 STA 给出闭合点
 
-**结论先写（2026-11-08 更新）**：本报告现在**有** STA，但它只到**模块级数据通路**、用**工艺代理**、跑在**预布局**网表上——不是香山目标工艺、不是全芯片、不是签核。结果是**两版 `VdotReduce` 在 333 ps 与 500 ps 下都违例**（worst slack `−791.8 / −624.8 ps` 与 `−375.8 / −208.8 ps`），`VIMac64b` 的模块级网表在同样约束下 slack 达 `−11,857.3 / −11,690.3 ps`。因此 **2 拍（500 ps）仍是未达成的设计目标**：写「已满足 2 拍」「已收敛」「Fmax = X GHz」都是越界。2026-11-06 那轮「本机与昆山均无 `sta`、也无 Liberty」的可达性核实（B.5）保留为**历史记录**，它描述的是补做之前的状态。
+**结论先写（2026-11-08 更新，含闭合点扫描）**：本报告现在**有** STA，但它只到**模块级数据通路**、用**工艺代理**、跑在**预布局**网表上——不是香山目标工艺、不是全芯片、不是签核。两个参考预算下**两版 `VdotReduce` 都违例**（333 ps：K1 `−791.8` / P-2 `−375.8 ps`；500 ps：`−624.8` / `−208.8 ps`），`VIMac64b` 的模块级网表在同样约束下 slack 达 `−11,857.3 / −11,690.3 ps`。为回答「到底要放宽到多少才不违例」，本轮**只放宽周期、不动任何约束**补做了闭合点扫描：**P-2 在 750 ps 首次 slack ≥ 0（+41.161 ps），K1 在 1200 ps 首次 ≥ 0（+75.164 ps）**。因此 **2 拍（500 ps）仍是未达成的设计目标**：写「已满足 2 拍」「已收敛」「Fmax = X GHz」都是越界——闭合点只说明「在这套代理工艺与预布局网表下、周期放宽到该值时最差 slack ≥ 0」，不是时序收敛，也不能外推为芯片可跑频率。
 
 **结果表（2026-11-08 实测；8/8 run `rc=0`，逐 run 记录 `results/sta/20261108/worst_slack_20261108.tsv`）**：
 
@@ -919,6 +919,19 @@ python3 results/difftest/slope/calc_slope.py \
 | P-2 | `VIMac64b` | 500 ps | **−11,690.3 ps** | 12,149.7 ps | `io_srcType_0[1]`（输入口） | `_52432_`（DFF） |
 
 （读表三条：① `worst slack` 是 `report_worst_slack -max` 输出，与 `report_checks` 逐条解析出的最小 slack 在 8/8 run 上一致；② 「数据到达」已含 50 ps 输入外部延迟，slack 另扣库内 setup 时间（`DFF_X1` 40.5 ps）与输出 50 ps 外部延迟，故 **slack ≠ 周期 − 数据到达**；③ **同一 top 的 K1 与 P-2 两行起点/终点不同**（`VdotReduce` 一版从输入口起、另一版从内部 `(sum,carry)` 寄存器起到输出口），因此 **不能**把两行之差（slack +416.0 ps、数据到达 −425.5 ps）当成「P-2 的收益」——那不是同一条路径的 before/after。）
+
+**闭合点扫描（2026-11-08 补做；约束与上表逐字相同，只改 `-period`；6/6 run `rc=0`，逐 run 记录 `results/sta/20261108/worst_slack_closure_20261108.tsv`）**：
+
+| RTL 版 | 时钟周期 | worst slack | 数据到达 | 起点 | 终点 | 工具判定 |
+|---|---|---|---|---|---|---|
+| P-2 | 700 ps | −8.839 ps | 658.839 ps | `_1279_`（DFF） | `io_vd[18]`（输出口） | VIOLATED |
+| P-2 | **750 ps** | **+41.161 ps** | 658.839 ps | `_1279_` | `io_vd[18]` | **MET** |
+| P-2 | 800 ps | +91.161 ps | 658.839 ps | `_1279_` | `io_vd[18]` | MET |
+| K1 | 1100 ps | −24.836 ps | 1084.304 ps | `io_sum_wo_0[3]`（输入口） | `_1197_`（DFF） | VIOLATED |
+| K1 | **1200 ps** | **+75.164 ps** | 1084.304 ps | `io_sum_wo_0[3]` | `_1197_` | **MET** |
+| K1 | 1300 ps | +175.164 ps | 1084.304 ps | `io_sum_wo_0[3]` | `_1197_` | MET |
+
+**两句可核查的话**：P-2 在已测点中 **750 ps 首次 slack ≥ 0（+41.161 ps）**，700 ps 仍为 −8.839 ps，闭合点落在 (700, 750] ps；K1 在 **1200 ps 首次 ≥ 0（+75.164 ps）**，1100 ps 仍为 −24.836 ps，闭合点落在 (1100, 1200] ps。**「闭合」在本节只指上述口径下的 slack ≥ 0**，不是时序收敛、不是达到某 GHz 设计目标，也不能外推为芯片可跑频率。两版的闭合点也**不可相减**当作「重定时的收益」——理由同上表读表第 ③ 条（起点/终点不同）。
 
 > **一处证据内部不一致（照实记）**：`toolchain_20261108.log:116-125` 的汇总行把 `VIMac64b` 的 `path_delay` 打成 **0.0587 ns**，而 `.rpt` 的 `data arrival time` 与 `worst_slack_20261108.tsv` 都是 **12.1497 ns**。本表取 `.rpt`（逐 run 原始报告，已人工核对到 `data arrival time` 行），判定该 log 汇总行解析取错字段；**该字段未用于本节任何数字**，两个值的差（12.0910 ns）也不与 slack 相加减。
 
@@ -1004,17 +1017,29 @@ python3 results/difftest/slope/calc_slope.py \
 | 昆山登录节点（未 source） | NOT_FOUND | NOT_FOUND | NOT_FOUND | — |
 | 昆山登录节点（`source ~/tools/env.sh`） | **可用**：`~/tools/yosys/bin/yosys`，`Yosys 0.48 (git sha1 aaa53474…)` | NOT_FOUND | NOT_FOUND | `module avail` 无 openroad/opensta/asap7/sky130（`grep` 退出 1）；HOME 内无 ORFS/OpenROAD 目录、无 `.sif`；`*.lib` 只命中 `core/src/nexus-am/Makefile.lib`（构建片段，非 Liberty） |
 
-⇒ **该快照的结论**：2026-11-06 时 STA 与 `report_power` 均【未运行】，原因不是脚本出错，而是工具与工艺库数据链缺失（当次**未安装、未构建、未下载任何 PDK**，未执行任何 STA 命令）。**2026-11-08 的变化**：STA 工具（自建 OpenSTA 3.2.0）与 Liberty（Nangate45 代理）已具备，STA **已跑**（见本节开头的表）；`report_power` **仍【未运行】**，因为仍缺**活动率**（VCD/SAIF，见 §4.10.3 的 C.3 路线 C）。
+⇒ **该快照的结论**：2026-11-06 时 STA 与 `report_power` 均【未运行】，原因不是脚本出错，而是工具与工艺库数据链缺失（当次**未安装、未构建、未下载任何 PDK**，未执行任何 STA 命令）。**2026-11-08 的变化**：STA 工具（自建 OpenSTA 3.2.0）与 Liberty（Nangate45 代理）已具备，STA **已跑**（见本节开头的表）；`report_power` **已跑**（leakage 实测、dynamic 仅合成活动率，见 §4.10.3 C.1）；仍缺的是**真实负载活动率**（VCD/SAIF，见 §4.10.3 C.4 路线 D）。
 
 ---
 
-#### 4.10.3 功耗边界：RTL 级能说什么、不能说什么
+#### 4.10.3 功耗边界：代理工艺下的 leakage 实测，dynamic 只有合成活动率
 
-**结论先写**：本报告**没有**功耗实测，也**没有**可换算成 mW 的 RTL 功耗估算。能写的是三条有证据的结构性事实 + 一条外部 FPGA 参照；不能写「功耗仅增 1.12%」「几乎不增功耗」这类把面积当功耗的句子。
+**结论先写（2026-11-08 更新）**：本轮补做了 `report_power`，但要说清它给的是什么。**leakage 是 Liberty 直接给的、可复算的实测值**（Nangate45 代理工艺、预布局网表）：`VdotReduce` K1 **1.778e-05 W**、P-2 **1.974e-05 W**，对照 `VIMac64b` **7.463e-04 W**（≈17.8 µW / 19.7 µW / 746 µW）。**dynamic 只有在合成活动率下才有数**（1 GHz 参考、输入活动率 0.1/cycle、duty 0.5）：`VdotReduce` K1 **8.871e-04 W**、P-2 **9.349e-04 W**、`VIMac64b` **3.525e-02 W**。合成活动率**不是真实负载**，所以 dynamic 只能作同流程量级对照，不能写成「本设计的功耗」。仍然**不能**写「功耗仅增 1.12%」「几乎不增功耗」这类把面积当功耗的句子。
 
 > 口径定位：官方 3.3 的显式判据只有「Baseline 与 vdot 的 latency 加速比」（`docx/02-赛题与评分细则.md:66`）；功耗不是独立评分行，但官方描述提到低功耗（`docx/02-赛题与评分细则.md:18`）。本节是**防守性口径说明**，不冒充官方要求。
 
-##### C.1 外部参照：Nanhu-vdot 的 +0.5% 是 FPGA 数，不是硅数
+##### C.1 本轮实测：leakage 与合成 dynamic（`report_power`，Nangate45 代理、预布局）
+
+| 设计 | leakage-only leakage | synthetic internal | synthetic switching | synthetic dynamic | synthetic total（含 leakage） |
+|---|---:|---:|---:|---:|---:|
+| K1 `VdotReduce` | **1.778420e-05 W** | 5.527636e-04 W | 3.343002e-04 W | **8.870638e-04 W** | 9.048480e-04 W |
+| P-2 `VdotReduce` | **1.974276e-05 W** | 6.113455e-04 W | 3.235936e-04 W | **9.349391e-04 W** | 9.546821e-04 W |
+| `VIMac64b` | **7.462668e-04 W** | 2.320141e-02 W | 1.204664e-02 W | **3.524805e-02 W** | 3.599424e-02 W |
+
+**命令与口径（必须同页读）**：工具 OpenSTA 3.2.0、Liberty 与 §4.10.2 同一份（`sha256 8d540a4d…e9b1`）、网表同一批映射后网表。leakage-only 用 `set_power_activity -input -density 0 -duty 0.5` 且**不建时钟**（避免时钟网 `2/period` 活动率混进 dynamic，报告里 internal/switching 均为 `0.000000e+00`，可据此确认是纯 leakage）；synthetic 组用 `create_clock -period 1.0` + `set_power_activity -input -activity 0.1 -duty 0.5`。`help report_power` 原文确认「无仿真活动时用 `set_power_activity`，输入默认 activity=0.1、duty=0.5」，且**不需要** `read_power_liberty`。6/6 run `rc=0`（作业 `127260994`，`kshcnormal`），逐 run 原文见 `results/sta/20261108/reports_power/`，汇总见 `results/sta/20261108/power_summary_20261108.tsv`。
+
+**边界（四条）**：① **leakage 与 dynamic 分列，不相加成单一「功耗」结论**——leakage 可复算，dynamic 依赖合成活动率与 1 GHz 参考频率，**不是真实负载**；② dynamic 随频率线性缩放，换频率须按 `f/1 GHz` 重算，不能把本表 1 GHz 的 dynamic 当其他频率的实测值；③ Nangate45 是 45 nm 开源代理工艺（`nom_voltage 1.10 V`、`nom_temperature 25 C`），不是香山目标工艺，绝对值不可外推；④ 预布局、无寄生、无 CTS，互连功耗为零 ⇒ dynamic 偏乐观。synthetic 组的 leakage 与 leakage-only 组在第 6 位有效数字有极小差异（P-2 `1.974309e-05` vs `1.974276e-05`），因该 Liberty 含状态相关 `leakage_power` 组；本表 leakage 取 leakage-only 组。
+
+##### C.2 外部参照：Nanhu-vdot 的 +0.5% 是 FPGA 数，不是硅数
 
 arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 vdot 扩展，报告：
 
@@ -1027,7 +1052,7 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 
 **用法与边界**：只能作为「同类 vdot 扩展在 FPGA 原型上资源/功耗增幅为个位数百分比」的**方向性佐证**；不能当香山 ASIC 的功耗数，不能把 +0.5% 搬到本设计。原因：① FPGA 功耗与 ASIC 功耗不是同一量纲；② 论文用**最小配置**（减少译码/执行单元、去 L2），与昆明湖 V2 全配置不同；③ 未给活动率/VCD/SAIF 设置，无法复算。
 
-##### C.2 我方一手事实：面积占比 + always-on 结构
+##### C.3 我方一手事实：面积占比 + always-on 结构
 
 | 事实 | 数值 | 出处 | 能说明什么 |
 |---|---|---|---|
@@ -1040,18 +1065,18 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 
 **由这些事实能推出的功耗结论只有一句**：新增逻辑的**面积**是 +1.12%；由于 tap 没有 opcode 门控，它的动态功耗在**每条 vimac** 上都会发生，而不是只在 vdot 上发生。这是定性成本，不是 mW 数字。
 
-##### C.3 四条估算路线与可行性
+##### C.4 四条估算路线与可行性
 
 | 路线 | 需要什么 | 现在能不能做 | 能产出 | 不能产出 |
 |---|---|---|---|---|
 | A. 面积代理 | 已有 481 / 42,783 | **能**（已完成） | 「cell 占比 +1.12%」 | 不能称功耗；不能假设 cell 电容/活动率相同 |
 | B. 手算 `P_dyn = α C V² f` | `C`（Liberty/PDK）、`V`、`f`、`α`（VCD/SAIF 或假设） | **不能**（缺 C/V/f/α） | 若强行假设，只能给无量纲比值 | 不能给 mW；不能当实测 |
-| C. OpenSTA/OpenROAD `report_power` | Liberty + 映射后网表 + 活动率（VCD/SAIF 或 `set_power_activity`） | **Liberty 与映射网表已具备（2026-11-08 补做 STA 时自建 OpenSTA 3.2.0 + Nangate45 代理库）、活动率仍缺**；【未运行】 | 给定 Liberty/活动率下的 internal/switching/leakage/total power（W） | 没有活动率（VCD/SAIF）就给不出有意义的数；Nangate45 只是工艺代理，不是目标工艺 |
+| C. OpenSTA/OpenROAD `report_power` | Liberty + 映射后网表 + 活动率（VCD/SAIF 或 `set_power_activity`） | **已做（2026-11-08）**：OpenSTA 3.2.0 + Nangate45 代理库 + 映射后网表；leakage 实测，dynamic 仅合成活动率（1 GHz、0.1/cycle、duty 0.5） | 见 C.1 表：leakage 与 synthetic dynamic 分列 | **真实负载 dynamic** 仍缺（无 VCD/SAIF 活动率）；Nangate45 只是工艺代理，绝对值不可外推 |
 | D. 用现有 VCD 做活动率 | VCD 必须是真实时钟域、覆盖代表性负载 | **不能**：`stage2/2.2-rtl/wave/` 的 `key.vcd` 的 clock 是**采样域时钟**（每拍 dump 一次 ⇒ 摘录中恒为 1、窗口 [8377,8577] 内 **0 次翻转**），且仅 213 个时间戳、非 `VdotReduce` 独立 top | — | 不能当活动率证据 |
 
-**OpenSTA 的能力边界（引原文）**：`report_power` 用 Liberty power models + propagated/annotated pin activities，报告 internal/switching/leakage/total power（"Power values are reported in watts."）；无仿真活动时用 `set_power_activity`，输入默认 activity=0.1、duty=0.5（OpenSTA Commands 页，本次实取）。**2026-11-08 补做 STA 后，Liberty（Nangate45 代理）与映射后网表已具备，缺的只剩活动率**——所以本节仍【未运行】`report_power`，也仍不写任何 mW 数字（`set_power_activity` 的默认值 0.1/0.5 是假设，不是本设计的数据）。
+**OpenSTA 的能力边界（引原文）**：`report_power` 用 Liberty power models + propagated/annotated pin activities，报告 internal/switching/leakage/total power（"Power values are reported in watts."）；无仿真活动时用 `set_power_activity`，输入默认 activity=0.1、duty=0.5（OpenSTA Commands 页实取；本次另取 `help report_power` 原文核对，见 `results/sta/20261108/reports_power/`）。**2026-11-08 已按路线 C 跑完**：leakage 可复算（见 C.1 表），dynamic 因缺真实活动率只能用合成值，故本节**只把 leakage 当实测结论**，dynamic 明确标注为合成活动率下的量级对照。
 
-##### C.4 禁止写法
+##### C.5 禁止写法
 
 - 不写「功耗仅增 1.12%」「功耗几乎不增」——1.12% 是 cell 占比，不是功耗。
 - 不写「Nanhu-vdot +0.5% ⇒ 本设计也 +0.5%」——平台/配置/工艺都不同。
@@ -1943,7 +1968,7 @@ tr/cell = 4900 / 481 = 10.19                                    # 实测比值
 | 形式验证 miter（数据通路） | **已跑并达标（2026-11-04）**：作业 `126751660`（`results/formal/50-miter-20261104T093531.json`，`status=通过`）正向 `SUCCESS`、负控 mutant `FAIL`；scope 仅 `vdot_dp` 数据通路 | 不覆盖流水/发射/旁路；全流水形式验证仍未运行 |
 | 2 拍时序闭合（`S2_own`/`S3_own` 切段探针） | **切段仍未运行；模块级 STA 已补做（2026-11-08）**：自建 OpenSTA 3.2.0 + Nangate45 `typical` 代理 Liberty（135 cell）、预布局、**仅数据通路**、无寄生；`VdotReduce` 在 333/500 ps 下 worst slack **−791.8 / −624.8 ps**（K1）、**−375.8 / −208.8 ps**（P-2），`VIMac64b` **−11,857.3 / −11,690.3 ps**——**全部违例**。`gen_probes.sh` 仍未建 ⇒ `S2_own`/`S3_own` 没有数字、B.1 的切段判据**未完成**。2026-11-06 的「`sta`/`openroad` 均 NOT_FOUND、仓内 0 个 Liberty」快照保留在 §4.10.2（B.5）作历史 | 见 §4.10.2 表；证据 `results/sta/20261108/`（8 份 `.rpt` + `worst_slack_20261108.tsv` + `toolchain_20261108.log`）；**仍不写「2 拍已收敛」** |
 | 结构覆盖率（RTL line/toggle，30 例） | **已补做（2026-11-08）**：顶层行覆盖率 **67.5%（113,628/168,283）**；`VdotReduce`/`VIMacU`/`VIMac64b` 的 `tree_line` 均 **100%**（分母 1/3/3），`VIMacSrcTypeModule` **未采集（-1）**；toggle/branch/expr/fsm **未采集**。作业 `127239138` 用例侧 30/30、`.dat` 30/30，但脚本内 `make coverage` 传参失败（rc=127），数字来自同管线重合并（`127252294`） | 见 §4.11.4；证据 `results/coverage/20261108T103732/`（`merged30all.coverage/` + `cases.tsv` + `annotated/`）；**不写「覆盖率达标」** |
-| 功耗 | **未测**（cell 占比 `481/42,783 = +1.12%` **不是功耗**；外部 Nanhu-vdot 的 `+0.5%` 是 **FPGA** 参照、不是硅数）。RTL 级只能给三条结构性事实（见 §4.10.3） | 见 §4.10.3；`report_power` 需 Liberty + 活动率——**Liberty 已有（Nangate45 代理，2026-11-08 补 STA 时自建）、活动率仍缺**，故仍未运行（`evidence/sta-toolcheck-20261106.txt` §L6 结论 4 是 2026-11-06 快照；现状见 §4.10.3 C.3） |
+| 功耗 | **已测（代理工艺）**：leakage 实测 `VdotReduce` K1 1.778e-05 W / P-2 1.974e-05 W、`VIMac64b` 7.463e-04 W；dynamic 仅合成活动率（1 GHz、0.1/cycle、duty 0.5），**不是真实负载**。cell 占比 `481/42,783 = +1.12%` **不是功耗** | 见 §4.10.3 C.1 表与边界；`results/sta/20261108/power_summary_20261108.tsv`（作业 `127260994`） |
 | 2.2 lint | **已跑（2026-11-04）**：作业 `126761068`（`results/lint/25-rtl-lint-20261104T113051.json`）对 `VdotReduce`（+两级 CSA）与 `VIMac64b` 两个 top 跑 `verilator --lint-only -Wno-fatal`，均 `rc=0`、`%Error=0`。**该次 `-Wno-fatal` 会把 warning 降级，`%Warning` 计数天然为 0 ⇒ 不能据此声称「无告警」**；修订另跑两档：**(a) 去 `-Wno-fatal`、默认告警集**（作业 `126798101`）两 top 均 `rc=0`/`%Error=0`/`%Warning=0`（`results/lint/25-strict-*.log`）；**(b) `-Wall`（打开告警集合）**（作业 `126803426`）`VdotReduce` `%Warning=1`、`VIMac64b` `%Warning=12`，**13 条全为 `UNUSEDSIGNAL`（Chisel 生成物的未用信号/未用位，含 `_RANDOM`），`%Error` 每 top 各 1 行（`VdotReduce` `Exiting due to 1 warning(s)`、`VIMac64b` `Exiting due to 12 warning(s)`，合计 2 行，均为汇总行、非缺陷类 error）；无 LATCH/WIDTH/CASEINCOMPLETE 等实质缺陷类**；Verilator 对 warning 计入退出码故 `rc=1`。⇒ 「lint 通过」（入库脚本判据 `rc=0 ∧ %Error=0`）在 (a) 成立；若判据是「`-Wall` 下 0 告警」则**不成立**（13 条 UNUSEDSIGNAL），本报告不把 (b) 写成通过 | 脚本 `core-package/scripts/25-rtl-lint.sh`（档 a 用一次性脚本 `results/lint/strict-lint2.sh`，**未加 `-Wall`**；档 b 用 `results/lint/wall-lint.sh`，两端 md5 分别 `a382af89…`/`f7089880…` 同值）；范围仅 `--lint-only`；provenance 见 `results/lint/provenance-strict-lint.txt` §P1–§P8 |
 | ~~当前 30 例清单整份 `--full`~~ | **已跑**（`142246`，30/30、0 ABORT、9/9 criteria、`status=通过`） | 见 `../3.1.2-difftest/README.md` §2 |
 | 编码检查退出码（`design/verify/encoding-gate.py`） | **EXIT=1（不是 PASS）**：本次实跑 `python3 -I design/verify/encoding-gate.py --snapshot "$OPCODES_SNAPSHOT"` → 上游维度 0 重叠、P1–P3 阳性对照 3/3 命中 + P4 反向对照 1/1 正确排除，但检出 3 条 `[SCALA-BITPAT]/[NEMU-DECODE-H]/[VECDECODER]` 漂移——**均为本仓自己已落地的 vdot 表项** | 见 §5.4；本报告**不宣称「编码检查通过」**，只主张「上游全库本编号位 0 占用 + 阳性对照 3/3 + 反向 1/1 命中」；同口径见 `stage2/2.1-design/README.md` §3 |

@@ -1,0 +1,51 @@
+Startpoint: io_sum_wo_0[3] (input port clocked by core_clock)
+Endpoint: _1197_ (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+      Delay        Time   Description
+-----------------------------------------------------------------
+   0.000000    0.000000   clock core_clock (rise edge)
+   0.000000    0.000000   clock network delay (ideal)
+   0.050000    0.050000 ^ input external delay
+   0.000000    0.050000 ^ io_sum_wo_0[3] (in)
+   0.041081    0.091081 ^ _0682_/ZN (XNOR2_X1)
+   0.059258    0.150339 ^ _0683_/Z (XOR2_X1)
+   0.049989    0.200328 ^ _0685_/ZN (XNOR2_X1)
+   0.047747    0.248075 ^ _0686_/ZN (XNOR2_X1)
+   0.062200    0.310275 ^ _0688_/Z (XOR2_X1)
+   0.049775    0.360050 ^ _0690_/ZN (XNOR2_X1)
+   0.049298    0.409348 ^ _0701_/ZN (XNOR2_X1)
+   0.061635    0.470983 ^ _0702_/Z (XOR2_X1)
+   0.063360    0.534343 ^ _0704_/Z (XOR2_X1)
+   0.025200    0.559543 v _0707_/ZN (AOI21_X1)
+   0.045452    0.604995 ^ _0740_/ZN (OAI21_X1)
+   0.023968    0.628963 v _0774_/ZN (AOI21_X1)
+   0.045071    0.674034 ^ _0808_/ZN (OAI21_X1)
+   0.023836    0.697870 v _0844_/ZN (AOI21_X1)
+   0.043834    0.741704 ^ _0878_/ZN (OAI21_X1)
+   0.024290    0.765993 v _0910_/ZN (NAND2_X1)
+   0.059893    0.825886 ^ _0984_/ZN (AOI211_X1)
+   0.036238    0.862124 v _1056_/ZN (OAI211_X1)
+   0.049437    0.911562 ^ _1129_/ZN (AOI211_X1)
+   0.028787    0.940348 v _1152_/ZN (OAI21_X1)
+   0.029892    0.970241 ^ _1157_/ZN (OAI21_X1)
+   0.019796    0.990037 v _1173_/ZN (AOI21_X1)
+   0.037562    1.027599 v _1177_/ZN (XNOR2_X1)
+   0.056705    1.084304 v _1178_/Z (MUX2_X1)
+   0.000000    1.084304 v _1197_/D (DFF_X1)
+               1.084304   data arrival time
+
+   1.300000    1.300000   clock core_clock (rise edge)
+   0.000000    1.300000   clock network delay (ideal)
+   0.000000    1.300000   clock reconvergence pessimism
+               1.300000 ^ _1197_/CK (DFF_X1)
+  -0.040532    1.259468   library setup time
+               1.259468   data required time
+-----------------------------------------------------------------
+               1.259468   data required time
+              -1.084304   data arrival time
+-----------------------------------------------------------------
+               0.175164   slack (MET)
+
+

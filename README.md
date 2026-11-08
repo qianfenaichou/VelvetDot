@@ -7,8 +7,8 @@
 - **RTL 落点**：新增 `yunsuan/vector/vectorIMAC/VdotReduce.scala`（4:2 压缩树 + 19 位 CPA），复用 `VIMac64b` 已算出的 8 个 16 位积；wrapper `xiangshan/backend/fu/wrapper/VIMacU.scala` 用输出 Mux 旁路 Mgu；非法判定在 `xiangshan/backend/decode/VecExceptionGen.scala:276-277`；NEMU 表项与参考模型 `design/verify/vdot_model.py`。
 - **验证**：主回归 30/30 + 扩容 224/224（`127194011`）= **254 个镜像**。30/30 在 K1 树（`20-full-20261103T142246`，`126676734`）与 P-2 树（`20-full-20261107T104227`，`127137638`，需 `patches/0005`）各跑过一次，数值相同；参考模型自检 1142 例；miter 正控 `SUCCESS` / 负控 `FAIL`（2 拍、`-set-init-zero` 有界证明）。
 - **性能**：`L_vdot=4` cyc（`vd==vs2` 依赖链）；两个口径并列——官方口径的组合链 latency `16 / 4 = 4.0×`（分母是 3 条 RVV 指令的整链，含 3 条指令的串行开销），每指令归一 `(16/3)÷4 = 1.333×`（微架构口径）。4 次独立重复 `L_vdot` 全为 4、极差 0（作业 `127196036`）。
-- **面积/时序**：`VdotReduce` 481 cells、ltp 22，占单个 `VIMac64b` 42,783 cells 的 **1.12%**；P-2 重定时版 500 cells、ltp 14（1.17%）。STA 最差路径 1084.3 ps（K1）/ 658.8 ps（P-2），两条路径起点/终点不同、**数值不可相减**；333 ps 与 500 ps 两个周期下**均违例，时序未闭合**。
-- **边界**：未做硅后（无 PDK、无布局布线、无寄生抽取）；未做功耗（`report_power` 未跑）；扩展只实测 K=16 一格（977 cells、ltp 26，独立数据通路、未集成进 `VIMacU`）；结构覆盖只到 line，toggle 未采集。
+- **面积/时序**：`VdotReduce` 481 cells、ltp 22，占单个 `VIMac64b` 42,783 cells 的 **1.12%**；P-2 重定时版 500 cells、ltp 14（1.17%）。STA 最差路径 1084.3 ps（K1）/ 658.8 ps（P-2），两条路径起点/终点不同、**数值不可相减**；333 ps 与 500 ps 两个周期下**均违例**；只放宽周期的闭合点扫描给出 P-2 750 ps、K1 1200 ps 首次 slack ≥ 0（该口径下，非时序收敛）。
+- **边界**：未做硅后（无 PDK、无布局布线、无寄生抽取）；功耗只有 leakage 是实测（K1 17.78 µW / P-2 19.74 µW / `VIMac64b` 746 µW），dynamic 仅合成活动率、不是真实负载；扩展只实测 K=16 一格（977 cells、ltp 26，独立数据通路、未集成进 `VIMacU`）；结构覆盖只到 line，toggle 未采集。
 
 基线为 XiangShan `a4eeaab`（`kunminghu-v2`）与 NEMU `a683e0b`；docx 编号项 12 项均有产物（见文末索引），三个视频位未产出，缺口写在已知限制。
 
