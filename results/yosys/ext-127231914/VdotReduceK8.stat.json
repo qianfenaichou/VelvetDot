@@ -1,0 +1,57 @@
+{
+   "creator": "Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)",
+   "invocation": "stat -json ",
+   "modules": {
+      "\\VdotReduceK8": {
+         "num_wires":         397,
+         "num_wire_bits":     1698,
+         "num_pub_wires":     69,
+         "num_pub_wire_bits": 1370,
+         "num_ports":         11,
+         "num_port_bits":     258,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         481,
+         "num_cells_by_type": {
+            "$_ANDNOT_": 32,
+            "$_AND_": 7,
+            "$_DFFE_PP_": 19,
+            "$_MUX_": 105,
+            "$_NAND_": 11,
+            "$_NOR_": 14,
+            "$_ORNOT_": 4,
+            "$_OR_": 23,
+            "$_XNOR_": 134,
+            "$_XOR_": 128,
+            "$scopeinfo": 4
+         }
+      }
+   },
+      "design": {
+         "num_wires":         397,
+         "num_wire_bits":     1698,
+         "num_pub_wires":     69,
+         "num_pub_wire_bits": 1370,
+         "num_ports":         11,
+         "num_port_bits":     258,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         481,
+         "num_cells_by_type": {
+            "$_ANDNOT_": 32,
+            "$_AND_": 7,
+            "$_DFFE_PP_": 19,
+            "$_MUX_": 105,
+            "$_NAND_": 11,
+            "$_NOR_": 14,
+            "$_ORNOT_": 4,
+            "$_OR_": 23,
+            "$_XNOR_": 134,
+            "$_XOR_": 128,
+            "$scopeinfo": 4
+         }
+      }
+}
+

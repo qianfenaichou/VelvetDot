@@ -1,0 +1,86 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2024  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+
+-- Running command `read_verilog -sv /public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK8.sv /public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK8Gold.sv; miter -equiv -flatten -make_outputs VdotReduceK8Gold VdotReduceK8 miter; hierarchy -top miter; sat -verify -prove-asserts -set-init-zero -seq 2 -show-ports miter' --
+
+1. Executing Verilog-2005 frontend: /public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK8.sv
+Parsing SystemVerilog input from `/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK8.sv' to AST representation.
+Generating RTLIL representation for module `\csa4to2_w19'.
+Generating RTLIL representation for module `\reduce_tree_k8'.
+Generating RTLIL representation for module `\VdotReduceK8'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK8Gold.sv
+Parsing SystemVerilog input from `/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK8Gold.sv' to AST representation.
+Generating RTLIL representation for module `\VdotReduceK8Gold'.
+Successfully finished Verilog frontend.
+
+3. Executing MITER pass (creating miter circuit).
+Creating miter cell "miter" with gold cell "VdotReduceK8Gold" and gate cell "VdotReduceK8".
+
+3.1. Executing FLATTEN pass (flatten design).
+<suppressed ~6 debug messages>
+
+3.2. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+<suppressed ~184 debug messages>
+
+4. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1. Analyzing design hierarchy..
+Top module:  \miter
+
+4.2. Analyzing design hierarchy..
+Top module:  \miter
+Removing unused module `\VdotReduceK8'.
+Removing unused module `\VdotReduceK8Gold'.
+Removing unused module `\csa4to2_w19'.
+Removing unused module `\reduce_tree_k8'.
+Removed 4 unused modules.
+
+5. Executing SAT pass (solving SAT problems in the circuit).
+
+Setting up time step 1:
+Final constraint equation: { } = { }
+Imported 575 cells to SAT database.
+No constraints for initial state found.
+
+
+Setting up time step 2:
+Final constraint equation: { } = { }
+Imported 575 cells to SAT database.
+Import show expression: \in_clock
+Import show expression: \in_io_fireS1
+Import show expression: \in_io_sum_wo_0
+Import show expression: \in_io_sum_wo_1
+Import show expression: \in_io_sum_wo_2
+Import show expression: \in_io_sum_wo_3
+Import show expression: \in_io_sum_wo_4
+Import show expression: \in_io_sum_wo_5
+Import show expression: \in_io_sum_wo_6
+Import show expression: \in_io_sum_wo_7
+Import show expression: \gate_io_vd
+Import show expression: \gold_io_vd
+Import show expression: \trigger
+
+Solving problem with 11124 variables and 29739 clauses..
+SAT proof finished - no model found: SUCCESS!
+
+                  /$$$$$$      /$$$$$$$$     /$$$$$$$    
+                 /$$__  $$    | $$_____/    | $$__  $$   
+                | $$  \ $$    | $$          | $$  \ $$   
+                | $$  | $$    | $$$$$       | $$  | $$   
+                | $$  | $$    | $$__/       | $$  | $$   
+                | $$/$$ $$    | $$          | $$  | $$   
+                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$
+                 \____ $$$|__/|________/|__/|_______/|__/
+                       \__/                              
+
+End of script. Logfile hash: c564372c80, CPU: user 0.10s system 0.02s, MEM: 18.52 MB peak
+Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+Time spent: 68% 1x sat (0 sec), 13% 3x read_verilog (0 sec), ...

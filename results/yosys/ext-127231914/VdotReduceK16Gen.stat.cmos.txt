@@ -1,0 +1,28 @@
+4. Printing statistics.
+
+=== VdotReduceK16Gen ===
+
+   Number of wires:               1269
+   Number of wire bits:           4259
+   Number of public wires:         157
+   Number of public wire bits:    3147
+   Number of ports:                 19
+   Number of port bits:            386
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1593
+     $_ANDNOT_                      33
+     $_AND_                        463
+     $_DFFE_PP_                     20
+     $_MUX_                        111
+     $_NAND_                        12
+     $_NOR_                         16
+     $_ORNOT_                        2
+     $_OR_                         328
+     $_XNOR_                       142
+     $_XOR_                        454
+     $scopeinfo                     12
+
+   Estimated number of transistors:      13552+
+

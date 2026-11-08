@@ -1,0 +1,32 @@
+{
+  "VdotReduceK8": {
+    "k": 8,
+    "sew": 8,
+    "width": 19,
+    "mode": "pure42",
+    "n_csa4to2": 3,
+    "n_csa3to2": 0,
+    "n_stages": 2,
+    "lines": 188
+  },
+  "VdotReduceK16": {
+    "k": 16,
+    "sew": 8,
+    "width": 20,
+    "mode": "pure42",
+    "n_csa4to2": 7,
+    "n_csa3to2": 0,
+    "n_stages": 3,
+    "lines": 227
+  },
+  "VdotReduceK16Gen": {
+    "k": 16,
+    "sew": 8,
+    "width": 20,
+    "mode": "gen32",
+    "n_csa4to2": 3,
+    "n_csa3to2": 8,
+    "n_stages": 4,
+    "lines": 250
+  }
+}

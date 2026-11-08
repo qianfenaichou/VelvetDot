@@ -1,0 +1,1118 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2024  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+
+-- Running command `read_verilog -sv /public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv; synth -top VdotReduceK16Gen; flatten; tee -o /public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16Gen.stat.json stat -json; tee -o /public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16Gen.stat.cmos.txt stat -tech cmos; tee -o /public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16Gen.ltp.txt ltp -noff' --
+
+1. Executing Verilog-2005 frontend: /public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv
+Parsing SystemVerilog input from `/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv' to AST representation.
+Generating RTLIL representation for module `\csa4to2_w20'.
+Generating RTLIL representation for module `\csa3to2_w20'.
+Generating RTLIL representation for module `\reduce_tree_k16'.
+Generating RTLIL representation for module `\VdotReduceK16Gen'.
+Successfully finished Verilog frontend.
+
+2. Executing SYNTH pass.
+
+2.1. Executing HIERARCHY pass (managing design hierarchy).
+
+2.1.1. Analyzing design hierarchy..
+Top module:  \VdotReduceK16Gen
+Used module:     \reduce_tree_k16
+Used module:         \csa4to2_w20
+Used module:         \csa3to2_w20
+
+2.1.2. Analyzing design hierarchy..
+Top module:  \VdotReduceK16Gen
+Used module:     \reduce_tree_k16
+Used module:         \csa4to2_w20
+Used module:         \csa3to2_w20
+Removed 0 unused modules.
+
+2.2. Executing PROC pass (convert processes to netlists).
+
+2.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+2.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+2.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 0 assignments to connections.
+
+2.2.4. Executing PROC_INIT pass (extract init attributes).
+
+2.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+2.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~1 debug messages>
+
+2.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\VdotReduceK16Gen.$proc$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:242$208'.
+     1/1: $0\io_vd_r[127:0]
+
+2.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+2.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\VdotReduceK16Gen.\io_vd_r' using process `\VdotReduceK16Gen.$proc$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:242$208'.
+  created $dff cell `$procdff$211' with positive edge clock.
+
+2.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+2.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `\VdotReduceK16Gen.$proc$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:242$208'.
+Removing empty process `VdotReduceK16Gen.$proc$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:242$208'.
+Cleaned up 1 empty switch.
+
+2.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module reduce_tree_k16.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+
+2.3. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module reduce_tree_k16.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+
+2.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \reduce_tree_k16..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Removed 6 unused cells and 69 unused wires.
+<suppressed ~9 debug messages>
+
+2.5. Executing CHECK pass (checking for obvious problems).
+Checking module VdotReduceK16Gen...
+Checking module csa3to2_w20...
+Checking module csa4to2_w20...
+Checking module reduce_tree_k16...
+Found and reported 0 problems.
+
+2.6. Executing OPT pass (performing simple optimizations).
+
+2.6.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.6.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+<suppressed ~228 debug messages>
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 76 cells.
+
+2.6.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \VdotReduceK16Gen..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \csa3to2_w20..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa4to2_w20..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \reduce_tree_k16..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+<suppressed ~39 debug messages>
+
+2.6.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \VdotReduceK16Gen.
+  Optimizing cells in module \csa3to2_w20.
+  Optimizing cells in module \csa4to2_w20.
+  Optimizing cells in module \reduce_tree_k16.
+Performed a total of 0 changes.
+
+2.6.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.6.6. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.6.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+Removed 0 unused cells and 76 unused wires.
+<suppressed ~1 debug messages>
+
+2.6.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.6.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+2.6.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \VdotReduceK16Gen..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \csa3to2_w20..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa4to2_w20..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \reduce_tree_k16..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+<suppressed ~39 debug messages>
+
+2.6.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \VdotReduceK16Gen.
+  Optimizing cells in module \csa3to2_w20.
+  Optimizing cells in module \csa4to2_w20.
+  Optimizing cells in module \reduce_tree_k16.
+Performed a total of 0 changes.
+
+2.6.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.6.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.6.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.6.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.6.16. Finished OPT passes. (There is nothing left to do.)
+
+2.7. Executing FSM pass (extract and optimize FSM).
+
+2.7.1. Executing FSM_DETECT pass (finding FSMs in design).
+
+2.7.2. Executing FSM_EXTRACT pass (extracting FSM from design).
+
+2.7.3. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+2.7.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.7.5. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+2.7.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
+
+2.7.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
+
+2.7.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
+
+2.8. Executing OPT pass (performing simple optimizations).
+
+2.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \VdotReduceK16Gen..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \csa3to2_w20..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa4to2_w20..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \reduce_tree_k16..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+<suppressed ~39 debug messages>
+
+2.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \VdotReduceK16Gen.
+  Optimizing cells in module \csa3to2_w20.
+  Optimizing cells in module \csa4to2_w20.
+  Optimizing cells in module \reduce_tree_k16.
+Performed a total of 0 changes.
+
+2.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.8.6. Executing OPT_DFF pass (perform DFF optimizations).
+Adding EN signal on $procdff$211 ($dff) from module VdotReduceK16Gen (D = { 96'000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa [19] \cpa }, Q = \io_vd_r).
+Setting constant 0-bit at position 32 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 33 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 34 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 35 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 36 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 37 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 38 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 39 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 40 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 41 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 42 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 43 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 44 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 45 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 46 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 47 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 48 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 49 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 50 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 51 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 52 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 53 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 54 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 55 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 56 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 57 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 58 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 59 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 60 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 61 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 62 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 63 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 64 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 65 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 66 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 67 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 68 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 69 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 70 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 71 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 72 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 73 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 74 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 75 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 76 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 77 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 78 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 79 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 80 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 81 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 82 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 83 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 84 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 85 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 86 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 87 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 88 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 89 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 90 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 91 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 92 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 93 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 94 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 95 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 96 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 97 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 98 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 99 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 100 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 101 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 102 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 103 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 104 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 105 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 106 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 107 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 108 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 109 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 110 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 111 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 112 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 113 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 114 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 115 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 116 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 117 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 118 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 119 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 120 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 121 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 122 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 123 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 124 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 125 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 126 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+Setting constant 0-bit at position 127 on $auto$ff.cc:266:slice$212 ($dffe) from module VdotReduceK16Gen.
+
+2.8.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+Removed 1 unused cells and 1 unused wires.
+<suppressed ~2 debug messages>
+
+2.8.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.8.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+2.8.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \VdotReduceK16Gen..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa3to2_w20..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa4to2_w20..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \reduce_tree_k16..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+<suppressed ~38 debug messages>
+
+2.8.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \VdotReduceK16Gen.
+  Optimizing cells in module \csa3to2_w20.
+  Optimizing cells in module \csa4to2_w20.
+  Optimizing cells in module \reduce_tree_k16.
+Performed a total of 0 changes.
+
+2.8.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.8.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.8.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.8.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.8.16. Finished OPT passes. (There is nothing left to do.)
+
+2.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 12 bits (of 32) from FF cell VdotReduceK16Gen.$auto$ff.cc:266:slice$213 ($dffe).
+Removed top 96 bits (of 128) from wire VdotReduceK16Gen.io_vd_r.
+Removed top 1 bits (of 20) from port Y of cell csa3to2_w20.$or$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$204 ($or).
+Removed top 1 bits (of 20) from port A of cell csa3to2_w20.$or$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$204 ($or).
+Removed top 1 bits (of 20) from port B of cell csa3to2_w20.$or$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$204 ($or).
+Removed top 1 bits (of 20) from port Y of cell csa3to2_w20.$or$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$202 ($or).
+Removed top 1 bits (of 20) from port A of cell csa3to2_w20.$or$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$202 ($or).
+Removed top 1 bits (of 20) from port B of cell csa3to2_w20.$or$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$202 ($or).
+Removed top 1 bits (of 20) from port Y of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$203 ($and).
+Removed top 1 bits (of 20) from port A of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$203 ($and).
+Removed top 1 bits (of 20) from port B of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$203 ($and).
+Removed top 1 bits (of 20) from port Y of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$200 ($and).
+Removed top 1 bits (of 20) from port A of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$200 ($and).
+Removed top 1 bits (of 20) from port B of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$200 ($and).
+Removed top 1 bits (of 20) from port Y of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$201 ($and).
+Removed top 1 bits (of 20) from port A of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$201 ($and).
+Removed top 1 bits (of 20) from port B of cell csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$201 ($and).
+Removed top 1 bits (of 20) from wire csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$200_Y.
+Removed top 1 bits (of 20) from wire csa3to2_w20.$and$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:137$203_Y.
+Removed top 1 bits (of 20) from wire csa3to2_w20.carry_hi.
+Removed top 1 bits (of 20) from wire csa4to2_w20.carry_vec.
+Removed top 1 bits (of 20) from wire csa4to2_w20.cout_vec.
+
+2.10. Executing PEEPOPT pass (run peephole optimizers).
+
+2.11. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+Removed 0 unused cells and 6 unused wires.
+<suppressed ~3 debug messages>
+
+2.12. Executing ALUMACC pass (create $alu and $macc cells).
+Extracting $alu and $macc cells in module VdotReduceK16Gen:
+  creating $macc model for $add$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:240$207 ($add).
+  creating $alu model for $macc $add$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:240$207.
+  creating $alu cell for $add$/public/home/scnsokdzoq/core/rtl/area_ext/VdotReduceK16Gen.sv:240$207: $auto$alumacc.cc:485:replace_alu$220
+  created 1 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module csa3to2_w20:
+  created 0 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module csa4to2_w20:
+  created 0 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module reduce_tree_k16:
+  created 0 $alu and 0 $macc cells.
+
+2.13. Executing SHARE pass (SAT-based resource sharing).
+
+2.14. Executing OPT pass (performing simple optimizations).
+
+2.14.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.14.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.14.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \VdotReduceK16Gen..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa3to2_w20..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa4to2_w20..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \reduce_tree_k16..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+<suppressed ~38 debug messages>
+
+2.14.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \VdotReduceK16Gen.
+  Optimizing cells in module \csa3to2_w20.
+  Optimizing cells in module \csa4to2_w20.
+  Optimizing cells in module \reduce_tree_k16.
+Performed a total of 0 changes.
+
+2.14.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.14.6. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.14.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.14.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.14.9. Finished OPT passes. (There is nothing left to do.)
+
+2.15. Executing MEMORY pass.
+
+2.15.1. Executing OPT_MEM pass (optimize memories).
+Performed a total of 0 transformations.
+
+2.15.2. Executing OPT_MEM_PRIORITY pass (removing unnecessary memory write priority relations).
+Performed a total of 0 transformations.
+
+2.15.3. Executing OPT_MEM_FEEDBACK pass (finding memory read-to-write feedback paths).
+
+2.15.4. Executing MEMORY_BMUX2ROM pass (converting muxes to ROMs).
+
+2.15.5. Executing MEMORY_DFF pass (merging $dff cells to $memrd).
+
+2.15.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.15.7. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+
+2.15.8. Executing OPT_MEM_WIDEN pass (optimize memories where all ports are wide).
+Performed a total of 0 transformations.
+
+2.15.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.15.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+2.16. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.17. Executing OPT pass (performing simple optimizations).
+
+2.17.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.17.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.17.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.17.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.17.5. Finished fast OPT passes.
+
+2.18. Executing MEMORY_MAP pass (converting memories to logic and flip-flops).
+
+2.19. Executing OPT pass (performing simple optimizations).
+
+2.19.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.19.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.19.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \VdotReduceK16Gen..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa3to2_w20..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \csa4to2_w20..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \reduce_tree_k16..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+<suppressed ~38 debug messages>
+
+2.19.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \VdotReduceK16Gen.
+  Optimizing cells in module \csa3to2_w20.
+  Optimizing cells in module \csa4to2_w20.
+  Optimizing cells in module \reduce_tree_k16.
+Performed a total of 0 changes.
+
+2.19.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.19.6. Executing OPT_SHARE pass.
+
+2.19.7. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.19.8. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+
+2.19.9. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.19.10. Finished OPT passes. (There is nothing left to do.)
+
+2.20. Executing TECHMAP pass (map to technology primitives).
+
+2.20.1. Executing Verilog-2005 frontend: /public/home/scnsokdzoq/tools/yosys/bin/../share/yosys/techmap.v
+Parsing Verilog input from `/public/home/scnsokdzoq/tools/yosys/bin/../share/yosys/techmap.v' to AST representation.
+Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
+Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
+Generating RTLIL representation for module `\_90_simplemap_logic_ops'.
+Generating RTLIL representation for module `\_90_simplemap_compare_ops'.
+Generating RTLIL representation for module `\_90_simplemap_various'.
+Generating RTLIL representation for module `\_90_simplemap_registers'.
+Generating RTLIL representation for module `\_90_shift_ops_shr_shl_sshl_sshr'.
+Generating RTLIL representation for module `\_90_shift_shiftx'.
+Generating RTLIL representation for module `\_90_fa'.
+Generating RTLIL representation for module `\_90_lcu_brent_kung'.
+Generating RTLIL representation for module `\_90_alu'.
+Generating RTLIL representation for module `\_90_macc'.
+Generating RTLIL representation for module `\_90_alumacc'.
+Generating RTLIL representation for module `\$__div_mod_u'.
+Generating RTLIL representation for module `\$__div_mod_trunc'.
+Generating RTLIL representation for module `\_90_div'.
+Generating RTLIL representation for module `\_90_mod'.
+Generating RTLIL representation for module `\$__div_mod_floor'.
+Generating RTLIL representation for module `\_90_divfloor'.
+Generating RTLIL representation for module `\_90_modfloor'.
+Generating RTLIL representation for module `\_90_pow'.
+Generating RTLIL representation for module `\_90_pmux'.
+Generating RTLIL representation for module `\_90_demux'.
+Generating RTLIL representation for module `\_90_lut'.
+Successfully finished Verilog frontend.
+
+2.20.2. Continuing TECHMAP pass.
+Using extmapper simplemap for cells of type $xor.
+Using extmapper simplemap for cells of type $mux.
+Using extmapper simplemap for cells of type $and.
+Using extmapper simplemap for cells of type $or.
+Using template $paramod$6fc37af1c109ae54e8aed83fcd995c12d378ce93\_90_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $dffe.
+Using template $paramod\_90_lcu_brent_kung\WIDTH=32'00000000000000000000000000010100 for cells of type $lcu.
+Using extmapper simplemap for cells of type $pos.
+Using extmapper simplemap for cells of type $not.
+No more expansions possible.
+<suppressed ~433 debug messages>
+
+2.21. Executing OPT pass (performing simple optimizations).
+
+2.21.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+<suppressed ~24 debug messages>
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.21.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.21.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.21.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+Removed 29 unused cells and 32 unused wires.
+<suppressed ~30 debug messages>
+
+2.21.5. Finished fast OPT passes.
+
+2.22. Executing ABC pass (technology mapping using ABC).
+
+2.22.1. Extracting gate netlist of module `\VdotReduceK16Gen' to `<abc-temp-dir>/input.blif'..
+Extracted 130 gates and 170 wires to a netlist network with 40 inputs and 20 outputs.
+
+2.22.1.1. Executing ABC.
+Running ABC command: "<yosys-exe-dir>/yosys-abc" -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 13 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+2.22.1.2. Re-integrating ABC results.
+ABC RESULTS:             ORNOT cells:        2
+ABC RESULTS:               AND cells:        7
+ABC RESULTS:                OR cells:       24
+ABC RESULTS:              XNOR cells:       22
+ABC RESULTS:              NAND cells:       12
+ABC RESULTS:               NOR cells:       16
+ABC RESULTS:            ANDNOT cells:       30
+ABC RESULTS:               XOR cells:       17
+ABC RESULTS:        internal signals:      110
+ABC RESULTS:           input signals:       40
+ABC RESULTS:          output signals:       20
+Removing temp directory.
+
+2.22.2. Extracting gate netlist of module `\csa3to2_w20' to `<abc-temp-dir>/input.blif'..
+Extracted 135 gates and 195 wires to a netlist network with 60 inputs and 39 outputs.
+
+2.22.2.1. Executing ABC.
+Running ABC command: "<yosys-exe-dir>/yosys-abc" -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 13 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+2.22.2.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:       57
+ABC RESULTS:                OR cells:       38
+ABC RESULTS:               XOR cells:       40
+ABC RESULTS:        internal signals:       96
+ABC RESULTS:           input signals:       60
+ABC RESULTS:          output signals:       39
+Removing temp directory.
+
+2.22.3. Extracting gate netlist of module `\csa4to2_w20' to `<abc-temp-dir>/input.blif'..
+Extracted 117 gates and 198 wires to a netlist network with 80 inputs and 39 outputs.
+
+2.22.3.1. Executing ABC.
+Running ABC command: "<yosys-exe-dir>/yosys-abc" -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 13 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+2.22.3.2. Re-integrating ABC results.
+ABC RESULTS:            ANDNOT cells:        1
+ABC RESULTS:              XNOR cells:       40
+ABC RESULTS:               MUX cells:       37
+ABC RESULTS:               XOR cells:       39
+ABC RESULTS:        internal signals:       79
+ABC RESULTS:           input signals:       80
+ABC RESULTS:          output signals:       39
+Removing temp directory.
+
+2.22.4. Extracting gate netlist of module `\reduce_tree_k16' to `<abc-temp-dir>/input.blif'..
+Extracted 0 gates and 0 wires to a netlist network with 0 inputs and 0 outputs.
+Don't call ABC as there is nothing to map.
+Removing temp directory.
+
+2.23. Executing OPT pass (performing simple optimizations).
+
+2.23.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module VdotReduceK16Gen.
+Optimizing module csa3to2_w20.
+Optimizing module csa4to2_w20.
+Optimizing module reduce_tree_k16.
+
+2.23.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\VdotReduceK16Gen'.
+Finding identical cells in module `\csa3to2_w20'.
+Finding identical cells in module `\csa4to2_w20'.
+Finding identical cells in module `\reduce_tree_k16'.
+Removed a total of 0 cells.
+
+2.23.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+2.23.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \VdotReduceK16Gen..
+Finding unused cells or wires in module \csa3to2_w20..
+Finding unused cells or wires in module \csa4to2_w20..
+Finding unused cells or wires in module \reduce_tree_k16..
+Removed 0 unused cells and 400 unused wires.
+<suppressed ~4 debug messages>
+
+2.23.5. Finished fast OPT passes.
+
+2.24. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `VdotReduceK16Gen'. Setting top module to VdotReduceK16Gen.
+
+2.24.1. Analyzing design hierarchy..
+Top module:  \VdotReduceK16Gen
+Used module:     \reduce_tree_k16
+Used module:         \csa3to2_w20
+Used module:         \csa4to2_w20
+
+2.24.2. Analyzing design hierarchy..
+Top module:  \VdotReduceK16Gen
+Used module:     \reduce_tree_k16
+Used module:         \csa3to2_w20
+Used module:         \csa4to2_w20
+Removed 0 unused modules.
+
+2.25. Printing statistics.
+
+=== VdotReduceK16Gen ===
+
+   Number of wires:                149
+   Number of wire bits:            908
+   Number of public wires:          39
+   Number of public wire bits:     798
+   Number of ports:                 19
+   Number of port bits:            386
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                151
+     $_ANDNOT_                      30
+     $_AND_                          7
+     $_DFFE_PP_                     20
+     $_NAND_                        12
+     $_NOR_                         16
+     $_ORNOT_                        2
+     $_OR_                          24
+     $_XNOR_                        22
+     $_XOR_                         17
+     reduce_tree_k16                 1
+
+=== csa3to2_w20 ===
+
+   Number of wires:                102
+   Number of wire bits:            215
+   Number of public wires:           6
+   Number of public wire bits:     119
+   Number of ports:                  5
+   Number of port bits:            100
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                135
+     $_AND_                         57
+     $_OR_                          38
+     $_XOR_                         40
+
+=== csa4to2_w20 ===
+
+   Number of wires:                 88
+   Number of wire bits:            277
+   Number of public wires:          10
+   Number of public wire bits:     199
+   Number of ports:                  6
+   Number of port bits:            120
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                117
+     $_ANDNOT_                       1
+     $_MUX_                         37
+     $_XNOR_                        40
+     $_XOR_                         39
+
+=== reduce_tree_k16 ===
+
+   Number of wires:                 40
+   Number of wire bits:            800
+   Number of public wires:          40
+   Number of public wire bits:     800
+   Number of ports:                 18
+   Number of port bits:            360
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 11
+     csa3to2_w20                     8
+     csa4to2_w20                     3
+
+=== design hierarchy ===
+
+   VdotReduceK16Gen                  1
+     reduce_tree_k16                 1
+       csa3to2_w20                   8
+       csa4to2_w20                   3
+
+   Number of wires:               1269
+   Number of wire bits:           4259
+   Number of public wires:         157
+   Number of public wire bits:    3147
+   Number of ports:                 95
+   Number of port bits:           1906
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1581
+     $_ANDNOT_                      33
+     $_AND_                        463
+     $_DFFE_PP_                     20
+     $_MUX_                        111
+     $_NAND_                        12
+     $_NOR_                         16
+     $_ORNOT_                        2
+     $_OR_                         328
+     $_XNOR_                       142
+     $_XOR_                        454
+
+2.26. Executing CHECK pass (checking for obvious problems).
+Checking module VdotReduceK16Gen...
+Checking module csa3to2_w20...
+Checking module csa4to2_w20...
+Checking module reduce_tree_k16...
+Found and reported 0 problems.
+
+3. Executing FLATTEN pass (flatten design).
+Deleting now unused module csa3to2_w20.
+Deleting now unused module csa4to2_w20.
+Deleting now unused module reduce_tree_k16.
+<suppressed ~12 debug messages>
+{
+   "creator": "Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)",
+   "invocation": "stat -json ",
+   "modules": {
+      "\\VdotReduceK16Gen": {
+         "num_wires":         1269,
+         "num_wire_bits":     4259,
+         "num_pub_wires":     157,
+         "num_pub_wire_bits": 3147,
+         "num_ports":         19,
+         "num_port_bits":     386,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         1593,
+         "num_cells_by_type": {
+            "$_ANDNOT_": 33,
+            "$_AND_": 463,
+            "$_DFFE_PP_": 20,
+            "$_MUX_": 111,
+            "$_NAND_": 12,
+            "$_NOR_": 16,
+            "$_ORNOT_": 2,
+            "$_OR_": 328,
+            "$_XNOR_": 142,
+            "$_XOR_": 454,
+            "$scopeinfo": 12
+         }
+      }
+   },
+      "design": {
+         "num_wires":         1269,
+         "num_wire_bits":     4259,
+         "num_pub_wires":     157,
+         "num_pub_wire_bits": 3147,
+         "num_ports":         19,
+         "num_port_bits":     386,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         1593,
+         "num_cells_by_type": {
+            "$_ANDNOT_": 33,
+            "$_AND_": 463,
+            "$_DFFE_PP_": 20,
+            "$_MUX_": 111,
+            "$_NAND_": 12,
+            "$_NOR_": 16,
+            "$_ORNOT_": 2,
+            "$_OR_": 328,
+            "$_XNOR_": 142,
+            "$_XOR_": 454,
+            "$scopeinfo": 12
+         }
+      }
+}
+
+4. Printing statistics.
+
+=== VdotReduceK16Gen ===
+
+   Number of wires:               1269
+   Number of wire bits:           4259
+   Number of public wires:         157
+   Number of public wire bits:    3147
+   Number of ports:                 19
+   Number of port bits:            386
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1593
+     $_ANDNOT_                      33
+     $_AND_                        463
+     $_DFFE_PP_                     20
+     $_MUX_                        111
+     $_NAND_                        12
+     $_NOR_                         16
+     $_ORNOT_                        2
+     $_OR_                         328
+     $_XNOR_                       142
+     $_XOR_                        454
+     $scopeinfo                     12
+
+   Estimated number of transistors:      13552+
+
+5. Executing LTP pass (find longest path).
+
+Longest topological path in VdotReduceK16Gen (length=27):
+    0: \io_sum_wo_0 [7]
+    1: $flatten\tree.\s0_csa3to2.$abc$993$new_n136 (via $flatten\tree.\s0_csa3to2.$abc$993$auto$blifparse.cc:396:parse_blif$1030)
+    2: $flatten\tree.\s0_csa3to2.$abc$993$new_n137 (via $flatten\tree.\s0_csa3to2.$abc$993$auto$blifparse.cc:396:parse_blif$1031)
+    3: \tree.s0_csa3to2.car [8] (via $flatten\tree.\s0_csa3to2.$abc$993$auto$blifparse.cc:396:parse_blif$1033)
+    4: $flatten\tree.\s5_csa3to2.$abc$993$new_n140 (via $flatten\tree.\s5_csa3to2.$abc$993$auto$blifparse.cc:396:parse_blif$1034)
+    5: $flatten\tree.\s5_csa3to2.$abc$993$new_n142 (via $flatten\tree.\s5_csa3to2.$abc$993$auto$blifparse.cc:396:parse_blif$1036)
+    6: \tree.s5_csa3to2.car [9] (via $flatten\tree.\s5_csa3to2.$abc$993$auto$blifparse.cc:396:parse_blif$1038)
+    7: $flatten\tree.\s8_csa4to2.$abc$1129$new_n164 (via $flatten\tree.\s8_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1174)
+    8: $flatten\tree.\s8_csa4to2.$abc$1129$new_n165 (via $flatten\tree.\s8_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1175)
+    9: $flatten\tree.\s8_csa4to2.$abc$1129$new_n166 (via $flatten\tree.\s8_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1176)
+   10: \tree.s8_csa4to2.car [9] (via $flatten\tree.\s8_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1232)
+   11: $flatten\tree.\s10_csa4to2.$abc$1129$new_n164 (via $flatten\tree.\s10_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1174)
+   12: $flatten\tree.\s10_csa4to2.$abc$1129$new_n165 (via $flatten\tree.\s10_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1175)
+   13: $flatten\tree.\s10_csa4to2.$abc$1129$new_n166 (via $flatten\tree.\s10_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1176)
+   14: \tree.s10_csa4to2.car [9] (via $flatten\tree.\s10_csa4to2.$abc$1129$auto$blifparse.cc:396:parse_blif$1232)
+   15: $abc$862$new_n111 (via $abc$862$auto$blifparse.cc:396:parse_blif$913)
+   16: $abc$862$new_n118 (via $abc$862$auto$blifparse.cc:396:parse_blif$920)
+   17: $abc$862$new_n119 (via $abc$862$auto$blifparse.cc:396:parse_blif$921)
+   18: $abc$862$new_n134 (via $abc$862$auto$blifparse.cc:396:parse_blif$936)
+   19: $abc$862$new_n135 (via $abc$862$auto$blifparse.cc:396:parse_blif$937)
+   20: $abc$862$new_n166 (via $abc$862$auto$blifparse.cc:396:parse_blif$968)
+   21: $abc$862$new_n167 (via $abc$862$auto$blifparse.cc:396:parse_blif$969)
+   22: $abc$862$new_n170 (via $abc$862$auto$blifparse.cc:396:parse_blif$972)
+   23: $abc$862$new_n182 (via $abc$862$auto$blifparse.cc:396:parse_blif$984)
+   24: $abc$862$new_n183 (via $abc$862$auto$blifparse.cc:396:parse_blif$985)
+   25: $abc$862$new_n187 (via $abc$862$auto$blifparse.cc:396:parse_blif$989)
+   26: $abc$862$new_n188 (via $abc$862$auto$blifparse.cc:396:parse_blif$990)
+   27: \cpa [19] (via $abc$862$auto$blifparse.cc:396:parse_blif$991)
+   ff: \io_vd [31] (via $auto$ff.cc:266:slice$576)
+
+End of script. Logfile hash: 513c238872, CPU: user 0.36s system 0.02s, MEM: 15.16 MB peak
+Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+Time spent: 39% 1x abc (0 sec), 13% 16x opt_clean (0 sec), ...

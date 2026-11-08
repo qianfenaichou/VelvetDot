@@ -1,0 +1,28 @@
+{
+  "schema": "vdot-verify/1",
+  "item": "P2-yosys-ext",
+  "script": "run_ext_yosys.sh",
+  "status": "通过",
+  "platform": "kshcnormal",
+  "slurm_job_id": "127231914",
+  "started_at": "2026-11-08T09:09:59+0800",
+  "ended_at": "2026-11-08T09:10:02+0800",
+  "yosys": "Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)",
+  "mapped_area_um2": -1,
+  "scope": "仅独立归约树数据通路（符号扩展 + 4:2 CSA 树 + W 位 CPA + 输出寄存器），未集成进 VIMacU，未含工艺库；cells 为 Yosys abc 通用门计数，不是硅面积",
+  "command_template": "read_verilog -sv <rtl>; synth -top <top>; flatten; tee -o <sj> stat -json; tee -o <cm> stat -tech cmos; tee -o <lt> ltp -noff",
+  "criteria": [
+    {"name": "synth_VdotReduceK8", "expected": "cells/ltp 解析成功", "actual": "cells=481 ltp=22", "status": "达标"},
+    {"name": "synth_VdotReduceK16", "expected": "cells/ltp 解析成功", "actual": "cells=977 ltp=26", "status": "达标"},
+    {"name": "synth_VdotReduceK16Gen", "expected": "cells/ltp 解析成功", "actual": "cells=1593 ltp=27", "status": "达标"},
+    {"name": "equiv_k8_vs_public_vdotreduce", "expected": "等价", "actual": "通过", "status": "达标"},
+    {"name": "equiv_k8_vs_gold", "expected": "等价", "actual": "通过", "status": "达标"},
+    {"name": "equiv_k16_vs_gold", "expected": "等价", "actual": "通过", "status": "达标"}
+  ],
+  "metrics": [
+    {"top": "VdotReduceK8", "k": 8, "width": 19, "structure": "pure4:2 3inst/2stage (baseline, replicates public K1 VdotReduce)", "cells": "481", "dff": "19", "scopeinfo": "4", "transistors_est": "4900", "longest_path": "22", "stat_json": "/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK8.stat.json", "ltp_txt": "/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK8.ltp.txt"},
+    {"top": "VdotReduceK16", "k": 16, "width": 20, "structure": "pure4:2 7inst/3stage (extension)", "cells": "977", "dff": "20", "scopeinfo": "8", "transistors_est": "10744", "longest_path": "26", "stat_json": "/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16.stat.json", "ltp_txt": "/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16.ltp.txt"},
+    {"top": "VdotReduceK16Gen", "k": 16, "width": 20, "structure": "generator-degraded 3:2 11inst/4stage (side evidence)", "cells": "1593", "dff": "20", "scopeinfo": "12", "transistors_est": "13552", "longest_path": "27", "stat_json": "/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16Gen.stat.json", "ltp_txt": "/public/home/scnsokdzoq/core/results/yosys/ext-127231914/VdotReduceK16Gen.ltp.txt"}
+  ],
+  "artifacts": ["/public/home/scnsokdzoq/core/results/yosys/ext-127231914.log", "/public/home/scnsokdzoq/core/results/yosys/ext-127231914.json", "/public/home/scnsokdzoq/core/results/yosys/ext-127231914"]
+}
