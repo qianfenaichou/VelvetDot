@@ -170,6 +170,6 @@ sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difft
 
 本工作基于香山昆明湖 V2（`a4eeaab`）与 YunSuan 向量实现（`9559211`，其 `rocket-chip` 子模块为 `46f1efe`），参考模型基于 NEMU（`a683e0b`），编码空间核对使用 riscv-opcodes 快照 `f24ac23`，并感谢 OpenXiangShan 社区维护这三个上游项目。结果产物对应 2026-11-01 基线，当前工作区检出已前移到实施 HEAD（`913ddd3` / `8942811` / `a9dca53`）。上游各组件的著作权与许可归其各自项目所有，版本锚点写在 [`versions.env`](versions.env)。更新日期：2026/11/08。
 
-![VelvetDot key visual](assets/velvetdot-keyvisual.png)
+![项目主视觉](assets/velvetdot-keyvisual.png)
 
-![VelvetDot poster](assets/velvetdot-poster.png)
+![项目海报](assets/velvetdot-poster.png)
