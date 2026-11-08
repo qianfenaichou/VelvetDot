@@ -1,0 +1,13 @@
+DAT_COUNT=30
+Coverage Summary:
+  line      :  67.5% (113628/168283)
+  toggle    :   0.0% (     0/     0)
+  branch    :   0.0% (     0/     0)
+  expr      :   0.0% (     0/     0)
+  fsm_state :   0.0% (     0/     0)
+  fsm_arc   :   0.0% (     0/     0)
+Annotation Summary:
+  lines with all attached points covered : 72.7%  (603019/829473)
+See lines with '%00' in /public/home/scnsokdzoq/core/results/coverage/20261108T103732/merged30.coverage
+REPORT_LINES=13557
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 105262828 Nov  8 13:09 /public/home/scnsokdzoq/core/results/coverage/20261108T103732/merged30.coverage/coverage_SimTop.log

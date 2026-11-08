@@ -1,0 +1,51 @@
+Startpoint: io_sum_wo_0[3] (input port clocked by core_clock)
+Endpoint: _1197_ (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+    Delay      Time   Description
+-------------------------------------------------------------
+   0.0000    0.0000   clock core_clock (rise edge)
+   0.0000    0.0000   clock network delay (ideal)
+   0.0500    0.0500 ^ input external delay
+   0.0000    0.0500 ^ io_sum_wo_0[3] (in)
+   0.0411    0.0911 ^ _0682_/ZN (XNOR2_X1)
+   0.0593    0.1503 ^ _0683_/Z (XOR2_X1)
+   0.0500    0.2003 ^ _0685_/ZN (XNOR2_X1)
+   0.0477    0.2481 ^ _0686_/ZN (XNOR2_X1)
+   0.0622    0.3103 ^ _0688_/Z (XOR2_X1)
+   0.0498    0.3601 ^ _0690_/ZN (XNOR2_X1)
+   0.0493    0.4093 ^ _0701_/ZN (XNOR2_X1)
+   0.0616    0.4710 ^ _0702_/Z (XOR2_X1)
+   0.0634    0.5343 ^ _0704_/Z (XOR2_X1)
+   0.0252    0.5595 v _0707_/ZN (AOI21_X1)
+   0.0455    0.6050 ^ _0740_/ZN (OAI21_X1)
+   0.0240    0.6290 v _0774_/ZN (AOI21_X1)
+   0.0451    0.6740 ^ _0808_/ZN (OAI21_X1)
+   0.0238    0.6979 v _0844_/ZN (AOI21_X1)
+   0.0438    0.7417 ^ _0878_/ZN (OAI21_X1)
+   0.0243    0.7660 v _0910_/ZN (NAND2_X1)
+   0.0599    0.8259 ^ _0984_/ZN (AOI211_X1)
+   0.0362    0.8621 v _1056_/ZN (OAI211_X1)
+   0.0494    0.9116 ^ _1129_/ZN (AOI211_X1)
+   0.0288    0.9403 v _1152_/ZN (OAI21_X1)
+   0.0299    0.9702 ^ _1157_/ZN (OAI21_X1)
+   0.0198    0.9900 v _1173_/ZN (AOI21_X1)
+   0.0376    1.0276 v _1177_/ZN (XNOR2_X1)
+   0.0567    1.0843 v _1178_/Z (MUX2_X1)
+   0.0000    1.0843 v _1197_/D (DFF_X1)
+             1.0843   data arrival time
+
+   0.5000    0.5000   clock core_clock (rise edge)
+   0.0000    0.5000   clock network delay (ideal)
+   0.0000    0.5000   clock reconvergence pessimism
+             0.5000 ^ _1197_/CK (DFF_X1)
+  -0.0405    0.4595   library setup time
+             0.4595   data required time
+-------------------------------------------------------------
+             0.4595   data required time
+            -1.0843   data arrival time
+-------------------------------------------------------------
+            -0.6248   slack (VIOLATED)
+
+

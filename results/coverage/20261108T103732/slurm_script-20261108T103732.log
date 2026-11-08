@@ -1,0 +1,39 @@
+[2026-11-08 10:37:32] ===== slurm_script run=20261108T103732 jobs=32 emu_threads=8 timeout=2400s guard=0 =====
+[2026-11-08 10:37:32] 已 source /public/home/scnsokdzoq/tools/env.sh
+[2026-11-08 10:37:33] [WARN] --no-budget-guard：跳过预算闸（用户已授权），机时风险与超支事实由记账脚本承担
+[2026-11-08 10:37:33] versions: xiangshan=a4eeaab difftest=3729300 verilator=Verilator 5.053 devel rev vUNKNOWN-built20261101-dd8a7d5
+[2026-11-08 10:37:33] == 覆盖率重建：rm -rf build/verilator-compile build/emu（T1）==
+[2026-11-08 12:18:22] coverage emu sha256=5bd559b126dccc5e908184c56428c73a93cef8bed262772f4a14217dc17f4d82
+[2026-11-08 12:23:22]   case vadd-microbench [vadd] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vadd-microbench/build/2026-11-08-12-23-18.coverage.dat)
+[2026-11-08 12:24:01]   case vdot_pos1 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_pos1/build/2026-11-08-12-23-57.coverage.dat)
+[2026-11-08 12:24:32]   case vdot_pos2 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_pos2/build/2026-11-08-12-24-28.coverage.dat)
+[2026-11-08 12:25:04]   case vdot_pos3 [vdot-pos] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_pos3/build/2026-11-08-12-25-00.coverage.dat)
+[2026-11-08 12:25:40]   case vdot_neg1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_neg1/build/2026-11-08-12-25-36.coverage.dat)
+[2026-11-08 12:26:17]   case vdot_neg_odd1 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_neg_odd1/build/2026-11-08-12-26-14.coverage.dat)
+[2026-11-08 12:26:49]   case vdot_neg_odd3 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_neg_odd3/build/2026-11-08-12-26-45.coverage.dat)
+[2026-11-08 12:27:31]   case vdot_neg_odd5 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_neg_odd5/build/2026-11-08-12-27-27.coverage.dat)
+[2026-11-08 12:28:10]   case vdot_neg_odd7 [vdot-neg] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_neg_odd7/build/2026-11-08-12-28-06.coverage.dat)
+[2026-11-08 12:28:49]   case vdot_bound1 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_bound1/build/2026-11-08-12-28-45.coverage.dat)
+[2026-11-08 12:29:28]   case vdot_bound2 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_bound2/build/2026-11-08-12-29-24.coverage.dat)
+[2026-11-08 12:30:00]   case vdot_bound3 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_bound3/build/2026-11-08-12-29-56.coverage.dat)
+[2026-11-08 12:30:41]   case vdot_bound4 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_bound4/build/2026-11-08-12-30-38.coverage.dat)
+[2026-11-08 12:31:18]   case vdot_bound5 [vdot-bound] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_bound5/build/2026-11-08-12-31-14.coverage.dat)
+[2026-11-08 12:36:58]   case vdot_rand [vdot-rand] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_rand/build/2026-11-08-12-36-54.coverage.dat)
+[2026-11-08 12:39:24]   case vdot_matrix [vdot-matrix] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_matrix/build/2026-11-08-12-39-20.coverage.dat)
+[2026-11-08 12:39:55]   case vdot_g0_badexp [g0] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_g0_badexp/build/2026-11-08-12-39-51.coverage.dat)
+[2026-11-08 12:40:15]   case vdot_ill_sew [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_sew/build/2026-11-08-12-40-11.coverage.dat)
+[2026-11-08 12:40:34]   case vdot_ill_lmul2 [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_lmul2/build/2026-11-08-12-40-31.coverage.dat)
+[2026-11-08 12:41:01]   case vdot_ill_lmul4 [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_lmul4/build/2026-11-08-12-40-58.coverage.dat)
+[2026-11-08 12:41:27]   case vdot_ill_lmul8 [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_lmul8/build/2026-11-08-12-41-23.coverage.dat)
+[2026-11-08 12:41:47]   case vdot_ill_vm0 [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_vm0/build/2026-11-08-12-41-43.coverage.dat)
+[2026-11-08 12:42:13]   case vdot_ill_vstart [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_vstart/build/2026-11-08-12-42-09.coverage.dat)
+[2026-11-08 12:42:39]   case vdot_ill_vill [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_vill/build/2026-11-08-12-42-35.coverage.dat)
+[2026-11-08 12:42:57]   case vdot_ill_vs [negative] -> 通过 (GOOD=1 ABORT=0 CRIT=1 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_ill_vs/build/2026-11-08-12-42-53.coverage.dat)
+[2026-11-08 12:49:32]   case perf_vdot [perf] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/perf_vdot/build/2026-11-08-12-49-28.coverage.dat)
+[2026-11-08 12:52:01]   case perf_base [perf] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/perf_base/build/2026-11-08-12-51-57.coverage.dat)
+[2026-11-08 12:54:16]   case perf_vadd [perf] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/perf_vadd/build/2026-11-08-12-54-12.coverage.dat)
+[2026-11-08 12:57:20]   case perf_vmacc [perf] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/perf_vmacc/build/2026-11-08-12-57-16.coverage.dat)
+[2026-11-08 12:58:48]   case vdot_mix [vdot-mix] -> 通过 (GOOD=1 ABORT=0 CRIT=0 rc=0 dat=/public/home/scnsokdzoq/core/results/coverage/20261108T103732/build/vdot_mix/build/2026-11-08-12-58-44.coverage.dat)
+[2026-11-08 12:59:25] 已恢复非覆盖 emu（/public/home/scnsokdzoq/core/src/XiangShan/build/emu -> verilator-compile/emu）
+[2026-11-08 12:59:26] 结果 JSON：/public/home/scnsokdzoq/core/results/coverage/20261108T103732/slurm_script-20261108T103732.json
+[2026-11-08 12:59:26] 判据：未达标（30/30）

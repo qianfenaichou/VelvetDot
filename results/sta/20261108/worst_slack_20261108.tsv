@@ -1,0 +1,9 @@
+# variant	top	clock_ps	worst_slack_ps	path_delay_ps	startpoint	endpoint	rc
+K1_VdotReduce	VdotReduce	333	-791.8	1084.3	io_sum_wo_0[3]	_1197_	0
+K1_VdotReduce	VdotReduce	500	-624.8	1084.3	io_sum_wo_0[3]	_1197_	0
+K1_VIMac64b	VIMac64b	333	-11857.3	12149.7	io_srcType_0[1]	_52432_	0
+K1_VIMac64b	VIMac64b	500	-11690.3	12149.7	io_srcType_0[1]	_52432_	0
+P2_VdotReduce	VdotReduce	333	-375.8	658.8	_1279_	io_vd[18]	0
+P2_VdotReduce	VdotReduce	500	-208.8	658.8	_1279_	io_vd[18]	0
+P2_VIMac64b	VIMac64b	333	-11857.3	12149.7	io_srcType_0[1]	_52432_	0
+P2_VIMac64b	VIMac64b	500	-11690.3	12149.7	io_srcType_0[1]	_52432_	0

@@ -1,0 +1,31 @@
+# cid	cls	image(占位符 /public/home/scnsokdzoq/core/test/bin 用 make_manifest.sh 替换为绝对路径)	extra
+vadd-microbench	vadd	/public/home/scnsokdzoq/core/test/bin/microbench.bin	
+vdot_pos1	vdot-pos	/public/home/scnsokdzoq/core/test/bin/vdot_pos1.bin	
+vdot_pos2	vdot-pos	/public/home/scnsokdzoq/core/test/bin/vdot_pos2.bin	
+vdot_pos3	vdot-pos	/public/home/scnsokdzoq/core/test/bin/vdot_pos3.bin	
+vdot_neg1	vdot-neg	/public/home/scnsokdzoq/core/test/bin/vdot_neg1.bin	
+vdot_neg_odd1	vdot-neg	/public/home/scnsokdzoq/core/test/bin/vdot_neg_odd1.bin	
+vdot_neg_odd3	vdot-neg	/public/home/scnsokdzoq/core/test/bin/vdot_neg_odd3.bin	
+vdot_neg_odd5	vdot-neg	/public/home/scnsokdzoq/core/test/bin/vdot_neg_odd5.bin	
+vdot_neg_odd7	vdot-neg	/public/home/scnsokdzoq/core/test/bin/vdot_neg_odd7.bin	
+vdot_bound1	vdot-bound	/public/home/scnsokdzoq/core/test/bin/vdot_bound1.bin	
+vdot_bound2	vdot-bound	/public/home/scnsokdzoq/core/test/bin/vdot_bound2.bin	
+vdot_bound3	vdot-bound	/public/home/scnsokdzoq/core/test/bin/vdot_bound3.bin	
+vdot_bound4	vdot-bound	/public/home/scnsokdzoq/core/test/bin/vdot_bound4.bin	
+vdot_bound5	vdot-bound	/public/home/scnsokdzoq/core/test/bin/vdot_bound5.bin	
+vdot_rand	vdot-rand	/public/home/scnsokdzoq/core/test/bin/vdot_rand.bin	
+vdot_matrix	vdot-matrix	/public/home/scnsokdzoq/core/test/bin/vdot_matrix.bin	
+vdot_g0_badexp	g0	/public/home/scnsokdzoq/core/test/bin/vdot_g0_badexp.bin	
+vdot_ill_sew	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_sew.bin	
+vdot_ill_lmul2	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_lmul2.bin	
+vdot_ill_lmul4	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_lmul4.bin	
+vdot_ill_lmul8	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_lmul8.bin	
+vdot_ill_vm0	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_vm0.bin	
+vdot_ill_vstart	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_vstart.bin	
+vdot_ill_vill	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_vill.bin	
+vdot_ill_vs	negative	/public/home/scnsokdzoq/core/test/bin/vdot_ill_vs.bin	
+perf_vdot	perf	/public/home/scnsokdzoq/core/test/bin/perf_vdot.bin	--no-diff
+perf_base	perf	/public/home/scnsokdzoq/core/test/bin/perf_base.bin	--no-diff
+perf_vadd	perf	/public/home/scnsokdzoq/core/test/bin/perf_vadd.bin	--no-diff
+perf_vmacc	perf	/public/home/scnsokdzoq/core/test/bin/perf_vmacc.bin	--no-diff
+vdot_mix	vdot-mix	/public/home/scnsokdzoq/core/test/bin/vdot_mix.bin	

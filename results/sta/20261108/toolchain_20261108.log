@@ -1,0 +1,183 @@
+=== BUILD2 START host=a04r3n09 date=2026-11-08T09:06:58+0800 ===
+gcc (GCC) 13.3.0
+cmake version 3.27.9
+=== [1/3] SWIG 4.2.1 (system swig is 2.0.10 < OpenSTA's 3.0 minimum) ===
+
+SWIG Version 4.2.1
+
+=== [2/3] OpenSTA configure ===
+CMAKE_RC=0
+-- TCL library: /public/home/scnsokdzoq/core-p2/sta/tcl/lib/libtcl8.6.so
+-- TCL header: /public/home/scnsokdzoq/core-p2/sta/tcl/include/tcl.h
+-- Eigen3 include dir: /public/home/scnsokdzoq/core-p2/sta/eigen-git-mirror-3.3.7
+-- CUDD library: /public/home/scnsokdzoq/core-p2/sta/cudd/lib/libcudd.a
+-- CUDD header: /public/home/scnsokdzoq/core-p2/sta/cudd/include/cudd.h
+-- SWIG version: 4.2.1
+=== [3/3] OpenSTA make ===
+MAKE_RC=2
+MAKE_FAIL
+[  1%] [BISON][VerilogParse] Building parser with bison 3.0.4
+[  2%] [FLEX][LibertyLex] Building scanner with flex 2.5.37
+/public/home/scnsokdzoq/core-p2/sta/OpenSTA-master/verilog/VerilogParse.yy:77.11-15: error: require bison 3.2, but have 3.0.4
+[  4%] [FLEX][LibExprLex] Building scanner with flex 2.5.37
+ %require  "3.2"
+           ^^^^^
+make[2]: *** [CMakeFiles/OpenSTA.dir/build.make:144：VerilogParse.cc] 错误 63
+make[2]: *** 正在等待未完成的任务....
+[  5%] [BISON][LibExprParse] Building parser with bison 3.0.4
+[  5%] [BISON][LibertyParse] Building parser with bison 3.0.4
+[  5%] [FLEX][SaifLex] Building scanner with flex 2.5.37
+[  5%] [BISON][SaifParse] Building parser with bison 3.0.4
+/public/home/scnsokdzoq/core-p2/sta/OpenSTA-master/liberty/LibExprParse.yy:49.11-15: error: require bison 3.2, but have 3.0.4
+ %require  "3.2"
+           ^^^^^
+make[2]: *** [CMakeFiles/OpenSTA.dir/build.make:100：LibExprParse.cc] 错误 63
+/public/home/scnsokdzoq/core-p2/sta/OpenSTA-master/liberty/LibertyParse.yy:53.11-15: error: require bison 3.2, but have 3.0.4
+ %require  "3.2"
+           ^^^^^
+make[2]: *** [CMakeFiles/OpenSTA.dir/build.make:111：LibertyParse.cc] 错误 63
+/public/home/scnsokdzoq/core-p2/sta/OpenSTA-master/power/SaifParse.yy:51.11-15: error: require bison 3.2, but have 3.0.4
+ %require  "3.2"
+           ^^^^^
+make[2]: *** [CMakeFiles/OpenSTA.dir/build.make:155：SaifParse.cc] 错误 63
+[  6%] Swig compile app/StaApp.i for tcl
+make[1]: *** [CMakeFiles/Makefile2:142：CMakeFiles/OpenSTA.dir/all] 错误 2
+make[1]: *** 正在等待未完成的任务....
+[  6%] Built target sta_swig_swig_compilation
+make: *** [Makefile:136：all] 错误 2
+=== BUILD3 START host=k18r3n17 date=2026-11-08T09:18:27+0800 ===
+system bison: bison (GNU Bison) 3.0.4
+=== [1/2] bison 3.8.2 (OpenSTA grammars require bison >= 3.2; system has 3.0.4) ===
+bison (GNU Bison) 3.8.2
+=== [2/2] OpenSTA configure+make ===
+CMAKE_RC=0
+-- Found BISON: /public/home/scnsokdzoq/core-p2/sta/bison/bin/bison (found version "3.8.2") 
+-- TCL library: /public/home/scnsokdzoq/core-p2/sta/tcl/lib/libtcl8.6.so
+-- TCL header: /public/home/scnsokdzoq/core-p2/sta/tcl/include/tcl.h
+-- Eigen3 include dir: /public/home/scnsokdzoq/core-p2/sta/eigen-git-mirror-3.3.7
+-- CUDD library: /public/home/scnsokdzoq/core-p2/sta/cudd/lib/libcudd.a
+-- CUDD header: /public/home/scnsokdzoq/core-p2/sta/cudd/include/cudd.h
+-- SWIG version: 4.2.1
+MAKE_RC=0
+-rwxrwxr-x 1 scnsokdzoq scnsokdzoq 8564536 Nov  8 09:22 /public/home/scnsokdzoq/core-p2/sta/OpenSTA-master/build/sta
+3.2.0
+=== BUILD3 DONE date=2026-11-08T09:22:04+0800 ===
+=== SYNTH START host=a01r2n18 date=2026-11-08T09:26:22+0800 ===
+Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+liberty: /public/home/scnsokdzoq/core-p2/sta/NangateOpenCellLibrary_typical.lib
+8d540a4d4cf6d09d27c87ad067857a9c0c2eeb023ab7a56e058cd3113db4e9b1  /public/home/scnsokdzoq/core-p2/sta/NangateOpenCellLibrary_typical.lib
+netlist sha256:
+66f3b0c6e5da1d8bfab7a49dcd1a543121b235a8410261e2d9280fb88bf049f6  /public/home/scnsokdzoq/core-p2/k1/vdot_dp.sv
+828574d90f58ccebc21a16e8ef18a4f42c54e90a111cf898db41a8efcef56905  /public/home/scnsokdzoq/core-p2/k1/vmac_only.sv
+ea3e4688eec7f41a598d9fca32a83ff55db912909b92bd9e9c6c96f14946fdb7  /public/home/scnsokdzoq/core-p2/rtl/area/vdot_dp.sv
+828574d90f58ccebc21a16e8ef18a4f42c54e90a111cf898db41a8efcef56905  /public/home/scnsokdzoq/core-p2/rtl/area/vmac_only.sv
+=== yosys K1_VdotReduce : /public/home/scnsokdzoq/core-p2/k1/vdot_dp.sv (top=VdotReduce) start=2026-11-08T09:26:23+0800 ===
+=== yosys K1_VIMac64b : /public/home/scnsokdzoq/core-p2/k1/vmac_only.sv (top=VIMac64b) start=2026-11-08T09:26:23+0800 ===
+=== yosys P2_VdotReduce : /public/home/scnsokdzoq/core-p2/rtl/area/vdot_dp.sv (top=VdotReduce) start=2026-11-08T09:26:23+0800 ===
+=== yosys P2_VIMac64b : /public/home/scnsokdzoq/core-p2/rtl/area/vmac_only.sv (top=VIMac64b) start=2026-11-08T09:26:23+0800 ===
+SYNTH_RC_P2_VdotReduce=0
+SYNTH_RC_K1_VdotReduce=0
+WARN_COUNT_P2_VdotReduce=2
+WARN_COUNT_K1_VdotReduce=2
+=== yosys P2_VdotReduce done=2026-11-08T09:26:24+0800 ===
+=== yosys K1_VdotReduce done=2026-11-08T09:26:24+0800 ===
+SYNTH_RC_P2_VIMac64b=0
+WARN_COUNT_P2_VIMac64b=2
+=== yosys P2_VIMac64b done=2026-11-08T09:26:56+0800 ===
+SYNTH_RC_K1_VIMac64b=0
+WARN_COUNT_K1_VIMac64b=2
+=== yosys K1_VIMac64b done=2026-11-08T09:26:56+0800 ===
+=== mapped netlists ===
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq   62582 Nov  8 09:26 /public/home/scnsokdzoq/core-p2/sta/netlist/K1_VdotReduce.v
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 2992559 Nov  8 09:26 /public/home/scnsokdzoq/core-p2/sta/netlist/K1_VIMac64b.v
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq   68336 Nov  8 09:26 /public/home/scnsokdzoq/core-p2/sta/netlist/P2_VdotReduce.v
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 2992559 Nov  8 09:26 /public/home/scnsokdzoq/core-p2/sta/netlist/P2_VIMac64b.v
+/public/home/scnsokdzoq/core-p2/sta/netlist/K1_VdotReduce.v  cells=599
+/public/home/scnsokdzoq/core-p2/sta/netlist/K1_VIMac64b.v  cells=26643
+/public/home/scnsokdzoq/core-p2/sta/netlist/P2_VdotReduce.v  cells=656
+/public/home/scnsokdzoq/core-p2/sta/netlist/P2_VIMac64b.v  cells=26643
+=== SYNTH DONE date=2026-11-08T09:26:57+0800 ===
+=== STA START host=a01r2n18 date=2026-11-08T09:34:03+0800 ===
+yosys: Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+opensta: 3.2.0
+liberty: /public/home/scnsokdzoq/core-p2/sta/NangateOpenCellLibrary_typical.lib  sha256=8d540a4d4cf6d09d27c87ad067857a9c0c2eeb023ab7a56e058cd3113db4e9b1
+STA_RC_K1_VdotReduce_0.333ns=0 worst_slack=-0.7918 path_delay=1.0843 cells=599
+  SP=io_sum_wo_0[3]
+  EP=_1197_
+STA_RC_K1_VdotReduce_0.500ns=0 worst_slack=-0.6248 path_delay=1.0843 cells=599
+  SP=io_sum_wo_0[3]
+  EP=_1197_
+STA_RC_P2_VdotReduce_0.333ns=0 worst_slack=-0.3758 path_delay=0.6588 cells=656
+  SP=_1279_
+  EP=io_vd[18]
+STA_RC_P2_VdotReduce_0.500ns=0 worst_slack=-0.2088 path_delay=0.6588 cells=656
+  SP=_1279_
+  EP=io_vd[18]
+STA_RC_K1_VIMac64b_0.333ns=0 worst_slack=-11.8573 path_delay=0.0587 cells=26643
+  SP=io_srcType_0[1]
+  EP=_52432_
+STA_RC_K1_VIMac64b_0.500ns=0 worst_slack=-11.6903 path_delay=0.0587 cells=26643
+  SP=io_srcType_0[1]
+  EP=_52432_
+STA_RC_P2_VIMac64b_0.333ns=0 worst_slack=-11.8573 path_delay=0.0587 cells=26643
+  SP=io_srcType_0[1]
+  EP=_52432_
+STA_RC_P2_VIMac64b_0.500ns=0 worst_slack=-11.6903 path_delay=0.0587 cells=26643
+  SP=io_srcType_0[1]
+  EP=_52432_
+=== worst_slack.tsv ===
+# variant	top	clock_ps	worst_slack_ps	path_delay_ps	startpoint	endpoint	rc
+K1_VdotReduce	VdotReduce	333	-791.8	1084.3	io_sum_wo_0[3]	_1197_	0
+K1_VdotReduce	VdotReduce	500	-624.8	1084.3	io_sum_wo_0[3]	_1197_	0
+P2_VdotReduce	VdotReduce	333	-375.8	658.8	_1279_	io_vd[18]	0
+P2_VdotReduce	VdotReduce	500	-208.8	658.8	_1279_	io_vd[18]	0
+K1_VIMac64b	VIMac64b	333	-11857.3	58.7	io_srcType_0[1]	_52432_	0
+K1_VIMac64b	VIMac64b	500	-11690.3	58.7	io_srcType_0[1]	_52432_	0
+P2_VIMac64b	VIMac64b	333	-11857.3	58.7	io_srcType_0[1]	_52432_	0
+P2_VIMac64b	VIMac64b	500	-11690.3	58.7	io_srcType_0[1]	_52432_	0
+=== reports ===
+总用量 88
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 11087 Nov  8 09:34 K1_VdotReduce_0.333ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  2084 Nov  8 09:34 K1_VdotReduce_0.333ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 11087 Nov  8 09:34 K1_VdotReduce_0.500ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  2084 Nov  8 09:34 K1_VdotReduce_0.500ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 16655 Nov  8 09:34 K1_VIMac64b_0.333ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  2974 Nov  8 09:34 K1_VIMac64b_0.333ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 16655 Nov  8 09:34 K1_VIMac64b_0.500ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  2974 Nov  8 09:34 K1_VIMac64b_0.500ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 10406 Nov  8 09:34 P2_VdotReduce_0.333ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  1743 Nov  8 09:34 P2_VdotReduce_0.333ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 10405 Nov  8 09:34 P2_VdotReduce_0.500ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  1743 Nov  8 09:34 P2_VdotReduce_0.500ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 16655 Nov  8 09:34 P2_VIMac64b_0.333ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  2974 Nov  8 09:34 P2_VIMac64b_0.333ns.rpt
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq 16655 Nov  8 09:34 P2_VIMac64b_0.500ns.log
+-rw-rw-r-- 1 scnsokdzoq scnsokdzoq  2974 Nov  8 09:34 P2_VIMac64b_0.500ns.rpt
+=== STA DONE date=2026-11-08T09:34:15+0800 ===
+
+================ TOOLCHAIN SUMMARY 2026-11-08T09:38:26+0800 ================
+partition: kshcnormal only (CPU); host=login04
+compiler: gcc (GCC) 13.3.0
+cmake: cmake version 3.27.9
+OpenSTA: 3.2.0  (source tarball OpenSTA-master.tar.gz)
+  sha256 OpenSTA-master.tar.gz: 30a2ea5416daf4c9779602df4e1c71e656cabec3efeebdefdb9295cc4a27af93
+  build deps: CUDD 3.0.0, Tcl 8.6.13 (built and linked; cmake did detect the system Tcl 8.5, but the first configure attempt failed earlier at find_package(Eigen3), so Tcl 8.5 compatibility was NOT established), SWIG 4.2.1 (built; system 2.0.10 < 3.0), bison 3.8.2 (built; system 3.0.4 < grammar %require 3.2), Eigen 3.3.7 headers
+  build log: /public/home/scnsokdzoq/core-p2/sta/OpenSTA-master/build/cmake.log + make.log (cmake found: cmake version 3.27.9)
+yosys: Yosys 0.48 (git sha1 aaa5347494801e9e3870b31387da59da24233f76, g++ 13.3.0 -fPIC -O3)
+liberty: /public/home/scnsokdzoq/core-p2/sta/NangateOpenCellLibrary_typical.lib
+  sha256: 8d540a4d4cf6d09d27c87ad067857a9c0c2eeb023ab7a56e058cd3113db4e9b1
+  cells: 135
+input SV sha256:
+  66f3b0c6e5da1d8bfab7a49dcd1a543121b235a8410261e2d9280fb88bf049f6  /public/home/scnsokdzoq/core-p2/k1/vdot_dp.sv
+  828574d90f58ccebc21a16e8ef18a4f42c54e90a111cf898db41a8efcef56905  /public/home/scnsokdzoq/core-p2/k1/vmac_only.sv
+  ea3e4688eec7f41a598d9fca32a83ff55db912909b92bd9e9c6c96f14946fdb7  /public/home/scnsokdzoq/core-p2/rtl/area/vdot_dp.sv
+  828574d90f58ccebc21a16e8ef18a4f42c54e90a111cf898db41a8efcef56905  /public/home/scnsokdzoq/core-p2/rtl/area/vmac_only.sv
+mapped gate netlists:
+  K1_VdotReduce.v cells=599 sha256=5fff1d553e95cede5ca019657e1605d3c65c6d250909e1a2be9e35aa0cb0bc01
+  K1_VIMac64b.v cells=26643 sha256=4a47e13479b317f7992c08e20b246581769f2d62815cbdb1f05d0e176964c6f2
+  P2_VdotReduce.v cells=656 sha256=b5c2a9b9ac4e79ad6f7e39c63c361fa405f2a3a27dea82d562e933fbfd63fe2e
+  P2_VIMac64b.v cells=26643 sha256=4a47e13479b317f7992c08e20b246581769f2d62815cbdb1f05d0e176964c6f2
+STA setup (per run): create_clock -name core_clock -period <P> [get_ports clock]; set_input_delay 0.05 -clock core_clock [all_inputs -no_clocks]; set_output_delay 0.05 -clock core_clock [all_outputs]; ideal clock; no set_driving_cell; no set_load; no wire load model / no parasitics; pre-placement
+slurm jobs: 127231199 build1 FAILED(exit 41: FindEigen3 missing), 127231703 build2 FAILED(exit 59: system bison 3.0.4 < 3.2), 127232720 build3 COMPLETED, 127233495 synth COMPLETED, 127234054 sta COMPLETED
+================ END SUMMARY ================
+build1 (CUDD 3.0.0 + Tcl 8.6.13 + first OpenSTA attempt) full log: ~/core-p2/sta/build.log (368 KB, left on cluster)

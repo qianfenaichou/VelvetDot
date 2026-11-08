@@ -1,0 +1,383 @@
+### TAG=K1_VdotReduce TOP=VdotReduce PERIOD=0.333ns CLK_PORT=clock
+### NETLIST=/public/home/scnsokdzoq/core-p2/sta/netlist/K1_VdotReduce.v
+### ports:
+PORT clock input
+PORT io_sum_wo_0[15] input
+PORT io_sum_wo_0[14] input
+PORT io_sum_wo_0[13] input
+PORT io_sum_wo_0[12] input
+PORT io_sum_wo_0[11] input
+PORT io_sum_wo_0[10] input
+PORT io_sum_wo_0[9] input
+PORT io_sum_wo_0[8] input
+PORT io_sum_wo_0[7] input
+PORT io_sum_wo_0[6] input
+PORT io_sum_wo_0[5] input
+PORT io_sum_wo_0[4] input
+PORT io_sum_wo_0[3] input
+PORT io_sum_wo_0[2] input
+PORT io_sum_wo_0[1] input
+PORT io_sum_wo_0[0] input
+PORT io_sum_wo_1[15] input
+PORT io_sum_wo_1[14] input
+PORT io_sum_wo_1[13] input
+PORT io_sum_wo_1[12] input
+PORT io_sum_wo_1[11] input
+PORT io_sum_wo_1[10] input
+PORT io_sum_wo_1[9] input
+PORT io_sum_wo_1[8] input
+PORT io_sum_wo_1[7] input
+PORT io_sum_wo_1[6] input
+PORT io_sum_wo_1[5] input
+PORT io_sum_wo_1[4] input
+PORT io_sum_wo_1[3] input
+PORT io_sum_wo_1[2] input
+PORT io_sum_wo_1[1] input
+PORT io_sum_wo_1[0] input
+PORT io_sum_wo_2[15] input
+PORT io_sum_wo_2[14] input
+PORT io_sum_wo_2[13] input
+PORT io_sum_wo_2[12] input
+PORT io_sum_wo_2[11] input
+PORT io_sum_wo_2[10] input
+PORT io_sum_wo_2[9] input
+PORT io_sum_wo_2[8] input
+PORT io_sum_wo_2[7] input
+PORT io_sum_wo_2[6] input
+PORT io_sum_wo_2[5] input
+PORT io_sum_wo_2[4] input
+PORT io_sum_wo_2[3] input
+PORT io_sum_wo_2[2] input
+PORT io_sum_wo_2[1] input
+PORT io_sum_wo_2[0] input
+PORT io_sum_wo_3[15] input
+PORT io_sum_wo_3[14] input
+PORT io_sum_wo_3[13] input
+PORT io_sum_wo_3[12] input
+PORT io_sum_wo_3[11] input
+PORT io_sum_wo_3[10] input
+PORT io_sum_wo_3[9] input
+PORT io_sum_wo_3[8] input
+PORT io_sum_wo_3[7] input
+PORT io_sum_wo_3[6] input
+PORT io_sum_wo_3[5] input
+PORT io_sum_wo_3[4] input
+PORT io_sum_wo_3[3] input
+PORT io_sum_wo_3[2] input
+PORT io_sum_wo_3[1] input
+PORT io_sum_wo_3[0] input
+PORT io_sum_wo_4[15] input
+PORT io_sum_wo_4[14] input
+PORT io_sum_wo_4[13] input
+PORT io_sum_wo_4[12] input
+PORT io_sum_wo_4[11] input
+PORT io_sum_wo_4[10] input
+PORT io_sum_wo_4[9] input
+PORT io_sum_wo_4[8] input
+PORT io_sum_wo_4[7] input
+PORT io_sum_wo_4[6] input
+PORT io_sum_wo_4[5] input
+PORT io_sum_wo_4[4] input
+PORT io_sum_wo_4[3] input
+PORT io_sum_wo_4[2] input
+PORT io_sum_wo_4[1] input
+PORT io_sum_wo_4[0] input
+PORT io_sum_wo_5[15] input
+PORT io_sum_wo_5[14] input
+PORT io_sum_wo_5[13] input
+PORT io_sum_wo_5[12] input
+PORT io_sum_wo_5[11] input
+PORT io_sum_wo_5[10] input
+PORT io_sum_wo_5[9] input
+PORT io_sum_wo_5[8] input
+PORT io_sum_wo_5[7] input
+PORT io_sum_wo_5[6] input
+PORT io_sum_wo_5[5] input
+PORT io_sum_wo_5[4] input
+PORT io_sum_wo_5[3] input
+PORT io_sum_wo_5[2] input
+PORT io_sum_wo_5[1] input
+PORT io_sum_wo_5[0] input
+PORT io_sum_wo_6[15] input
+PORT io_sum_wo_6[14] input
+PORT io_sum_wo_6[13] input
+PORT io_sum_wo_6[12] input
+PORT io_sum_wo_6[11] input
+PORT io_sum_wo_6[10] input
+PORT io_sum_wo_6[9] input
+PORT io_sum_wo_6[8] input
+PORT io_sum_wo_6[7] input
+PORT io_sum_wo_6[6] input
+PORT io_sum_wo_6[5] input
+PORT io_sum_wo_6[4] input
+PORT io_sum_wo_6[3] input
+PORT io_sum_wo_6[2] input
+PORT io_sum_wo_6[1] input
+PORT io_sum_wo_6[0] input
+PORT io_sum_wo_7[15] input
+PORT io_sum_wo_7[14] input
+PORT io_sum_wo_7[13] input
+PORT io_sum_wo_7[12] input
+PORT io_sum_wo_7[11] input
+PORT io_sum_wo_7[10] input
+PORT io_sum_wo_7[9] input
+PORT io_sum_wo_7[8] input
+PORT io_sum_wo_7[7] input
+PORT io_sum_wo_7[6] input
+PORT io_sum_wo_7[5] input
+PORT io_sum_wo_7[4] input
+PORT io_sum_wo_7[3] input
+PORT io_sum_wo_7[2] input
+PORT io_sum_wo_7[1] input
+PORT io_sum_wo_7[0] input
+PORT io_fireS1 input
+PORT io_vd[127] output
+PORT io_vd[126] output
+PORT io_vd[125] output
+PORT io_vd[124] output
+PORT io_vd[123] output
+PORT io_vd[122] output
+PORT io_vd[121] output
+PORT io_vd[120] output
+PORT io_vd[119] output
+PORT io_vd[118] output
+PORT io_vd[117] output
+PORT io_vd[116] output
+PORT io_vd[115] output
+PORT io_vd[114] output
+PORT io_vd[113] output
+PORT io_vd[112] output
+PORT io_vd[111] output
+PORT io_vd[110] output
+PORT io_vd[109] output
+PORT io_vd[108] output
+PORT io_vd[107] output
+PORT io_vd[106] output
+PORT io_vd[105] output
+PORT io_vd[104] output
+PORT io_vd[103] output
+PORT io_vd[102] output
+PORT io_vd[101] output
+PORT io_vd[100] output
+PORT io_vd[99] output
+PORT io_vd[98] output
+PORT io_vd[97] output
+PORT io_vd[96] output
+PORT io_vd[95] output
+PORT io_vd[94] output
+PORT io_vd[93] output
+PORT io_vd[92] output
+PORT io_vd[91] output
+PORT io_vd[90] output
+PORT io_vd[89] output
+PORT io_vd[88] output
+PORT io_vd[87] output
+PORT io_vd[86] output
+PORT io_vd[85] output
+PORT io_vd[84] output
+PORT io_vd[83] output
+PORT io_vd[82] output
+PORT io_vd[81] output
+PORT io_vd[80] output
+PORT io_vd[79] output
+PORT io_vd[78] output
+PORT io_vd[77] output
+PORT io_vd[76] output
+PORT io_vd[75] output
+PORT io_vd[74] output
+PORT io_vd[73] output
+PORT io_vd[72] output
+PORT io_vd[71] output
+PORT io_vd[70] output
+PORT io_vd[69] output
+PORT io_vd[68] output
+PORT io_vd[67] output
+PORT io_vd[66] output
+PORT io_vd[65] output
+PORT io_vd[64] output
+PORT io_vd[63] output
+PORT io_vd[62] output
+PORT io_vd[61] output
+PORT io_vd[60] output
+PORT io_vd[59] output
+PORT io_vd[58] output
+PORT io_vd[57] output
+PORT io_vd[56] output
+PORT io_vd[55] output
+PORT io_vd[54] output
+PORT io_vd[53] output
+PORT io_vd[52] output
+PORT io_vd[51] output
+PORT io_vd[50] output
+PORT io_vd[49] output
+PORT io_vd[48] output
+PORT io_vd[47] output
+PORT io_vd[46] output
+PORT io_vd[45] output
+PORT io_vd[44] output
+PORT io_vd[43] output
+PORT io_vd[42] output
+PORT io_vd[41] output
+PORT io_vd[40] output
+PORT io_vd[39] output
+PORT io_vd[38] output
+PORT io_vd[37] output
+PORT io_vd[36] output
+PORT io_vd[35] output
+PORT io_vd[34] output
+PORT io_vd[33] output
+PORT io_vd[32] output
+PORT io_vd[31] output
+PORT io_vd[30] output
+PORT io_vd[29] output
+PORT io_vd[28] output
+PORT io_vd[27] output
+PORT io_vd[26] output
+PORT io_vd[25] output
+PORT io_vd[24] output
+PORT io_vd[23] output
+PORT io_vd[22] output
+PORT io_vd[21] output
+PORT io_vd[20] output
+PORT io_vd[19] output
+PORT io_vd[18] output
+PORT io_vd[17] output
+PORT io_vd[16] output
+PORT io_vd[15] output
+PORT io_vd[14] output
+PORT io_vd[13] output
+PORT io_vd[12] output
+PORT io_vd[11] output
+PORT io_vd[10] output
+PORT io_vd[9] output
+PORT io_vd[8] output
+PORT io_vd[7] output
+PORT io_vd[6] output
+PORT io_vd[5] output
+PORT io_vd[4] output
+PORT io_vd[3] output
+PORT io_vd[2] output
+PORT io_vd[1] output
+PORT io_vd[0] output
+### report_units
+ time 1ns
+ capacitance 1fF
+ resistance 1kohm
+ voltage 1v
+ current 1mA
+ power 1nW
+ distance 1um
+### report_clocks
+Clock                   Period          Waveform
+----------------------------------------------------
+core_clock                0.33        0.00      0.17
+### check_setup
+### report_worst_slack -max
+worst slack max -0.7918
+### report_tns -max
+tns max -9.53
+### report_checks -path_delay max -format full_clock_expanded
+Startpoint: io_sum_wo_0[3] (input port clocked by core_clock)
+Endpoint: _1197_ (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+    Delay      Time   Description
+-------------------------------------------------------------
+   0.0000    0.0000   clock core_clock (rise edge)
+   0.0000    0.0000   clock network delay (ideal)
+   0.0500    0.0500 ^ input external delay
+   0.0000    0.0500 ^ io_sum_wo_0[3] (in)
+   0.0411    0.0911 ^ _0682_/ZN (XNOR2_X1)
+   0.0593    0.1503 ^ _0683_/Z (XOR2_X1)
+   0.0500    0.2003 ^ _0685_/ZN (XNOR2_X1)
+   0.0477    0.2481 ^ _0686_/ZN (XNOR2_X1)
+   0.0622    0.3103 ^ _0688_/Z (XOR2_X1)
+   0.0498    0.3601 ^ _0690_/ZN (XNOR2_X1)
+   0.0493    0.4093 ^ _0701_/ZN (XNOR2_X1)
+   0.0616    0.4710 ^ _0702_/Z (XOR2_X1)
+   0.0634    0.5343 ^ _0704_/Z (XOR2_X1)
+   0.0252    0.5595 v _0707_/ZN (AOI21_X1)
+   0.0455    0.6050 ^ _0740_/ZN (OAI21_X1)
+   0.0240    0.6290 v _0774_/ZN (AOI21_X1)
+   0.0451    0.6740 ^ _0808_/ZN (OAI21_X1)
+   0.0238    0.6979 v _0844_/ZN (AOI21_X1)
+   0.0438    0.7417 ^ _0878_/ZN (OAI21_X1)
+   0.0243    0.7660 v _0910_/ZN (NAND2_X1)
+   0.0599    0.8259 ^ _0984_/ZN (AOI211_X1)
+   0.0362    0.8621 v _1056_/ZN (OAI211_X1)
+   0.0494    0.9116 ^ _1129_/ZN (AOI211_X1)
+   0.0288    0.9403 v _1152_/ZN (OAI21_X1)
+   0.0299    0.9702 ^ _1157_/ZN (OAI21_X1)
+   0.0198    0.9900 v _1173_/ZN (AOI21_X1)
+   0.0376    1.0276 v _1177_/ZN (XNOR2_X1)
+   0.0567    1.0843 v _1178_/Z (MUX2_X1)
+   0.0000    1.0843 v _1197_/D (DFF_X1)
+             1.0843   data arrival time
+
+   0.3330    0.3330   clock core_clock (rise edge)
+   0.0000    0.3330   clock network delay (ideal)
+   0.0000    0.3330   clock reconvergence pessimism
+             0.3330 ^ _1197_/CK (DFF_X1)
+  -0.0405    0.2925   library setup time
+             0.2925   data required time
+-------------------------------------------------------------
+             0.2925   data required time
+            -1.0843   data arrival time
+-------------------------------------------------------------
+            -0.7918   slack (VIOLATED)
+
+
+### report_checks -unconstrained -path_delay max
+Startpoint: io_sum_wo_0[3] (input port clocked by core_clock)
+Endpoint: _1197_ (rising edge-triggered flip-flop clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+    Delay      Time   Description
+-------------------------------------------------------------
+   0.0000    0.0000   clock core_clock (rise edge)
+   0.0000    0.0000   clock network delay (ideal)
+   0.0500    0.0500 ^ input external delay
+   0.0000    0.0500 ^ io_sum_wo_0[3] (in)
+   0.0411    0.0911 ^ _0682_/ZN (XNOR2_X1)
+   0.0593    0.1503 ^ _0683_/Z (XOR2_X1)
+   0.0500    0.2003 ^ _0685_/ZN (XNOR2_X1)
+   0.0477    0.2481 ^ _0686_/ZN (XNOR2_X1)
+   0.0622    0.3103 ^ _0688_/Z (XOR2_X1)
+   0.0498    0.3601 ^ _0690_/ZN (XNOR2_X1)
+   0.0493    0.4093 ^ _0701_/ZN (XNOR2_X1)
+   0.0616    0.4710 ^ _0702_/Z (XOR2_X1)
+   0.0634    0.5343 ^ _0704_/Z (XOR2_X1)
+   0.0252    0.5595 v _0707_/ZN (AOI21_X1)
+   0.0455    0.6050 ^ _0740_/ZN (OAI21_X1)
+   0.0240    0.6290 v _0774_/ZN (AOI21_X1)
+   0.0451    0.6740 ^ _0808_/ZN (OAI21_X1)
+   0.0238    0.6979 v _0844_/ZN (AOI21_X1)
+   0.0438    0.7417 ^ _0878_/ZN (OAI21_X1)
+   0.0243    0.7660 v _0910_/ZN (NAND2_X1)
+   0.0599    0.8259 ^ _0984_/ZN (AOI211_X1)
+   0.0362    0.8621 v _1056_/ZN (OAI211_X1)
+   0.0494    0.9116 ^ _1129_/ZN (AOI211_X1)
+   0.0288    0.9403 v _1152_/ZN (OAI21_X1)
+   0.0299    0.9702 ^ _1157_/ZN (OAI21_X1)
+   0.0198    0.9900 v _1173_/ZN (AOI21_X1)
+   0.0376    1.0276 v _1177_/ZN (XNOR2_X1)
+   0.0567    1.0843 v _1178_/Z (MUX2_X1)
+   0.0000    1.0843 v _1197_/D (DFF_X1)
+             1.0843   data arrival time
+
+   0.3330    0.3330   clock core_clock (rise edge)
+   0.0000    0.3330   clock network delay (ideal)
+   0.0000    0.3330   clock reconvergence pessimism
+             0.3330 ^ _1197_/CK (DFF_X1)
+  -0.0405    0.2925   library setup time
+             0.2925   data required time
+-------------------------------------------------------------
+             0.2925   data required time
+            -1.0843   data arrival time
+-------------------------------------------------------------
+            -0.7918   slack (VIOLATED)
+
+
+### DONE K1_VdotReduce

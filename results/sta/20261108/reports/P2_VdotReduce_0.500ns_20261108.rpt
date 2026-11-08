@@ -1,0 +1,43 @@
+Startpoint: _1279_ (rising edge-triggered flip-flop clocked by core_clock)
+Endpoint: io_vd[18] (output port clocked by core_clock)
+Path Group: core_clock
+Path Type: max
+
+    Delay      Time   Description
+-------------------------------------------------------------
+   0.0000    0.0000   clock core_clock (rise edge)
+   0.0000    0.0000   clock network delay (ideal)
+   0.0000    0.0000 ^ _1279_/CK (DFF_X1)
+   0.0841    0.0841 v _1279_/Q (DFF_X1)
+   0.0592    0.1434 v _0677_/Z (XOR2_X1)
+   0.0465    0.1898 ^ _0679_/ZN (AOI21_X1)
+   0.0339    0.2237 v _0692_/ZN (OAI211_X1)
+   0.0273    0.2510 ^ _0694_/ZN (NAND3_X1)
+   0.0184    0.2695 v _0698_/ZN (AOI21_X1)
+   0.0505    0.3200 ^ _0701_/ZN (AOI21_X1)
+   0.0315    0.3515 v _0705_/ZN (OAI21_X1)
+   0.0460    0.3975 ^ _0713_/ZN (OAI211_X1)
+   0.0291    0.4266 v _0722_/ZN (NAND3_X1)
+   0.0269    0.4534 ^ _0724_/ZN (NAND3_X1)
+   0.0212    0.4746 v _0733_/ZN (NAND3_X1)
+   0.0270    0.5016 ^ _0734_/ZN (OAI21_X1)
+   0.0282    0.5298 v _0736_/ZN (OAI21_X1)
+   0.0454    0.5752 ^ _0744_/ZN (OAI211_X1)
+   0.0240    0.5992 v _0750_/ZN (NAND3_X1)
+   0.0228    0.6220 ^ _0751_/ZN (OAI21_X1)
+   0.0368    0.6588 ^ _0753_/ZN (XNOR2_X1)
+   0.0000    0.6588 ^ io_vd[18] (out)
+             0.6588   data arrival time
+
+   0.5000    0.5000   clock core_clock (rise edge)
+   0.0000    0.5000   clock network delay (ideal)
+   0.0000    0.5000   clock reconvergence pessimism
+  -0.0500    0.4500   output external delay
+             0.4500   data required time
+-------------------------------------------------------------
+             0.4500   data required time
+            -0.6588   data arrival time
+-------------------------------------------------------------
+            -0.2088   slack (VIOLATED)
+
+
