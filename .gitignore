@@ -139,3 +139,7 @@ AGENTS.md
 /core-package/verify/check.js
 /design/verify/check.js
 /design/verify/check-v3.js
+
+# 个人材料，不入库
+docs/口播/
+docx/
