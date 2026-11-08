@@ -1,20 +1,36 @@
 # vdot.vv：香山 V2 的 K=8 int8 点积
 
-`vdot.vv` 是 RISC-V 向量扩展（RVV）的自定义指令，在 SEW=8、LMUL=1、K=8 下单条完成 8 个 int8 元素的点积；K=8 指每条指令固定处理 lane 0–7 的 8 个 int8 元素。19 位有符号结果符号扩展后写回 `vd[31:0]`，`vd[127:32]` 恒为零，不读旧 vd（[`design/SPEC.md`](design/SPEC.md) §1）。
+`vdot.vv` 是 RVV 自定义指令：SEW=8、LMUL=1、K=8，单条完成 lane 0–7 共 8 个 int8 的点积；19 位有符号和符号扩展后写回 `vd[31:0]`，`vd[127:32]` 恒零，不读旧 vd（[`design/SPEC.md`](design/SPEC.md) §1）。
 
-仓库含指令规格、Chisel RTL 与 NEMU 改动、Python 参考模型（golden model）、协同仿真用例，以及三阶段的测试与性能材料。
+> 团队：芯芯像绒 · 参赛单位：南昌交通学院 · 指导老师：徐婧 · 提交 PR：#153。版本与结果基线分开写：结果数字对应基线 `a4eeaab` / `9559211` / `a683e0b`（P-2 单列 `8942811` + `patches/0005`），当前实施 HEAD 见 [`versions.env`](versions.env)。
+
+- **RTL 落点**：新增 `yunsuan/vector/vectorIMAC/VdotReduce.scala`（4:2 压缩树 + 19 位 CPA），复用 `VIMac64b` 已算出的 8 个 16 位积；wrapper `xiangshan/backend/fu/wrapper/VIMacU.scala` 用输出 Mux 旁路 Mgu；非法判定在 `xiangshan/backend/decode/VecExceptionGen.scala:276-277`；NEMU 表项与参考模型 `design/verify/vdot_model.py`。
+- **验证**：主回归 30/30 + 扩容 224/224（`127194011`）= **254 个镜像**。30/30 在 K1 树（`20-full-20261103T142246`，`126676734`）与 P-2 树（`20-full-20261107T104227`，`127137638`，需 `patches/0005`）各跑过一次，数值相同；参考模型自检 1142 例；miter 正控 `SUCCESS` / 负控 `FAIL`（2 拍、`-set-init-zero` 有界证明）。
+- **性能**：`L_vdot=4` cyc（`vd==vs2` 依赖链）；两个口径并列——官方口径的组合链 latency `16 / 4 = 4.0×`（分母是 3 条 RVV 指令的整链，含 3 条指令的串行开销），每指令归一 `(16/3)÷4 = 1.333×`（微架构口径）。4 次独立重复 `L_vdot` 全为 4、极差 0（作业 `127196036`）。
+- **面积/时序**：`VdotReduce` 481 cells、ltp 22，占单个 `VIMac64b` 42,783 cells 的 **1.12%**；P-2 重定时版 500 cells、ltp 14（1.17%）。STA 最差路径 1084.3 ps（K1）/ 658.8 ps（P-2），两条路径起点/终点不同、**数值不可相减**；333 ps 与 500 ps 两个周期下**均违例，时序未闭合**。
+- **边界**：未做硅后（无 PDK、无布局布线、无寄生抽取）；未做功耗（`report_power` 未跑）；扩展只实测 K=16 一格（977 cells、ltp 26，独立数据通路、未集成进 `VIMacU`）；结构覆盖只到 line，toggle 未采集。
+
+基线为 XiangShan `a4eeaab`（`kunminghu-v2`）与 NEMU `a683e0b`；docx 编号项 12 项均有产物（见文末索引），三个视频位未产出，缺口写在已知限制。
+
+## 证据在哪
+
+| 阶段 | 目录 | 关键 JSON / 日志 |
+|---|---|---|
+| 阶段一 1.1–1.3 | [`stage1/`](stage1/) | `1.1-env/terminal-excerpt.log` + `1.1-env/raw/nodeip-20261104T105314/`；`1.3-vadd/raw/vadd_stages.tsv` + `1.3-vadd/waveform/` |
+| 阶段二 2.1–2.3.3 | [`stage2/`](stage2/) | `2.1-design/{SPEC,ARCHITECTURE,ALGORITHM}.md`；`2.2-rtl/wave/`；`2.3.x/runs/20-full-20261103T142246.json` |
+| 阶段三 3.1.1–3.3 | [`stage3/`](stage3/) | `3.1.2-difftest/`；`3.2-baseline/json/`；`3.3/report.md` + `3.3/sections/` |
+
+跨阶段的机读产物在 `results/`：主回归 [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)、扩容 [`94-extra-20261108T014445.json`](results/difftest/extra/94-extra-20261108T014445.json)、性能 [`99-perf-repeat-4x-20261108.json`](results/difftest/perf-repeat/99-perf-repeat-4x-20261108.json)、面积 [`vdot-k1.stat.json`](results/yosys/vdot-k1.stat.json) / [`vdot-p2.stat.json`](results/yosys/vdot-p2.stat.json)、时序 [`worst_slack_20261108.tsv`](results/sta/20261108/worst_slack_20261108.tsv)、结构覆盖 [`coverage-summary`](results/coverage/20261108T103732/merged30all.coverage/verilator_coverage-summary.txt)、K=16 扩展 [`ext-127231914.json`](results/yosys/ext-127231914.json)、形式 [`50-miter-20261104T093531.json`](results/formal/50-miter-20261104T093531.json)。2026-11-08 新增的 `results/sta/`、`results/coverage/20261108T103732/`、`results/yosys/ext-127231914*` 同时打包进 `out/upload/proof-materials.zip`（同名路径）；若从 Git 仓库取得的工作区里这些路径为空，以包内同一路径为准。
 
 ```
 patches/       10 个补丁：9 个功能与单测 + 1 个跨拍重定时
 design/        规格、微架构、算法、编码规范；verify/ 为参考模型、用例与 miter
 core-package/  批量脚本与落位手册（rsync 到 $CORE_DIR）
-results/       实测产物：difftest、perf 重复、yosys、formal、lint、wave、coverage
+results/       实测产物：difftest、perf 重复、yosys、sta、formal、lint、wave、coverage
 stage1–3/      三阶段材料
 docx/          赛题原文与评分细则
 versions.env   上游版本锚点
 ```
-
-基线为 XiangShan `a4eeaab`（`kunminghu-v2`）与 NEMU `a683e0b`；docx 编号项 12 项均有产物（见文末索引），形式验证只到数据通路、三个视频位未产出，缺口写在已知限制。主回归 30/30；扩容 224 例在 2026-11-08 全量通过（224/224），与主清单合计 254 个镜像。
 
 ## 指令规格
 
@@ -29,31 +45,41 @@ versions.env   上游版本锚点
 | 合法条件 | `SEW=8 ∧ LMUL=1 ∧ vm=1 ∧ vstart=0 ∧ vill=0 ∧ mstatus.VS≠OFF`，任一不成立即非法；非法判定优先于 `vl=0` 全写 |
 | 编码 | opcode `1010111` / funct3 `010` / funct6 `001110` / vm `1`；`vdot.vv v3, v2, v1` = `0x3A20A1D7` |
 
-编码空间按 riscv-opcodes 快照 `f24ac23` 核对：同一空间的 `001100`（`0x0C`）已被 Zvbc `vclmul.vv` 占用，`001110` 在 ratified 与 unratified 全库中空闲。规格全文见 [`design/SPEC.md`](design/SPEC.md)，核对记录见 [`stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md`](stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md)。
+编码空间按 riscv-opcodes 快照 `f24ac23` 核对：同一空间的 `001100`（`0x0C`）已被 Zvbc `vclmul.vv` 占用，`001110` 在 ratified 与 unratified 全库中空闲。`design/verify/encoding-gate.py` 实跑 **EXIT=1**：上游 0 占用、阳性对照 3/3、反向对照 1/1，但脚本把本仓已落地的 vdot 表项计为 3 条漂移（自命中）⇒ 只主张「上游全库本编号位 0 占用」，不宣称「编码检查通过」。规格全文见 [`design/SPEC.md`](design/SPEC.md)，核对记录见 [`stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md`](stage2/2.1-design/encoding-gate-zvbc-2026-10-31.md)。
 
 ## 实测结果
 
-三张表分列功能回归、面积与形式验证、延迟与吞吐。
+三张表分列功能与结构覆盖、面积与形式验证及时序/扩展、延迟与吞吐。
 
 | 项 | 结果 | 证据（作业号） |
 |---|---|---|
-| 30 例整份 `--full` | 30/30 通过，`regression_delta=0`，9/9 判据达标（2026-11-07） | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638） |
+| 30 例整份 `--full`（P-2 树，需 `patches/0005`） | 30/30 通过，`regression_delta=0`，9/9 判据达标（2026-11-07） | [`20-full-20261107T104227.json`](results/difftest/20-full-20261107T104227.json)（127137638） |
+| 30 例整份 `--full`（K1 树，公开 9 patch 可复现） | 30/30 通过，9/9 判据达标，`L_vdot` 等 `metrics[]` 与 P-2 同值（2026-11-03） | [`20-full-20261103T142246.json`](results/difftest/20-full-20261103T142246.json)（126676734） |
 | 扩容 224 例（清单外；与 30 例合计 254 个镜像） | 224/224 通过，负例 57/57，自检串 162/162，G0 捕获 2/2，8/8 判据达标 | [`94-extra-20261108T014445.json`](results/difftest/extra/94-extra-20261108T014445.json)（127194011） |
 | 30 例整份 `--full`（2026-11-08 复跑） | 未完成：退出码 1，未生成结果 JSON，`sacct` 无对应作业记录 | 无产物 |
 | 参考模型自检 | 1142 例通过，三套独立算法交叉 | `python3 design/verify/vdot_model_test.py`（本地，秒级） |
+| 结构覆盖（30 例合并，P-2 树） | 先看 vdot 模块：`tree_line` 100%（VdotReduce 1/1、VIMacU 3/3、VIMac64b 3/3，分母是条件行）；背景值：**全 SoC 顶层行覆盖（非 vdot 专属）** 67.5%（113628/168283）；toggle/branch 未采集 | [`verilator_coverage-summary.txt`](results/coverage/20261108T103732/merged30all.coverage/verilator_coverage-summary.txt)、[`coverage_SimTop.log`](results/coverage/20261108T103732/merged30all.coverage/coverage_SimTop.log)（127239138 / 127252294） |
 
-第一张表第 1–2 行来自两次作业，第 3 行是 2026-11-08 的 30 例复跑（无产物），第 4 行是本地命令；功能判据见 `core-package/scripts/20-run-difftest.sh:14-21`，正例须 `HIT GOOD TRAP`、`ABORT=0` 且命中用例自检串，负例须双侧一致陷入非法。三类数字口径不同：功能是 pass/fail 计数，面积是综合后的 cell 数与拓扑级数，延迟是 `rdcycle` 周期。
+第一张表第 1–2 行是同一次 30 例回归在 P-2 与 K1 两棵树上的两次作业，第 3 行是扩容清单，第 4 行是 2026-11-08 的 30 例复跑（无产物），第 5 行是本地命令，第 6 行是 30 个 `.dat` 的合并结果。功能判据见 `core-package/scripts/20-run-difftest.sh:14-21`，正例须 `HIT GOOD TRAP`、`ABORT=0` 且命中用例自检串，负例须双侧一致陷入非法。三类数字口径不同：功能是 pass/fail 计数，面积是综合后的 cell 数与拓扑级数，延迟是 `rdcycle` 周期。
 
-面积用 Yosys 0.48 综合，只统计 vdot 数据通路模块，不含 wrapper `VIMacU` 其余部分与工艺库；K1 与 P-2 是同日两次作业的不同镜像，只作同工具内的相对比较。两份 stat 件不带作业号，其 `num_cells` 与对应 `40-area-*.json` 的 `metrics[]` 同值；该 JSON 的 `stat_json` 仍指向 11-01 的旧件 `vdot.stat.json`（481 cells、DFF 19，与 500 矛盾），因此本表直接引 `vdot-p2` / `vdot-k1` 两份原始 stat 件。
+覆盖率的模块级分母按 difftest `scripts/coverage/statistics.py` 的 `tree_line` 规则只计带计数的 `if`/`end else` 行，分母为 1/3/3；顶层 67.5% 是 Verilator 的 line 覆盖点口径（同一主作业单个 `.dat` 即 97,683/168,283），全 SoC 分母里绝大部分与 vdot 无关，两个「line」不是同一定义。实际构建命令只出现 `--coverage-line`（[`slurm-127239138.out:12`](results/coverage/20261108T103732/slurm-127239138.out)）；这是集群侧对 `difftest/verilator.mk` 的临时 line-only 修改，仓库原文 `repos/XiangShan/difftest/verilator.mk:71-72` 在 `EMU_COVERAGE=1` 时同时加 `--coverage-line --coverage-toggle`。故 toggle 无记录、记「未采集」；`VIMacSrcTypeModule` 在 30 个 `.dat` 中无覆盖点。收集脚本自身 `coverage_report` 判据未达标（`95-coverage.sh:465-480` 把 30 个 `.dat` 一次塞进 make，第 2 个起被 shell 当命令执行，rc=127），本次合并是对同一批 30 个 `.dat` 用同一 `verilator_coverage → coverage.py → statistics.py` 管线重做，加 `--annotate-all` 才产出被 inline 的 `VdotReduce.sv`。
+
+面积用 Yosys 0.48 综合，只统计 vdot 数据通路模块，不含 wrapper `VIMacU` 其余部分与工艺库；K1 与 P-2 是同日两次作业的不同镜像，只作同工具内的相对比较。1.12% / 1.17% = 481 / 500 除以 `VIMac64b` 的 42,783 cells。两份 stat 件不带作业号，其 `num_cells` 与对应 `40-area-*.json` 的 `metrics[]` 同值；该 JSON 的 `stat_json` 仍指向 11-01 的旧件 `vdot.stat.json`（481 cells、DFF 19，与 500 矛盾），因此本表直接引 `vdot-p2` / `vdot-k1` 两份原始 stat 件。
+
+时序用 OpenSTA 3.2.0 对同一 Yosys 网表做模块级静态时序，对象是 `VdotReduce` 与 `VIMac64b` 两个模块、不是全芯片；无 CTS、无布局布线、无寄生抽取，时钟为理想时钟（clock network delay=0），无 `set_driving_cell`、无负载模型，输入/输出外部延迟各 50 ps，互连为零，绝对值偏乐观；Nangate45 是 45 nm 开源代理工艺（135 cell），不是香山实际工艺节点，绝对值不能当签核数。`VIMac64b` 最差路径 12.1497 ns 由单级 `NOR2_X1` 增量 8.4455 ns 主导（`K1_VIMac64b_0.333ns_20261108.rpt:41`），是综合后未做扇出修复/buffering 的产物，只作同流程相对对照；原始报告未输出 fanout 字段，本表不写扇出数。K1 与 P-2 的 `VIMac64b` 网表 sha256 相同，面积表与 STA 里两版 `VIMac64b` 的 4 行都取自同一网表；`VdotReduce` 两版网表不同。两个周期下 `VdotReduce` 均违例（333 ps：K1 −791.8 ps、P-2 −375.8 ps；500 ps：−624.8 / −208.8 ps），本仓不主张时序闭合。
+
+K=16 行来自 `design/verify/area/gen_ext.py` 生成的独立归约树，综合命令与 `core-package/scripts/40-yosys-area.sh` 逐字相同（`synth -top` + `stat -tech cmos` + `ltp -noff`），K8 对照在同一流程下逐值复现 481 cells / 4,900 tr / 22 ltp；三条 miter（K8≡公开仓 `VdotReduce`、K8≡gold、K16≡gold）以 `sat -verify -prove-asserts -set-init-zero -seq 2`（2 拍、零初值）全部 `SAT proof SUCCESS`——这是**有界等价检查**，不是无界等价证明。cells 是 Yosys 通用门计数、不是硅面积，未做 `dfflibmap`/`abc -liberty` 映射，也未集成进 `VIMacU`。
 
 | 项 | 结果 | 口径 | 证据（作业号） |
 |---|---|---|---|
-| `VdotReduce`（P-2） | 500 cells，14 级，DFF 38 | P-2 = 把 `(sum, carry)` 跨 `fireS1` 寄存的进位保存重定时版（`patches/0005-…`） | [`vdot-p2.stat.json`](results/yosys/vdot-p2.stat.json)、[`vdot-p2.ltp.txt`](results/yosys/vdot-p2.ltp.txt)、[`40-area-20261107T104238.json`](results/yosys/40-area-20261107T104238.json)（127137643） |
-| `VdotReduce`（K1） | 481 cells，22 级，DFF 19 | K1 = 未重定时版 | [`vdot-k1.stat.json`](results/yosys/vdot-k1.stat.json)、[`vdot-k1.ltp.txt`](results/yosys/vdot-k1.ltp.txt)、[`40-area-20261107T095404.json`](results/yosys/40-area-20261107T095404.json)（127135437） |
+| `VdotReduce`（P-2） | 500 cells，14 级，DFF 38（占 `VIMac64b` 1.17%） | P-2 = 把 `(sum, carry)` 跨 `fireS1` 寄存的进位保存重定时版（`patches/0005-…`） | [`vdot-p2.stat.json`](results/yosys/vdot-p2.stat.json)、[`vdot-p2.ltp.txt`](results/yosys/vdot-p2.ltp.txt)、[`40-area-20261107T104238.json`](results/yosys/40-area-20261107T104238.json)（127137643） |
+| `VdotReduce`（K1） | 481 cells，22 级，DFF 19（占 `VIMac64b` 1.12%） | K1 = 未重定时版 | [`vdot-k1.stat.json`](results/yosys/vdot-k1.stat.json)、[`vdot-k1.ltp.txt`](results/yosys/vdot-k1.ltp.txt)、[`40-area-20261107T095404.json`](results/yosys/40-area-20261107T095404.json)（127135437） |
 | `VIMac64b` | 42,783 cells，100 级 | 11-04 与两次 11-07 作业同值 | [`40-area-20261107T104238.json`](results/yosys/40-area-20261107T104238.json)、[`40-area-20261104T094144.json`](results/yosys/40-area-20261104T094144.json)（126752216） |
-| miter 正控 / 负控 | `SUCCESS` / `FAIL` | 只证 `vdot_dp` 数据通路 | [`50-miter-20261104T093531.json`](results/formal/50-miter-20261104T093531.json)（126751660） |
+| miter 正控 / 负控 | `SUCCESS` / `FAIL` | 只证 `vdot_dp` 数据通路；2026-11-04 件用 `-seq 3 -set-at` 驱动，属有界检查 | [`50-miter-20261104T093531.json`](results/formal/50-miter-20261104T093531.json)（126751660） |
+| `VdotReduce` 时序（STA） | 最差路径 K1 1084.3 ps、P-2 658.8 ps；两版起点/终点不同，数值不可相减；333 ps 与 500 ps 两个周期下 slack 均为负 | OpenSTA 3.2.0 + Nangate45 代理库；预布局、仅数据通路、理想时钟、无负载模型 | [`worst_slack_20261108.tsv`](results/sta/20261108/worst_slack_20261108.tsv)（127234054） |
+| K=16 扩展综合 | 977 cells、ltp 26，为 K8 的 2.03 倍；K8 对照 481/22 | 独立数据通路，未集成进 `VIMacU`；无工艺库映射（`mapped_area_um2=-1`） | [`ext-127231914.json`](results/yosys/ext-127231914.json)（127231914） |
 
-延迟与吞吐来自同一组 perf 用例：`L_vdot` 是依赖链 cyc，`T_steady` 是 cyc/dot，两者相除没有物理含义，不是加速比。同属每点周期的 `B1`/`B2` 与 `T_steady` 才能相除得出每点开销倍数 6 / 9，延迟侧可报的比值则是基线链每指令归一 `(16/3) ÷ 4 ≈ 1.33×`（[b3 日志](results/difftest/b3/91-b3-20261104T115624.log)，口径见 [`stage3/3.3/report.md`](stage3/3.3/report.md) §4.3）。基线是「用已有向量指令组合实现同等功能」的自设序列，官方细则未规定条数与计时窗口。2026-11-08 以 4 次独立重复复核该比值（作业 127196036）：`L_vdot` 四次均为 4，中位数 4、极差 0，`(16/3)/4 = 1.333333`（整数打印口径 `5/4 = 1.25`），口径与限定见 [`perf-repeat.md`](stage3/3.3/sections/perf-repeat.md) §2.5。
+延迟与吞吐来自同一组 perf 用例：`L_vdot` 是依赖链 cyc，`T_steady` 是 cyc/dot，两者相除没有物理含义，不是加速比。同属每点周期的 `B1`/`B2` 与 `T_steady` 才能相除得出每点开销倍数 6 / 9。延迟加速比按两个口径并列：① 按官方 3.3 指标定义的「基线组合链 latency / vdot latency」= `16 / 4 = 4.0×`（基线序列由本项自设，官方未规定指令条数；分母是 3 条串行 RVV 指令的整链，含 3 条指令的串行开销，不是单指令对单指令）；② 每指令归一 `(16/3) ÷ 4 ≈ 1.33×`（微架构口径，把整链 latency 摊到 3 条指令）。两者差异只来自分母是否按指令数归一，均不跨 SEW 或跨工作负载（[b3 日志](results/difftest/b3/91-b3-20261104T115624.log)，口径见 [`stage3/3.3/report.md`](stage3/3.3/report.md) §4.3）。基线是「用已有向量指令组合实现同等功能」的自设序列，官方细则未规定条数与计时窗口。2026-11-08 以 4 次独立重复复核该比值（作业 127196036）：`L_vdot` 四次均为 4，中位数 4、极差 0，`(16/3)/4 = 1.333333`（整数打印口径 `5/4 = 1.25`），口径与限定见 [`perf-repeat.md`](stage3/3.3/sections/perf-repeat.md) §2.5。
 
 | 口径 | 值 | 含义 | 证据（作业号） |
 |---|---|---|---|
@@ -109,10 +135,12 @@ sbatch -p kshcnormal -N 1 -n 32 --time=03:00:00 "$CORE_DIR"/scripts/20-run-difft
 
 ## 已知限制
 
-1. 验证覆盖不完整：形式验证只到 `vdot_dp` 数据通路（miter 的 scope 不覆盖流水、发射与旁路），译码与 wrapper 改动只由 difftest 与 Chisel 单测覆盖；lint 在默认告警集下两 top 0 warning，`-Wall` 下 13 条 `UNUSEDSIGNAL`（VdotReduce 1 + VIMac64b 12）、rc=1，未逐条修复。规避：改动后必跑 30 例主清单与 224 例扩容清单，并把 miter 顶层扩到 wrapper 列入后续。
-2. 补丁按 `a4eeaab` 基线的检出生成、应用顺序有依赖，编码核对也基于 riscv-opcodes `f24ac23` 快照。换基线或上游重新分配 `001110/010` 时结果不可直接沿用；规避是先跑 `git apply --check`，必要时重跑 `design/verify/encoding-gate.py` 并改走 [`design/SPEC.md`](design/SPEC.md) §2.4 的回退池。
-3. 30 例复现依赖集群 SLURM 分区 `kshcnormal`、`nexus-am` 源码树与 xPack `riscv64-unknown-elf-gcc 13.2.0`（版本记录见 `results/env/00-env-20261105T092724.tools.tsv`）。`nexus-am` 仓库不含（上游为 `https://github.com/OpenXiangShan/nexus-am`，本工作区未固定 commit），缺任一项时第 4 步会停在前置检查（`build_all.sh:21` 对 `AM_HOME` 硬退出、`10-build-emu.sh:167-170` 对两棵源码树 `fail_unrun`），此时只能用 `results/` 下的既有产物核对结论。
-4. 官方要求的三个视频位未产出：`recording/` 下只有分镜脚本，没有视频文件。截图与文档不能顶替录屏，视频项提交前不完整；规避是按该目录三份分镜脚本补录后再提交。
+1. 验证覆盖不完整：形式验证只到 `vdot_dp` 数据通路（miter 的 scope 不覆盖流水、发射与旁路，且为 2–3 拍、零初值/定点驱动的**有界**检查，不是无界等价证明），译码与 wrapper 改动只由 difftest 与 Chisel 单测覆盖；lint 在默认告警集下两 top 0 warning，`-Wall` 下 13 条 `UNUSEDSIGNAL`（VdotReduce 1 + VIMac64b 12）、rc=1，未逐条修复。结构覆盖只采到 line：全 SoC 顶层 67.5%（非 vdot 专属），vdot 模块级分母仅 1/3/3（`tree_line` 口径），toggle/branch/expr 未采集，`VIMacSrcTypeModule` 无覆盖点，`vdot-structural.tsv` 未产出。规避：改动后必跑 30 例主清单与 224 例扩容清单，并把 miter 顶层扩到 wrapper 列入后续。
+2. 无物理实现证据：未做硅后（无 PDK、无布局布线、无寄生抽取、无 DRC/LVS），STA 只在模块级、Nangate45 代理工艺下做，且 `VdotReduce` 在两个测试周期下均违例；功耗未测（`report_power` 未跑）。这些数字不能用于判断芯片可达频率或能效。
+3. 扩展只实测 K=16 一格：977 cells、ltp 26，是独立数据通路、未集成进 `VIMacU`，乘法器未改未测（仍 8×8 signed→16 位积），K=16 真实集成需要 16 个乘积输入（两个 64 位切片），wrapper 目前只连 `vimacs(0)` 的 8 lane。K=32/64 仍是推算。
+4. 补丁按 `a4eeaab` 基线的检出生成、应用顺序有依赖，编码核对也基于 riscv-opcodes `f24ac23` 快照。换基线或上游重新分配 `001110/010` 时结果不可直接沿用；规避是先跑 `git apply --check`，必要时重跑 `design/verify/encoding-gate.py` 并改走 [`design/SPEC.md`](design/SPEC.md) §2.4 的回退池。
+5. 30 例复现依赖集群 SLURM 分区 `kshcnormal`、`nexus-am` 源码树与 xPack `riscv64-unknown-elf-gcc 13.2.0`（版本记录见 `results/env/00-env-20261105T092724.tools.tsv`）。`nexus-am` 仓库不含（上游为 `https://github.com/OpenXiangShan/nexus-am`，本工作区未固定 commit），缺任一项时第 4 步会停在前置检查（`build_all.sh:21` 对 `AM_HOME` 硬退出、`10-build-emu.sh:167-170` 对两棵源码树 `fail_unrun`），此时只能用 `results/` 下的既有产物核对结论。
+6. 官方要求的三个视频位未产出：`recording/` 下只有分镜脚本，没有视频文件。截图与文档不能顶替录屏，视频项提交前不完整；规避是按该目录三份分镜脚本补录后再提交。
 
 ## 交付物索引
 

@@ -4,7 +4,8 @@
 > **并入位置**：`stage3/3.3/report.md` 的 **§4.10**（本次实读位于 `report.md:837`）。按 §4.6 的并入约定，A/B/C 三节整件插入 §4.10 一处，不改数字与口径标签，也不拆到 §2/§5。
 > **版本**：XiangShan `913ddd3` / yunsuan `83059b5` / NEMU `a9dca53`（实施 HEAD）；基线 pin `a4eeaab` / `9559211` / `a683e0b`。
 > **标注约定**：【实测】=本次在本机或昆山实跑并看到输出；【实读】=本次取回原文/源码逐字读到；【推算】=由实读证据做的算术推导，非实测；【未运行】=本次未执行；【未核实】=查不到或无条件验证。
-> **口径约定**：全文只允许一个数字写成「加速比」，即每指令归一 `1.33×`（整数打印口径 `1.25×`，见 `report.md` §4.3）；`6 / 9` 只写「每点开销倍数」；`481 / 42,783` 只写 cell 占比，不是面积、不是功耗。
+> **口径约定**：加速比只允许两个并列口径——官方整链 `16/4 = 4.0×` 与每指令归一 `1.33×`（整数打印口径 `1.25×`，见 `report.md` §4.3），引用时须写明是哪一个；`6 / 9` 只写「每点开销倍数」；`481 / 42,783` 只写 cell 占比，不是面积、不是功耗。
+> **状态行（2026-11-08 同步）**：B 节（4.10.2 时序边界）的**结论状态已变**——STA 已补做（自建 OpenSTA 3.2.0 + Nangate45 代理 `typical` Liberty、预布局、仅模块级数据通路），**两版 `VdotReduce` 在 333 / 500 ps 下均违例**，2 拍仍是**未达成的设计目标**。**实测表、工具/Liberty/约束与六条边界只在 `report.md` §4.10.2 维护**，本文件不复制数字，避免出现第二份正文。A 节（4.10.1）与 C 节（4.10.3）**未变**；C 节的「功耗」仍【未运行】（缺活动率），但「工具与 Liberty 缺」这一条已不成立（见 C.3 路线 C 的本日注记）。
 
 ---
 
@@ -58,9 +59,9 @@
 
 ---
 
-## B. 4.10.2 时序边界：2 拍是设计目标，不是收敛结论
+## B. 4.10.2 时序边界：2 拍仍是设计目标，代理工艺 STA 实测全部违例
 
-**结论先写**：本报告**没有** STA，也没有 Liberty 与工艺库；2 拍是**设计目标（预算内候选）**，写成「已收敛」即为越界。
+**结论先写（2026-11-08 更新）**：本报告现在**有** STA，但它只到**模块级数据通路**、用**工艺代理**（Nangate45，45 nm，135 cell）、跑在**预布局**网表上——不是目标工艺、不是全芯片、不是签核。结果是**两版 `VdotReduce` 在 333 ps 与 500 ps 下都违例**（worst slack −791.8 / −624.8 ps 与 −375.8 / −208.8 ps），`VIMac64b` 的模块级网表 slack 达 −11,857.3 / −11,690.3 ps。因此 2 拍是**未达成的设计目标**，写「已收敛」即为越界。**逐 run 表、工具版本、Liberty、约束与六条边界见 `report.md` §4.10.2**；本节只保留判据、历史快照与「能说什么/不能说什么」，不复制数字。2026-11-06 的「无 `sta`、无 Liberty」快照见 B.5，它描述的是补做之前的状态。
 
 ### B.1 判据（内部预登记，统一定义）
 
@@ -74,24 +75,24 @@
 | `ltp(VIMac64b)` | 100 级 | 同文件 → `metrics[0].longest_path` | 作为相对基准 `P0` | 同上 |
 | 结构不变量 I1/I2 | `fireS1` 同使能同边界；结果寄存器与 `outCtrl` 在 C2 对齐 | `repos/XiangShan/src/main/scala/xiangshan/backend/fu/wrapper/VIMacU.scala:129-130,159-160`（端口连接与输出选路） | vdot 不新增流水级；第 2 拍与 `VIMac64b` 的第 2 拍并行 | 不证明该拍内组合延迟满足 |
 | 交付形态的 2 拍目标 | `VimacCfg.latency = CertainLatency(2)` | `repos/XiangShan/src/main/scala/xiangshan/backend/fu/FuConfig.scala:551,563` | 交付配置写的是 2 拍 | 不是 STA 结论 |
-| 面积 JSON 的性质 | `scope` 字段=「仅 vdot 数据通路模块，未含 VIMacU 其余部分，**未含工艺库**」 | 同 JSON 的 `scope` 字段（实读） | 该 JSON 不是可喂 STA 的网表 | 不存网表、不是 Liberty 映射后的标准单元 |
+| 面积 JSON 的性质 | `scope` 字段=「仅 vdot 数据通路模块，未含 VIMacU 其余部分，**未含工艺库**」 | 同 JSON 的 `scope` 字段（实读） | 该 JSON 不是可喂 STA 的网表 | 不存网表、不是 Liberty 映射后的标准单元（2026-11-08 补做 STA 的网表是另一次 yosys 映射产物，不是这个 JSON） |
 
-**缺什么（G-D 缺省）**：2026-11-04 24:00 设了 G-D 缺省——E-0/E-2 实测与 vmac 回归未齐时锁定 tap0/K1，2 拍只写「设计目标/预算内候选」，不自动升 3 拍、不启 X16（`design/ARCHITECTURE.md:103`）。**具体缺项**：`S2_own`/`S3_own` 切段探针（`design/verify/area/gen_probes.sh` 未建，该目录本次实读**只有** `build_area_rtl.sh`）、Liberty、Yosys 工艺映射（`dfflibmap -liberty` + `abc -liberty`）、OpenSTA、SDC 与 `report_checks`。
+**缺什么（G-D 缺省）**：2026-11-04 24:00 设了 G-D 缺省——E-0/E-2 实测与 vmac 回归未齐时锁定 tap0/K1，2 拍只写「设计目标/预算内候选」，不自动升 3 拍、不启 X16（`design/ARCHITECTURE.md:103`）。**具体缺项（2026-11-08 更新）**：`S2_own`/`S3_own` 切段探针**仍未建**（`design/verify/area/gen_probes.sh` 未建，该目录实读只有 `build_area_rtl.sh`）；Liberty、Yosys 工艺映射（`dfflibmap -liberty` + `abc -liberty`）、OpenSTA、SDC 与 `report_checks` **已由 2026-11-08 的 STA 补上**（见本节开头）——**剩下的缺口就是切段探针**。
 
 ### B.3 可学的先例：外部公开材料的 ASAP7 + OpenSTA 与负 slack 如实报告（调研范围内）
 
-一份外部公开参赛材料（本次实读 `README.md` @ commit `01996d9f92eb`，第 88-110 行）给出了一个**可复用的范式**：
+一份外部公开参赛材料采用了「固定版工具链 + 明写参考预算 + 负 slack 照实写」的写法。该材料的**具体数值、仓库路径与 commit 不在本文件列示**；本节只保留四条可复用的方法：
 
-| 项 | 该材料的做法（原文数值） | 值得学的点 |
+| 项 | 该材料的做法（只写方法） | 值得学的点 |
 |---|---|---|
-| 工具链 | Yosys + OpenSTA + 固定版 OpenROAD-flow-scripts（`ORFS_ROOT` 指到 `0fcc4186e344f85167d97c1d67994bef01e89036`），脚本 `eda/run_eda.sh` | 工具版本固定，避免「换工具换结论」 |
-| 约束 | 333 ps 参考预算（≈ 3.003 GHz【推算：1/333 ps】） | 预算明写，读者可自行换算 |
-| 结果 | `VIMacU` 映射面积差 109.30626 µm²（约 1.73%）；预布局 STA 最差路径 **821.4327 ps**、路径裕量 **−488.4327 ps**（= 821.4327 − 333，本次复算一致） | **负 slack 照实写**，并声明「为后续优化提供模块级量化基线」 |
-| 边界声明 | 「该结果基于公开 ASAP7 库与局部实验约束」 | 明确是工艺代理 + 局部约束，不冒充目标工艺签核 |
+| 工具链 | Yosys + OpenSTA + 固定版 OpenROAD-flow-scripts | 工具版本固定，避免「换工具换结论」 |
+| 约束 | 预先声明一个参考时钟预算 | 预算明写，读者可自行换算 |
+| 结果 | 预布局 STA 出现负 slack，照实写并附面积/路径量级 | **负 slack 照实写**，不写成收敛 |
+| 边界声明 | 明确「公开 ASAP7 库 + 局部实验约束」 | 明确是工艺代理 + 局部约束，不冒充目标工艺签核 |
 
-**与它的差距必须写明**：本仓**没有**做这一步（工具与工艺库都不在，见 B.5），所以本报告只能写「2 拍为设计目标」，**不能**写「已做 STA 且满足」。若后续补做，**负 slack 也照实写**，并按该材料的写法注记「工艺代理 + 局部约束 + 预布局」。
+**与它的关系（2026-11-08 更新）**：本仓**已补做**这一步（工具与工艺库均自建，见本节开头），并按该写法注记「工艺代理 + 局部约束 + 预布局」；**负 slack 照实写**（−791.8 … −11,857.3 ps），**不能**写「已做 STA 且满足」。二者**不做数值对比**：工艺库、对象、约束都不同；同口径只保留「负 slack、工艺代理」这一方向性一致，仅此而已。
 
-### B.4 若要闭合：路线（本次未运行）
+### B.4 若要闭合：路线（2026-11-06 时未运行；2026-11-08 已跑通模块级部分）
 
 1. **先补切段闭包**：`gen_probes.sh`（未建）生成 M-S2 / M-S3 两个 top，产出 `S2_own` / `S3_own`；没有这一步只能对 `VdotReduce` 单模块做 STA，不能对「tap 并入 S2」的真实路径做 STA。
 2. **选 Liberty 与工艺代理**：公开 PDK（如 ASAP7 / sky130）只能作**工艺代理**，结论只能写「代理工艺下的相对路径比较」。
@@ -107,7 +108,9 @@
    SDC 至少要有 `create_clock -period <T>`、输入/输出 `set_input_delay`/`set_output_delay`、`set_clock_uncertainty`；端口名以生成网表为准。
 5. **判据**：在同一 Liberty、同一 clock 下比较切段路径与 `VIMac64b` 关键路径，判据是「tap 并入后 S2 仍不超过既有 MAC 关键路径」，**不是**「绝对频率达标」。
 
-### B.5 工具与工艺库可达性（本次实测，只核实不实跑 STA）
+**2026-11-08 执行情况**：第 2–4 步已做（Liberty = Nangate45 代理；`dfflibmap` + `abc -liberty` 映射；OpenSTA `read_liberty → read_verilog → link_design → create_clock → set_*_delay → report_checks`）；第 1 步（`gen_probes.sh` 切段闭包）**仍未做** ⇒ 第 5 步的**切段**判据**未完成**，已跑的是两个模块各自的整模块路径（`report.md` §4.10.2 表）。
+
+### B.5 工具与工艺库可达性（2026-11-06 实测快照；2026-11-08 已被新状态取代）
 
 完整命令与原始输出：`stage3/3.3/evidence/sta-toolcheck-20261106.txt`（46 行，逐条命令 + 原样输出）。
 
@@ -117,7 +120,7 @@
 | 昆山登录节点（未 source） | NOT_FOUND | NOT_FOUND | NOT_FOUND | — |
 | 昆山登录节点（`source ~/tools/env.sh`） | **可用**：`~/tools/yosys/bin/yosys`，`Yosys 0.48 (git sha1 aaa53474…)` | NOT_FOUND | NOT_FOUND | `module avail` 无 openroad/opensta/asap7/sky130（`grep` 退出 1）；HOME 内无 ORFS/OpenROAD 目录、无 `.sif`；`*.lib` 只命中 `core/src/nexus-am/Makefile.lib`（构建片段，非 Liberty） |
 
-⇒ **STA 与 `report_power` 均【未运行】**：不是脚本出错，是工具与工艺库数据链缺失。本次**未安装、未构建、未下载任何 PDK**，未执行任何 STA 命令。
+⇒ **该快照的结论**：2026-11-06 时 STA 与 `report_power` 均【未运行】，原因不是脚本出错，而是工具与工艺库数据链缺失（当次未安装、未构建、未下载任何 PDK，未执行任何 STA 命令）。**2026-11-08 变化**：STA 工具（自建 OpenSTA 3.2.0）与 Liberty（Nangate45 代理）已具备，STA **已跑**（`report.md` §4.10.2）；`report_power` **仍【未运行】**，因为仍缺**活动率**（VCD/SAIF）。
 
 ---
 
@@ -159,16 +162,16 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 |---|---|---|---|---|
 | A. 面积代理 | 已有 481 / 42,783 | **能**（已完成） | 「cell 占比 +1.12%」 | 不能称功耗；不能假设 cell 电容/活动率相同 |
 | B. 手算 `P_dyn = α C V² f` | `C`（Liberty/PDK）、`V`、`f`、`α`（VCD/SAIF 或假设） | **不能**（缺 C/V/f/α） | 若强行假设，只能给无量纲比值 | 不能给 mW；不能当实测 |
-| C. OpenSTA/OpenROAD `report_power` | Liberty + 映射后网表 + 活动率（VCD/SAIF 或 `set_power_activity`） | **工具支持、数据链缺**；【未运行】 | 给定 Liberty/活动率下的 internal/switching/leakage/total power（W） | 没有 Liberty 就没有数；用公开 PDK 只是工艺代理 |
+| C. OpenSTA/OpenROAD `report_power` | Liberty + 映射后网表 + 活动率（VCD/SAIF 或 `set_power_activity`） | **Liberty 与映射网表已具备（2026-11-08 补做 STA 时自建 OpenSTA 3.2.0 + Nangate45 代理库）、活动率仍缺**；【未运行】 | 给定 Liberty/活动率下的 internal/switching/leakage/total power（W） | 没有活动率（VCD/SAIF）就给不出有意义的数；Nangate45 只是工艺代理，不是目标工艺 |
 | D. 用现有 VCD 做活动率 | VCD 必须是真实时钟域、覆盖代表性负载 | **不能**：`stage2/2.2-rtl/wave/` 的 `key.vcd` 的 clock 是**采样域时钟**（每拍 dump 一次 ⇒ 摘录中恒为 1、窗口 [8377,8577] 内 **0 次翻转**），且仅 213 个时间戳、非 `VdotReduce` 独立 top | — | 不能当活动率证据 |
 
-**OpenSTA 的能力边界（引原文）**：`report_power` 用 Liberty power models + propagated/annotated pin activities，报告 internal/switching/leakage/total power（"Power values are reported in watts."）；无仿真活动时用 `set_power_activity`，输入默认 activity=0.1、duty=0.5（OpenSTA Commands 页，本次实取）。这恰好说明：**没有 Liberty 和活动率，`report_power` 给不出有意义的数**。
+**OpenSTA 的能力边界（引原文）**：`report_power` 用 Liberty power models + propagated/annotated pin activities，报告 internal/switching/leakage/total power（"Power values are reported in watts."）；无仿真活动时用 `set_power_activity`，输入默认 activity=0.1、duty=0.5（OpenSTA Commands 页，本次实取）。**2026-11-08 注**：Liberty（Nangate45 代理）与映射后网表已具备，缺的只剩活动率——`set_power_activity` 的默认 0.1/0.5 是假设值、不是本设计数据，故 `report_power` 仍【未运行】，本节继续不写 mW 数字。
 
 ### C.4 禁止写法
 
 - 不写「功耗仅增 1.12%」「功耗几乎不增」——1.12% 是 cell 占比，不是功耗。
 - 不写「Nanhu-vdot +0.5% ⇒ 本设计也 +0.5%」——平台/配置/工艺都不同。
-- 不写「OpenROAD 可算功耗 ⇒ 已算」——工具存在不等于数据链存在；本次【未运行】。
+- 不写「OpenROAD 可算功耗 ⇒ 已算」——2026-11-08 起 Liberty 与映射网表已有，但活动率仍缺；`report_power` 仍【未运行】。
 - 不写「tap 只在 vdot 时翻转」——源码显示它对每条 vimac 都 latch。
 
 ---
@@ -189,7 +192,7 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 | 8 | OpenROAD Flow Scripts | `flow/scripts/synth.tcl`、`flow/scripts/load.tcl` | https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/scripts/synth.tcl；https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts/blob/master/flow/scripts/load.tcl | Yosys `write_verilog` → OpenSTA `read_verilog/link_design/read_sdc` 的标准先例 | 【实读】`gh api` 取回；`synth.tcl:347`、`load.tcl:33-34,42` 逐行核对 |
 | 9 | YosysHQ | Yosys 命令文档：`ltp`、`dfflibmap`、`write_verilog` | https://yosyshq.readthedocs.io/projects/yosys/en/latest/cmd/index_passes_status.html（`ltp`）；https://yosyshq.readthedocs.io/projects/yosys/en/latest/cmd/index_passes_techmap.html（`dfflibmap`） | `ltp` 只算单模块内拓扑级数（`-noff` 排除 FF）；`dfflibmap -liberty` 做 FF 映射；`write_verilog -noattr` 写网表 | 【实读】`ltp` 页 HTTP 200、文本逐字核对；`dfflibmap` 帮助文本在昆山 `yosys 0.48` 上实跑取回（`help dfflibmap` 原文见 B.4） |
 | 10 | Xu-Hao Chen, Si-Peng Hu, Hong-Chao Liu, Bo-Ran Liu, Dan Tang, Di Zhao | *Research on LLM Acceleration Using the High-Performance RISC-V Processor "Xiangshan" (Nanhu Version) Based on the Open-Source Matrix Instruction Set Extension (Vector Dot Product)*，arXiv:2409.00661 | https://arxiv.org/abs/2409.00661；PDF https://arxiv.org/pdf/2409.00661 | Nanhu-vdot 的「几乎不增功耗」= FPGA VU19P + Vivado 2020.2 + 最小配置：8.454→8.494 W、LUT +2.8%、FF +0.9%、BRAM 不变 | 【实读】PDF HTTP 200、741,721 B、10 页；`nanhu.txt:242-296` 逐字核对（含机箱/FPGA/工具链、资源表、功耗句） |
-| 11 | 外部公开参赛材料 | README §4「ASAP7 综合与预布局 STA」@ commit `01996d9f92eb` | 从略 | 本次调研范围内**仅见一例** ASAP7 + OpenSTA 先例（范围限于该调研覆盖的参赛仓，不是全量普查）：面积差 109.30626 µm²（1.73%）、333 ps 预算、最差路径 821.4327 ps、**负 slack −488.4327 ps 如实报告** | 【实测】`gh api …/contents/README.md` 取回 136 行，`:88-110` 逐字核对；`gh api …/commits` 首条 sha = `01996d9f92eb` |
+| 11 | 外部公开参赛材料 | README §4「ASAP7 综合与预布局 STA」 | 从略 | 方法学参照：固定版工具链 + 明写参考时钟预算 + 负 slack 照实写 + 「公开 ASAP7 库 + 局部约束」边界声明；**不列外部数值与可识别信息** | 【实读】本次调研覆盖的参赛材料中读到该写法；不记 commit/路径/数值 |
 
 ---
 
@@ -202,8 +205,8 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 | 1 | 依赖延迟/吞吐的**相对比较** | `L_vadd=3`、`L_vmacc=4`、`L_vdot=4`（median=mean，1984 样本）；`T_steady=1 cyc/dot`；`L_base_chain=16`、`L_base_chain_ladder=24`、`B3=11` | 不能写「硅上 4 拍」「Fmax 可达 X GHz」「vdot 比基线快 4×/6×/9×」；不能把 6/9 叫 latency 加速比 | `results/difftest/20-full-20261103T142246.json` → `metrics[]`；`results/difftest/b3/91-b3-20261104T115624.log:5-22` |
 | 2 | 中位数 vs 均值 | 主指标 median=mean（3/4/4）；基线链 median=mean=16、8/8 轮一致；ladder 24/23；kernel 16/15 | 不能写「中位数是 Agner/K&J 的方法」；不能写「已做置信区间/统计显著」；不能只报中位数而隐藏 mean/min/max | `perf_vadd.c:80-112`；`91-b3-…log:5-13`；`93-kcmp-…log:14` |
 | 3 | `rdcycle` 读的可信度 | 可写「difftest 对 `mcycle..mhpmcounter31` 全部 skip，计数器语义不由 difftest 覆盖」；可写 #6852/#6501 的机制 | 不能写「30/30 通过 ⇒ 计数器读数一定对」；不能把单次 `min` 当干净样本；不能把 #6852 写成「官方口径」 | `Bundle.scala:365,369`；`NewCSR.scala:942-943,1140`；`Rob.scala:1544,1548`；`gh issue view 6852/6501` |
-| 4 | 2 拍时序 | 可写「设计目标 2 拍（`VimacCfg.latency=2`）」；可写「`ltp(VdotReduce)=22` vs `ltp(VIMac64b)=100` 是拓扑级数」；可写 G-D 缺省锁 tap0/K1 | 不能写「2 拍已收敛」「setup 满足」「22 级 < 100 级 ⇒ 满足 2 拍」「换算成 ps/GHz」 | `FuConfig.scala:563`；`40-area-20261104T094144.json`；`design/ARCHITECTURE.md:103`（2 拍预算与 G-D 缺省） |
-| 5 | STA | 可写「路线：`read_liberty → read_verilog → link_design → read_sdc → report_checks`」；可写 ORFS 先例与外部公开材料的负 slack 范式 | 不能写「STA 已跑/已通过/已签核」；不能写「OpenSTA 已装」；不能写「用公开 PDK 签核」 | 本机 `command -v yosys sta openroad` → 无输出 `EXIT=1`；仓内 0 个 `.lib/.lef/.sdc/.db`；昆山探查见 `evidence/sta-toolcheck-20261106.txt` |
+| 4 | 2 拍时序 | 可写「设计目标 2 拍（`VimacCfg.latency=2`）」；可写「`ltp(VdotReduce)=22` vs `ltp(VIMac64b)=100` 是拓扑级数」；可写 G-D 缺省锁 tap0/K1；**2026-11-08 起**可写「代理工艺 STA 实测：K1/P-2 `VdotReduce` 在 333/500 ps 下 worst slack −791.8/−624.8 与 −375.8/−208.8 ps，`VIMac64b` −11,857.3/−11,690.3 ps，全部违例」（`report.md` §4.10.2） | 不能写「2 拍已收敛」「setup 满足」「22 级 < 100 级 ⇒ 满足 2 拍」「换算成 ps/GHz」；**也不能**把代理工艺（Nangate45、预布局、仅数据通路）的负 slack 写成目标工艺签核数或频率 | `FuConfig.scala:563`；`40-area-20261104T094144.json`；`design/ARCHITECTURE.md:103`；`report.md` §4.10.2 表与六条边界 |
+| 5 | STA | 可写「路线：`read_liberty → read_verilog → link_design → read_sdc → report_checks`」；可写 ORFS 先例与外部公开材料的负 slack 范式；**2026-11-08 起**可写「本仓已用自建 OpenSTA 3.2.0 + Nangate45 代理库跑过模块级 STA，结果为负 slack」（`report.md` §4.10.2，证据 `results/sta/20261108/`） | 不能写「STA 已通过/已签核/时序收敛」；不能写「用公开 PDK 签核」；不能把模块级、预布局、无寄生的结果当全芯片或目标工艺结论；`report_power` 仍不能写「已跑」 | `results/sta/20261108/toolchain_20261108.log`（OpenSTA 3.2.0、Liberty sha256、135 cell）；`worst_slack_20261108.tsv`（8/8 `rc=0`）；2026-11-06 的「`sta` NOT_FOUND」快照见 `evidence/sta-toolcheck-20261106.txt`（历史） |
 | 6 | 面积 | 可写 `481/42,783=+1.12%`（全口径）、`458/41,945=+1.09%`（组合口径）、19 FF、`ltp=22` | 不能写「481 cells = 完整面积/硅面积」；不能换 μm²；不能把 cells 当功耗 | `40-area-20261104T094144.json`；`vdot.stat.json`；`vmac_only.stat.json` |
 | 7 | 功耗 | 可写「cell 占比 +1.12%」；可写「tap 对每条 vimac 都在算、都 latch，无操作数隔离」；可写 Nanhu-vdot 的 FPGA +0.5% 作为方向性参照 | 不能写「功耗仅增 1.12%」「几乎不增功耗」；不能写「Nanhu +0.5% ⇒ 本设计 +0.5%」；不能给 mW 数字 | `VIMacU.scala:129-130,159-160`；`VdotReduce.scala:44`；`ALGORITHM.md:114`；arXiv:2409.00661 |
 | 8 | 活动率/功耗工具 | 可写「OpenSTA `report_power` 需要 Liberty + 活动率（VCD/SAIF 或 `set_power_activity`，默认 0.1/0.5）」 | 不能写「已有可用活动率」；不能拿 `stage2/2.2-rtl/wave/` 的采样域 key VCD 当活动率证据 | OpenSTA Commands；`stage2/2.2-rtl/wave/vcd-summary-…probefix-20261106.txt`（窗口内 0 次翻转） |
@@ -216,6 +219,6 @@ arXiv:2409.00661（Chen 等，2024）在 XiangShan Nanhu **最小配置**上做 
 
 1. **整件插入 §4.10**：把 A/B/C 三节（`## A.` 起、到 `## D.` 之前的 `---` 为止）原文贴进 `stage3/3.3/report.md` 的 `### 4.10`（本次实读 `report.md:837`），标题层级改为 4.10.1–4.10.3。**不要**拆到 §2 与 §5——§5.1–§5.6 已被创新性/探索性支撑点占用，再插 5.5/5.6 会撞号。
 2. **节号**：A/B/C 已按 `4.10.1 / 4.10.2 / 4.10.3` 编好；若编辑改用 `### 4.10.x` 以外的层级，正文内的 `4.10.x` 交叉引用需同步改。
-3. **§8 待回填表**建议改两行：①「2 拍时序闭合」行现状补「`gen_probes.sh` 未建 + 无 Liberty/STA；昆山 Yosys 0.48 可用（`evidence/sta-toolcheck-20261106.txt`）」；②新增一行「功耗：未测（cell 占比 1.12% 不是功耗；Nanhu +0.5% 为 FPGA 参照）」。
+3. **§8 待回填表**建议改两行：①「2 拍时序闭合」行现状补「`gen_probes.sh` 未建 + 无 Liberty/STA；昆山 Yosys 0.48 可用（`evidence/sta-toolcheck-20261106.txt`）」；②新增一行「功耗：未测（cell 占比 1.12% 不是功耗；Nanhu +0.5% 为 FPGA 参照）」。**2026-11-08 注**：① 已按新状态回填为「切段仍未运行；模块级 STA 已补做（代理工艺、预布局）」，本条的「无 Liberty/STA」只描述 2026-11-06 状态；② 功耗行仍**未测**，本轮 STA 不改变它（`report_power` 仍需活动率）。
 4. **§9 用词核对**建议追加三条：不写「功耗仅增 1.12%」；不写「2 拍已收敛／22 级 ⇒ 满足 2 拍」；不写「中位数是 Agner/K&J 方法」。**注意否定语境**：本文件里这些短语只出现在「不写/禁止」句中，不要用裸 `grep -c` 判 0。
 5. **不要动**：`report.md` 既有数字、`results/yosys/40-area-*.json`、RTL 源码。本文件只是正文来源与证据台账。

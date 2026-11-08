@@ -85,7 +85,9 @@
 
 ## C. DIFFTEST 参数表
 
-> 口径：下表只列**构建与运行脚本里真实存在的参数**。取值一列写“脚本默认值”或“本次运行 JSON 实读值”，两者不混。**“本次状态”一列的三份 JSON 分别是：主清单 `results/difftest/20-full-20261103T142246.json`（作业 `126676734`）、P-2 主清单 `results/difftest/20-full-20261107T104227.json`（作业 `127137638`）、扩容 `results/difftest/extra/94-extra-20261106T143635.json`（作业 `127031933`）。**
+> **口径（2026-11-08）**：本文件 §C/§D/§E 的**扩容列是 2026-11-06 的 129 例快照**（作业 `127031933`），只作历史对照；**当前扩容清单 224 例、224/224（作业 `127194011`、8/8 criteria）**，以 `report.md` §4.11.3/§4.12.4 为准。本轮未回写本文的扩容列。
+>
+> 口径：下表只列**构建与运行脚本里真实存在的参数**。取值一列写“脚本默认值”或“本次运行 JSON 实读值”，两者不混。**“本次状态”一列的三份 JSON 分别是：主清单 `results/difftest/20-full-20261103T142246.json`（作业 `126676734`）、P-2 主清单 `results/difftest/20-full-20261107T104227.json`（作业 `127137638`）、扩容 `results/difftest/extra/94-extra-20261106T143635.json`（作业 `127031933`，历史）。**
 
 | # | 参数 | 取值 / 口径 | 锚点 | 本次状态 |
 |---|---|---|---|---|
@@ -114,7 +116,7 @@
 
 > “假绿”= 用例跑到 `HIT GOOD TRAP` 但结果其实错、或参照模型其实没比。判据名与 `criteria[].name` 逐字一致，取值来自三份 JSON 的 `criteria[]`。
 
-| criterion | 堵的假绿 | 实现位置 | `126676734` | `127137638` | `127031933` |
+| criterion | 堵的假绿 | 实现位置 | `126676734` | `127137638` | `127031933`（129 例，历史） |
 |---|---|---|---|---|---|
 | `nm_exec_vdot` | 参照 `.so` 还是旧版、根本不含 vdot | `20-run-difftest.sh:376-381` | 2 行 | 2 行 | 2 行 |
 | `vec_reg_compare` | 向量寄存器没参与比较 | `20-run-difftest.sh:382-388` | 达标 | 达标 | 达标 |
@@ -128,7 +130,7 @@
 | `golden_crosscheck` | 扩容期望常量与金模型不一致 | `94-run-extra.sh:322`；`extra_crosscheck.py:284-291` | — | — | MATCH |
 | `regression_delta` | 新增失败 | `20-run-difftest.sh:538-547` | `0` | `0` | — |
 
-**这张表怎么读**：`cases_pass` 只说明“程序都跑到 `GOOD TRAP`”；真正防“结果错但程序正常结束”的是 `no_empty_green`（自检串 + G0 反例）与 `vec_reg_compare`（向量寄存器真的比了）。两者缺一，`cases_pass=30/30` 都可能只是空绿。`reg_size_match` 堵的是“参照模型不配套”——它不会让用例失败，只会让比对结果不可信。
+**这张表怎么读**：`cases_pass` 只说明“程序都跑到 `GOOD TRAP`”；真正防“结果错但程序正常结束”的是 `no_empty_green`（自检串 + G0 反例）与 `vec_reg_compare`（向量寄存器真的比了）。两者缺一，`cases_pass=30/30` 都可能只是空绿。`reg_size_match` 堵的是“参照模型不配套”——它不会让用例失败，只会让比对结果不可信。**扩容列的现行取值不在本表**：224 例轮（`127194011`）的 `cases_all_ran`/`cases_pass` 均为 **224/224**、8/8 达标，见 `report.md` §4.12.4；本表扩容纳列只作 2026-11-06 历史快照。
 
 ---
 
@@ -156,7 +158,7 @@
 4. **步长/上限的实际取值未从 JSON 解析**：`MAX_INSTR`、`TIMEOUT_S`、`difftest_step` 只在脚本里有默认值或机制，JSON 未记录本次实际生效值；本节只写“脚本默认值 + 机制”，不把默认值写成实测值。
 5. **`vcsr` 比对开关未单独核**：`vrf` 的开关有 `vec_reg_compare` 判据兜底；`vcsr`（`CONFIG_DIFFTEST_VECCSRSTATE`）本次没有对应判据，只从 `refproxy.cpp:195-197` 读到“宏打开才比”。不得写成“向量 CSR 已比”。
 6. **4 个性能用例 `--no-diff`**：`perf_vdot`/`perf_base`/`perf_vadd`/`perf_vmacc` 只在自检口径下运行，不参与 difftest 逐位比对（`manifest.tsv:27-30`）。引用它们的数字时必须带这条限定。
-7. **结构覆盖未运行**：RTL line/toggle 覆盖在 2026-11-07 实跑受阻（`--diff` 退出段 SIGSEGV、`.coverage.dat` 0 B），本节不引用任何结构覆盖数字；状态见 `stage3/3.3/sections/coverage.md` §D。
+7. **结构覆盖只到 line**：2026-11-07 曾实跑受阻（历史，`sections/coverage.md` §D）；2026-11-08 line-only 已实测（全 SoC 顶层 67.5%、三个 vdot 模块 `tree_line` 分母 1/3/3、toggle 未采集），数字与边界见 `report.md` §4.11.4。
 8. **金模型自测的范围**：`vdot_model_test.py` 本次实跑 `ALL TESTS PASSED (1142 cases)`（EXIT=0），证明的是**模型自身**的三算法交叉（金模型 / 算法 A 任意精度 / 算法 B 位级）与三变异自检；它不等于“模型与 NEMU 逐例比对”。
 
 ---

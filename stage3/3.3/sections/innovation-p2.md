@@ -4,7 +4,7 @@
 >
 > 日期：2026-11-07 ｜ 设计依据：P-2 预登记（候选 A）
 > 改动文件：`repos/XiangShan/yunsuan/src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala`（**仅此一个**；`+19 / −6` 行，`git -C repos/XiangShan/yunsuan diff --stat` 实测）
-> 昆山作业：重建 `127135641` ｜ 30 例 `--full` `127137638` ｜ 面积 K1 `127135437`、P-2 `127137643` ｜ extra 129 `127137640`
+> 昆山作业：重建 `127135641` ｜ 30 例 `--full` `127137638` ｜ 面积 K1 `127135437`、P-2 `127137643` ｜ extra 129 `127137640`（当轮；现 224 见 C5）
 > 证据（本地副本，与远端同 sha256）：`results/emu/10-build-20261107T100125.{json,log}`、`results/difftest/20-full-20261107T104227.{json,log,cases.tsv}`、`results/difftest/94-extra-20261107T104230.{json,log,cases.tsv}`、`results/yosys/40-area-20261107T095404.*`（K1）、`results/yosys/40-area-20261107T104238.*`（P-2）、`results/yosys/vdot-{k1,p2}.{stat.json,ltp.txt,stat.cmos.txt}`
 >
 > **公开仓可复现性（2026-11-07 终检披露）**：P-2 的源码改动在本机子仓 `repos/XiangShan/yunsuan` @ `8942811`（父提交 `83059b5`），完整 diff 已按 `git -C repos/XiangShan/yunsuan format-patch -1 8942811` 原样落到根仓 `patches/0005-X-new-P-2-VdotReduce-carry-save-retiming-yunsuan.patch`（3,587 B，sha256 `2d25778c…`；在 `83059b5` 工作树上 `git apply --check` rc=0，在 `8942811` 上 `git apply -R --check` rc=0）。**公开仓 `origin/master=4e323d8` 不收录该 patch，且 `repos/` 被 `.gitignore` 排除**（`git ls-tree -r 4e323d8 | grep -c '^repos/'` = 0），故只按公开仓的 9 个基线 patch 复现得到 K1 的 **481 / 4,900 / 22**，**得不到本节的 500 / 4,900 / 14**；评审复现 500/14 须在 `0002-X15`、`0003-X-new` 之后应用 `patches/0005-…`，再按 §4.13.7 重跑。本节的 500/14 是**本地实测值**，其可复现性以该 patch 为准。
@@ -19,8 +19,8 @@
 | C2 | **面积实测 481 → 500 cells（+19）**，组合部分 **458 → 458（不变）**，增量**恰好是 38−19 = 19 个 FF**；`VIMac64b` 对照 42,783 / ltp 100 逐值未变。 | `40-area-20261107T104238.json`；`vdot-p2.stat.json` 的 `$_DFFE_PP_ = 38`、`$scopeinfo = 4`（§4.13.3） |
 | C3 | **最长组合路径 22 → 14 级（−8 级，−36.4%）**，且 ltp 报出的起点是 `\sumS2`（即寄存器之后的 CPA 段），说明 S2 侧树锥已不再是模块最长路径。 | `vdot-k1.ltp.txt` 22 级 vs `vdot-p2.ltp.txt` 14 级（起点 `\sumS2`） |
 | C4 | **功能未被破坏**：30 例 `--full` `status=通过`、`cases_pass=30/30`、9/9 criteria 达标、`regression_delta=0`、自检串 21/21、G0 反例捕获 1/1；**`L_vdot` 仍为 4 cyc**（`T_steady=1`、`T_kernel=290`、`B1/B2=6/9` 均与 K1 同值）⇒ 2 拍契约与延迟口径未变。 | `20-full-20261107T104227.json`（§4.13.4） |
-| C5 | **清单外补强同样通过**：extra 129 例 `status=通过`、129/129、8/8 criteria 达标，其中 **`golden_crosscheck=达标`（`EXTRA_CROSSCHECK verdict=MATCH`）**、自检串 86/86、G0 2/2、负例 41/41、`vdot_rand10k`（10,000 组随机）通过。 | `94-extra-20261107T104230.json`（V12） |
-| C6 | **口径**：P-2 是**时序裕量/面积**方向的改动，**不是加速**；`ltp` 只作相对级数、不换 ps、不代表频率；全节**不写「收敛」**（无 STA/liberty）。 | 本节全部数字均为 Yosys 0.48 同脚本同口径实测 |
+| C5 | **清单外补强同样通过**：extra 129 例（2026-11-07 当轮清单规模）`status=通过`、129/129、8/8 criteria 达标，其中 **`golden_crosscheck=达标`（`EXTRA_CROSSCHECK verdict=MATCH`）**、自检串 86/86、G0 2/2、负例 41/41、`vdot_rand10k`（10,000 组随机）通过。**清单其后扩至 224 例；同一 P-2 树在 2026-11-08 跑到 224/224（作业 `127194011`，8/8，见 `report.md` §4.11.3/§4.12.4）**，129 只作历史轮次。 | `94-extra-20261107T104230.json`（V12）；224 轮见 `out/audit/final/94-extra-20261108T014445.json` |
+| C6 | **口径**：P-2 是**时序裕量/面积**方向的改动，**不是加速**；`ltp` 只作相对级数、不换 ps、不代表频率；全节**不写「收敛」**。本节自身的证据是 Yosys 拓扑级数；2026-11-08 补做的代理工艺 STA（模块级、预布局）单列在 `report.md` §4.10.2——P-2 `VdotReduce` 在 333 ps 下 slack **−375.8 ps**（500 ps 下 −208.8 ps），**仍是违例**，本节不据此改任何结论。 | 本节全部数字均为 Yosys 0.48 同脚本同口径实测；STA 见 `report.md` §4.10.2 |
 
 ---
 
@@ -90,15 +90,15 @@ assign io_vd = {96'h0, {13{cpa[18]}}, cpa};   // = Cat(96'h0, sext32(s19))，96+
 | V9 | 面积 P-2 | `sbatch … 40-yosys-area.sh --vdot-rtl ~/core-p2/rtl/area/vdot_dp.sv …` | `VdotReduce 500 / 4900 / 14`、`$_DFFE_PP_=38` | 达标 |
 | V10 | 非 vdot 通路未回归 | V3 的 30 例含 `vadd-microbench`（vadd/vmacc 通路） | 该例 `通过`，且 `L_vadd=3`/`L_vmacc=4` 与 K1 同值 | 达标 |
 | V11 | 清单未被改动 | 本地 `sha256sum design/verify/cases/manifest.tsv` | `a90d107118773ebb0de5c1518846680b174b03cf0eb0cdf8be333e582dddbab1`（30 数据行） | 未变 |
-| V12 | extra 129（清单外补强） | `sbatch … 94-run-extra.sh --emu ~/core-p2/emu-p2 --ref-so ~/core-p2/ref-p2.so --manifest ~/core/test/manifest.extra.abs.tsv` | 作业 `127137640` `status=通过`：`cases_pass=129/129`、8/8 criteria 达标、**`golden_crosscheck=达标`（`EXTRA_CROSSCHECK verdict=MATCH`）**、自检串 86/86、G0 2/2、负例 41/41、`vdot_rand10k` 通过；墙钟 10:42:30→11:43:54 | 达标 |
+| V12 | extra 129（2026-11-07 当轮；清单现 224，见 C5） | `sbatch … 94-run-extra.sh --emu ~/core-p2/emu-p2 --ref-so ~/core-p2/ref-p2.so --manifest ~/core/test/manifest.extra.abs.tsv` | 作业 `127137640` `status=通过`：`cases_pass=129/129`、8/8 criteria 达标、**`golden_crosscheck=达标`（`EXTRA_CROSSCHECK verdict=MATCH`）**、自检串 86/86、G0 2/2、负例 41/41、`vdot_rand10k` 通过；墙钟 10:42:30→11:43:54 | 达标 |
 
-> **关于「golden_crosscheck」**：`20-run-difftest.sh` **没有**这个 criterion 名（`grep -n golden_crosscheck core-package/scripts/20-run-difftest.sh` → 0 命中）；30 例里金模型的作用体现在 V5 的 21 条自检串——它们的期望值由 `design/verify/vdot_model.py` 金模型生成、编进镜像。带 `golden_crosscheck` 这个名字的判据在 `94-run-extra.sh`（extra 129 用 `extra_crosscheck.py` 逐条对拍金模型），V12 的结果为 `达标`。
+> **关于「golden_crosscheck」**：`20-run-difftest.sh` **没有**这个 criterion 名（`grep -n golden_crosscheck core-package/scripts/20-run-difftest.sh` → 0 命中）；30 例里金模型的作用体现在 V5 的 21 条自检串——它们的期望值由 `design/verify/vdot_model.py` 金模型生成、编进镜像。带 `golden_crosscheck` 这个名字的判据在 `94-run-extra.sh`（extra（现 224 例）用 `extra_crosscheck.py` 逐条对拍金模型），V12 的结果为 `达标`。
 
 ---
 
 ## 4.13.5 诚实边界（必须与数字同页出现）
 
-1. **无 STA / 无 liberty**：`ltp` 是 Yosys 拓扑级数，不是 ps、不是频率。因此本节只能说「最长组合路径从 22 级降到 14 级」，**不能**说「2 拍已收敛」「频率提升」——这属于禁止表述③的范围。
+1. **`ltp` 不是 STA**：`ltp` 是 Yosys 拓扑级数，不是 ps、不是频率。因此本节只能说「最长组合路径从 22 级降到 14 级」，**不能**说「2 拍已收敛」「频率提升」——这属于禁止表述③的范围。**2026-11-08 补充**：代理工艺 STA 已对 P-2 `VdotReduce` 跑过（`report.md` §4.10.2），333 ps 下 worst slack **−375.8 ps**、500 ps 下 **−208.8 ps**，仍为违例；该 STA 只到模块级数据通路，**不改变**本节「不给收敛结论」的口径。
 2. **S2 / S3 锥没有分开探**：`M-S2`/`M-S3` 切段探针本次**未建、未跑**；`ltp=14` 是**模块级**最长组合路径（起点 `\sumS2`），不能据此反推「S2 树锥 = 8 级」。
 3. **面积只覆盖数据通路**：两版都是 `VdotReduce` 模块闭包、无标准单元库、无布线/时钟树；42,783 是 `VIMac64b` 对照口径，不含 `VIMacU` 其余部分。
 4. **延迟不变是实测**：`L_vdot=4` 来自 30 例里的 `perf_vdot`（RAW ×2000 逐次 rdcycle），与 K1 的 4 同值；这支持「2 拍契约未被破坏」，但不等于「时序闭合」。
@@ -161,4 +161,4 @@ python3 -c 'import json;d=json.load(open("vdot.stat.json"));m=list(d["modules"].
 head -3 vdot.ltp.txt
 ```
 
-**回滚点**：`repos/XiangShan/yunsuan` @ `83059b5`；被改文件改前 blob `4fbaff570e80f45f2613d8e22ee9f64fff0a4122`；回滚命令 `git -C repos/XiangShan/yunsuan checkout -- src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala`。**四个验证面（重建 / 30 例 `--full` / 面积 before-after / extra 129）均达标，未触发回滚。**
+**回滚点**：`repos/XiangShan/yunsuan` @ `83059b5`；被改文件改前 blob `4fbaff570e80f45f2613d8e22ee9f64fff0a4122`；回滚命令 `git -C repos/XiangShan/yunsuan checkout -- src/main/scala/yunsuan/vector/vectorIMAC/VdotReduce.scala`。**四个验证面（重建 / 30 例 `--full` / 面积 before-after / extra（当轮 129，现 224））均达标，未触发回滚。**

@@ -34,7 +34,7 @@
 | 用例集 | 期望值来源 | 复核方式 | 本次证据 |
 |---|---|---|---|
 | 主清单 30 例 | `design/verify/cases/gen.py:23-25` 的**算法 B**（逐项 `int64` 累加后截 32 位） | 用例内嵌断言 `result==expect && hi==0` | 30/30 通过；`CASE <cid>: MATCH` 逐例实读（§B） |
-| 扩容 129 例 | `design/verify/cases/gen_extra.py` 调 `vdot_model.vdot_vv()` 生成常量 | `extra_crosscheck.py` 从 `.c` 源重放并**再算一遍**（`:284-291`） | 作业 `127031933`：`golden_crosscheck=达标`；`EXTRA_CROSSCHECK … problems=0`（仓库记录，见 `sections/case-expand.md` §4.12.3） |
+| 扩容 224 例 | `design/verify/cases/gen_extra.py` 调 `vdot_model.vdot_vv()` 生成常量 | `extra_crosscheck.py` 从 `.c` 源重放并**再算一遍**（`:284-291`） | 作业 `127194011`（224 例）：`golden_crosscheck=达标`；本地 `python3 -I design/verify/cases/extra_crosscheck.py --quiet` → `cases=224 … problems=0` / `EXIT=0`（见 `sections/case-expand.md` §4.12.3；上一轮 129 例 `127031933` 为历史） |
 
 > 主清单的 30 个常量**不是** `vdot_model.py` 生成的，而是 `gen.py` 的算法 B；金模型自测（`vdot_model_test.py`，本次实跑 1142 例）证明算法 A/B 与 19 位模型交叉一致。两者不要混写成“30 例期望全部由金模型生成”。
 
@@ -128,7 +128,7 @@ MATRIX back_to_back v4=0xFFFFFC4C v5=0xFFFFFC4C v6=0xFFFFFC4C v7=0xFFFFFC4C OK
 
 **实际日志（本次实读）**：`vdot_ill_vstart` 与 `vdot_ill_sew` 的日志都在第 29848 行打印 `HIT CRITICAL ERROR: please check if software cause a double trap.`，第 29849 行打印 `HIT GOOD TRAP at pc = 0xe`（`full-logs-20261103T142246/vdot_ill_vstart.20261103T142246.log:29848-29849`；`…/vdot_ill_sew.…log:29848-29849`）。扩容整套的 `negatives_illegal=41/41` 记在 `results/difftest/extra/94-extra-20261106T143635.json` 的 `criteria[]`。
 
-> **数量口径**：主清单 8 个 negative 是冻结件（`manifest.tsv` 30 数据行、`sha256 a90d1071…`）；扩容 41 个 negative 是作业 `127031933` 的 129 行清单快照。工作区 `manifest.extra.tsv` 后续有扩充，行数已大于 129；本文的 41 与 129 都以该作业 JSON 为准，不引用工作区当前行数。
+> **数量口径**：主清单 8 个 negative 是冻结件（`manifest.tsv` 30 数据行、`sha256 a90d1071…`）；**当前扩容清单 224 数据行、negative 57 行（作业 `127194011`，`neg_req=57 / neg_ok=57`）**。本文 §B 的 41 与 129 是 2026-11-06 作业 `127031933` 的历史快照，保留作对照；现行数以 `report.md` §4.11.3/§4.12.4 为准。
 
 ---
 
@@ -165,11 +165,11 @@ MATRIX back_to_back v4=0xFFFFFC4C v5=0xFFFFFC4C v6=0xFFFFFC4C v7=0xFFFFFC4C OK
 | 机制 | 做什么 | 本次实跑/实读/历史记录 | 防的是哪种假通过 |
 |---|---|---|---|
 | `vdot_model_test.py` | 三算法交叉（金模型 / 算法 A 任意精度 / 算法 B 位级）、19 位边界、六条非法顺序、三变异自检、四腐化反假通过 | **本次实跑**：`ALL TESTS PASSED (1142 cases)`，EXIT=0 | 金模型自己写错（`design/verify/vdot_model_test.py:511-565,581-604`） |
-| `extra_crosscheck.py` | 从 `.c` 源重放每条 `vdot`，用 `vdot_model.vdot_vv()` 再算一遍常量；反解机器码 | 作业 `127031933` 的 `golden_crosscheck=达标`；仓库记录 `problems=0`（`sections/case-expand.md` §4.12.3；本次未重跑 crosscheck） | 扩容常量与金模型不一致、编码注释与机器码不一致 |
+| `extra_crosscheck.py` | 从 `.c` 源重放每条 `vdot`，用 `vdot_model.vdot_vv()` 再算一遍常量；反解机器码 | 作业 `127194011`（224 例）`golden_crosscheck=达标`；本地 `cases=224 … problems=0` / `EXIT=0`（`sections/case-expand.md` §4.12.3） | 扩容常量与金模型不一致、编码注释与机器码不一致 |
 | `vdot_rand` 1024 组 | C 侧算法 B 独立复算 + 高 96 位检查 | `RAND_SUMMARY groups=1024 mism=0 ab_bad=0`（本次实读日志） | 只测几个手算值、随机覆盖不足 |
-| difftest `vrf` 比对 | 每个提交步 `memcmp` 向量寄存器堆 | `vec_reg_compare=达标`；`cases_pass=30/30`、129/129 | 向量寄存器没比、只看 PC/标量 |
+| difftest `vrf` 比对 | 每个提交步 `memcmp` 向量寄存器堆 | `vec_reg_compare=达标`；`cases_pass=30/30`；扩容 **224/224**（127194011；历史 129/129） | 向量寄存器没比、只看 PC/标量 |
 | G0 反例 | 期望值故意错 1 bit，必须 `MISMATCH` | 主 `G0 捕获 1/1`；扩容 `2/2`（`no_empty_green`） | 用例没有自检、`HIT GOOD TRAP` 被当成通过 |
-| 负例临界事件 | 两侧都 critical error 才 `HIT CRITICAL ERROR` + `GOOD TRAP` | 主 8/8、扩容 41/41；日志 29848-29849 实读 | 只有 DUT 陷入、NEMU 没陷入（或反之） |
+| 负例临界事件 | 两侧都 critical error 才 `HIT CRITICAL ERROR` + `GOOD TRAP` | 主 8/8、扩容 **57/57**（127194011；历史 41/41）；历史日志 29848-29849 实读 | 只有 DUT 陷入、NEMU 没陷入（或反之） |
 
 ---
 
@@ -178,11 +178,11 @@ MATRIX back_to_back v4=0xFFFFFC4C v5=0xFFFFFC4C v6=0xFFFFFC4C v7=0xFFFFFC4C OK
 1. **负例只判“是否陷入”，不判异常字段**：主清单与扩容的 negative 判据都是 `HIT CRITICAL ERROR` + 无失配 + 无哨兵（§C.2）。`cause` / `epc` / `mtval` **没有逐例断言**——本次实跑 `grep -rn "mcause\|mepc\|mtval" design/verify core-package | wc -l` → **0**。可主张“三端一致地判非法”，不可主张“三端异常字段逐字段相等”。
 2. **没有 golden↔NEMU 直连**：如 §A 所述，是“金模型/算法 B ↔ RTL（用例自检）+ NEMU ↔ RTL（difftest）”传递闭合。不得写成“已直接比对”。
 3. **主清单 30 例的期望不是金模型生成的**：是 `gen.py` 的算法 B；金模型自测只证明算法 A/B 与 19 位模型交叉一致（§A 表）。两者不要混写。
-4. **`vs1==vs2` 在 30 例内是 gap**：覆盖矩阵 F15 `gap`（0 命中），由扩容 `xo_v12_*` 10 例补齐；引用“覆盖”时必须区分 30 例冻结件与 129 例扩容。
+4. **`vs1==vs2` 在 30 例内是 gap**：覆盖矩阵 F15 `gap`（0 命中），由扩容 `xo_v12_*` 10 例补齐；引用“覆盖”时必须区分 30 例冻结件与扩容清单（当前 224 例）。
 5. **4 个性能用例 `--no-diff`**：`perf_vdot`/`perf_base`/`perf_vadd`/`perf_vmacc` 只在自检口径下运行，不参与 difftest 逐位比对（`manifest.tsv:27-30`）。`vdot_matrix` 里的 `vd==vs2` 也不在 30 例中被 difftest 覆盖（F14 记 `partial`）。
 6. **平台边界**：QEMU 级 difftest（NEMU `.so` vs Verilator `build/emu`），不是硅片实测；平台为 `kshcnormal`（`stage3/3.3/report.md` §2）。
-7. **结构覆盖未运行**：RTL line/toggle 覆盖在 2026-11-07 实跑受阻（`--diff` 退出段 SIGSEGV、`.coverage.dat` 0 B），本文不引用任何结构覆盖数字；状态见 `sections/coverage.md` §D。
-8. **扩容清单行数漂移**：工作区 `manifest.extra.tsv` 当前行数大于 129；本文的 129/41 都以作业 `127031933` 的 JSON 快照为准，不用工作区当前行数替换。
+7. **结构覆盖只到 line**：2026-11-07 曾实跑受阻（历史，见 `sections/coverage.md` §D）；2026-11-08 line-only 已实测（全 SoC 顶层 67.5%、三个 vdot 模块 `tree_line` 分母 1/3/3、toggle 未采集），数字与边界见 `report.md` §4.11.4。
+8. **扩容清单已扩到 224**：工作区 `manifest.extra.tsv` 为 224 数据行；本文 §B 的 129/41 只作 2026-11-06 历史快照，现行 224/57 以作业 `127194011` 为准。
 9. **单点依赖的回归风险**：`vdot_matrix` 是 F05/F08/F09/F10/F13/F24/F25 的仅有来源，`vdot_rand` 是 F03/F22/F27 的仅有来源（`stage3/3.1.2-difftest/coverage/matrix.md` §1）；漏跑任一例，对应 CP 会回落为 gap。这是覆盖风险，不是本文的一致性结论。
 
 ---

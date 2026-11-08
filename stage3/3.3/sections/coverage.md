@@ -4,7 +4,8 @@
 > **标注约定**：【实测】=本次命令输出或存量日志串逐字读到；【静态】=二进制/源码扫描；【推算】=由实测做的算术外推，非实测；【未运行】=本次未执行。
 > **口径约定**：本节不出现任何加速比；`6 / 9` 不出现；面积/功耗不出现。全文只出现一种比值：**覆盖率**（命中格 ÷ 总格），与性能无关。
 > **修订记录（2026-11-06）**：15:42 版曾并入 `report.md` §4.11；15:53 之后新增的 3 条证据行（30 行冻结清单回传、昆山登录节点干跑、昆山预算闸实跑）已随本次更新进入 §4.11。本文件后续修改时，`report.md` §4.11 同步更新。
-> **来源声明（2026-11-07）**：本文件是 `report.md` §4.11 的源文件；§4.11 的正文与校验值按本文件更新，两者不一致时以本文件为准（编号见 `report.md:154`）。
+> **来源声明（2026-11-07）**：本文件原名 `report.md` §4.11 的源文件；**2026-11-08 起扩容与结构覆盖的现行数以 `report.md` §4.11.3/§4.11.4 为准**（见下方状态横幅），本文件保留为源稿与历史演进记录。
+> **状态横幅（2026-11-08）**：本文件原是 2026-11-07 的快照（结构覆盖「实跑受阻、无数字」、扩容 129 例）。**当前数以 `report.md` §4.11.3/§4.11.4 为准**：扩容 **224 例、224/224**（作业 `127194011`）；结构覆盖 **line 已实测**（全 SoC 顶层 67.5%、三个 vdot 模块 `tree_line` 分母 1/3/3、toggle 未采集，作业 `127239138`/`127252294`）。下文 §C/§E/§F 的 129 已按 224 改写；§D 的 2026-11-07 失败记录保留为历史前置状态，不再是现行结论。
 > **修订记录（2026-11-07 实跑）**：§A.2 与 §D 由「预算闸未放行（未运行）」改为**实跑受阻**的实测记录（覆盖 emu 建成、`--diff` 退出段 SIGSEGV rc=139、gdb 栈、line-only 修复作业 `127128086` 结果待收）；本次**仍不含任何覆盖率数字**。§4.11 并入时须整段更新。
 > **数据源**：`stage3/3.1.2-difftest/full-logs-20261103T142246/`（30 份逐用例日志，作业 `126676734`，30/30 通过）+ 30 个 `.bin` 的编码扫描；结构覆盖实跑诊断在 `stage3/3.1.2-difftest/coverage/evidence/cov-debug-20261107/`；机读件在 `stage3/3.1.2-difftest/coverage/`。
 
@@ -13,7 +14,7 @@
 ## A. 4.11.1 结论（三句话）
 
 1. **功能覆盖已量化**：29 个 coverpoint × 30 例 = **870 格**，其中 `covered 11 / thin 15 / partial 2 / gap 1`；把 thin/partial 折算成「至少命中一次」则是 **28/29 项有命中**，仅 **F15 `vs1==vs2`** 仍为零命中（【实测】`summary.tsv`，生成命令见 `matrix.md` §0；30 例内为零，extra 的 `xo_v12_*` 10 例已通过，见 §C）。
-2. **结构覆盖（RTL line/toggle）本次【未运行（实跑受阻）】**：2026-11-07 已在昆山实跑（用户授权突破自设 11.0 机时预算）：覆盖率 emu **重建成功**（`EMU_COVERAGE=1`，作业 `127117867`，构建 04:34→06:24 = 110 min，emu `sha256 b86f95b4…`、424 MB），但**覆盖构建的 emu 在 `--diff` 用例的退出段 SIGSEGV（rc=139）、`.coverage.dat` 为 0 字节**，30 例只跑完第 1 例即中止。定位（【实测】，`coverage/evidence/cov-debug-20261107/`）：`--no-diff -C 100 --dump-coverage` 可正常退出且 dat 达 **3.3 GB（100 条指令）**；`--diff` 全跑即使不 dump 也在退出段 rc=139；gdb 栈 `VerilatedCovImp::write → std::map::operator[] → _Rb_tree_insert_and_rebalance`（`Emulator::save_coverage ← ~Emulator ← main`）。**本次不写任何覆盖率数字**；修复方向 = 去掉 `--coverage-toggle` 的 line-only 重建（冒烟作业 `127128086`，**结果待收**），命令见 `matrix.md` §6.3。
+2. **结构覆盖（RTL line）已于 2026-11-08 实测**：全 SoC 顶层行 67.5%（113,628/168,283，非 vdot 专属）；`VdotReduce`/`VIMacU`/`VIMac64b` 的 `tree_line` 均 100%（分母只有 1/3/3 个条件行）；toggle/branch/expr/fsm **未采集**。数字与边界以 `report.md` §4.11.4 为准。下文 §D 保留 2026-11-07「实跑受阻（`--diff` 退出段 SIGSEGV、`.coverage.dat` 0 字节）」的历史记录——那是本轮的前置状态，已被 line-only 重建解除（主作业 `127239138`，合并 `127252294`）。
 3. **对外表述**：官方 12 项交付物里**没有「代码覆盖率」这一项**（`docx/02:45-66` 逐条核对）；本节的作用是给 **可行性 10 分格的「功能验证有效性」**（`docx/02:92`）与 3.1.2 协同仿真补**量化证据**，不声称完成一项官方覆盖率交付物。
 
 ---
@@ -74,11 +75,11 @@
 
 ---
 
-## C. 4.11.3 扩容套件 `manifest.extra.tsv` 的补强（129 例）
+## C. 4.11.3 扩容套件 `manifest.extra.tsv` 的补强（**224 例**，2026-11-08 实测）
 
-主清单（30 行、`sha256 a90d1071…`）是官方回归口径的冻结件，**一行未动**；扩容用例全部落在 `design/verify/cases/manifest.extra.tsv`（129 数据行：`vdot-base` 7 / `vdot-ov` 30 / `vdot-pl` 48 / `negative` 41 / `g0` 2 / `vdot-rand10k` 1）。
+主清单（30 行、`sha256 a90d1071…`）是官方回归口径的冻结件，**一行未动**；扩容用例全部落在 `design/verify/cases/manifest.extra.tsv`（**224 数据行**、本地 `sha256 9e72b97b…`：`vdot-pl` 98 / `negative` 57 / `vdot-ov` 56 / `vdot-base` 7 / `negative-legal` 3 / `g0` 2 / `vdot-rand10k` 1）。
 
-**对 30 例缺口的三条直接补强（【静态】`extra-static-scan.tsv`，129/129 文件扫到 vdot 编码）**：
+**对 30 例缺口的三条直接补强（【静态】`extra-static-scan.tsv` 是 **129 例快照**：129/129 文件扫到 vdot 编码；新增 95 例的 `.bin` 未取回本地——`ls design/verify/cases/extra/*.bin | wc -l` → 129、`*.c` → 224，故这 95 例的编码扫描【未运行】）**：
 
 | 30 例缺口 | extra 补强 | 编码事实 |
 |---|---|---|
@@ -86,11 +87,11 @@
 | F13 `vd==vs1` thin | `xo_vs1_*` 10 + 交叉 5 = **15 例** | 15 个 `.bin` 含 `vd==vs1` |
 | F14 `vd==vs2` partial | `xo_vs2_*` **10 例**（走 `--diff`） | 10 个 `.bin` 含 `vd==vs2` |
 
-> **已实跑覆盖（终态，2026-11-06）**：`94-extra-20261106T143635`（作业 `127031933`）`status=通过`、`cases_pass=129/129`、8/8 criteria `达标`（含 `golden_crosscheck=达标 :: EXTRA_CROSSCHECK verdict=MATCH`）；`xo_v12_*` 10 例在 `.cases.tsv` 第 3 列全部为「通过」。**因此这三条补强已从「仅编码事实」升级为「编码 + 实跑」双重证据**；但 extra 仍不进 30 例主清单、不参与 `regression_delta`，F15 在 30 例矩阵内仍记 gap（§A.1）。
+> **已实跑覆盖（2026-11-08 终态）**：`94-extra-20261108T014445`（作业 `127194011`，`started_at=2026-11-08T01:44:45+0800` → `ended_at=03:24:34+0800` ⇒ 墙钟 1:39:49）`status=通过`、**`selected=executed=pass=224`**、8/8 criteria `达标`（含 `golden_crosscheck=达标 :: EXTRA_CROSSCHECK verdict=MATCH`、自检串 162/162、G0 2/2、负例 57/57）；本地复核 `python3 -I design/verify/cases/extra_crosscheck.py --quiet` → `cases=224 reads_or_groups=10357 vdot_encs=415 problems=0` / `verdict=MATCH` / `EXIT=0`。**因此这三条补强已从「仅编码事实」升级为「编码 + 实跑」双重证据**；但 extra 仍不进 30 例主清单、不参与 `regression_delta`，F15 在 30 例矩阵内仍记 gap（§A.1）。上一轮 129 例（作业 `127031933`，`94-extra-20261106T143635`）保留为**历史**。
 
 ---
 
-## D. 4.11.4 结构覆盖（RTL line/toggle）：实跑受阻，数字【未运行】
+## D. 4.11.4 结构覆盖（RTL line/toggle）：2026-11-07 受阻记录（历史）；当前数字见 `report.md` §4.11.4
 
 ### D.1 实跑发生了什么（2026-11-07，用户授权突破自设 11.0 机时预算）
 
@@ -104,7 +105,7 @@
 | `--diff` + `-C 100` + dump | **rc=0**（截断到 100 条即可正常退出） | 同上 q2 |
 | gdb 栈 | `std::_Rb_tree_insert_and_rebalance` ← `std::map<int,std::string>::operator[]` ← `VerilatedCovImp::write` ← `Emulator::save_coverage` ← `Emulator::~Emulator` ← `main` | 同上 q3（`evidence/cov-debug-20261107/dbg2/q3.log`） |
 
-**结论**：① 崩溃在**退出析构段**（与 difftest 比对结果无关：q1 无 dump 也崩、用例本身通过）；② `--coverage-toggle` 的 dat 规模不可用（100 条指令 3.3 GB；`vtransform.py` 只认 `.v`、香山是 `.sv`，SRAM/Difftest 的 `coverage_off` 不生效 = 配方档 T2）；③ 短跑不崩、全跑崩。因此**本次不写任何覆盖率数字**，结构覆盖记 **【未运行（实跑受阻）】**，**不写「覆盖率达标」**。
+**结论**：① 崩溃在**退出析构段**（与 difftest 比对结果无关：q1 无 dump 也崩、用例本身通过）；② `--coverage-toggle` 的 dat 规模不可用（100 条指令 3.3 GB；`vtransform.py` 只认 `.v`、香山是 `.sv`，SRAM/Difftest 的 `coverage_off` 不生效 = 配方档 T2）；③ 短跑不崩、全跑崩。因此**2026-11-07 当次不写任何覆盖率数字**，结构覆盖记 **【未运行（实跑受阻）】**，**不写「覆盖率达标」**。（**该结论已被 2026-11-08 的 line-only 重建实测取代**：数字与边界见 `report.md` §4.11.4；本节保留为历史前置状态。）
 
 **下一步（未完成）**：去掉 `--coverage-toggle` 的 **line-only** 重建（远端 `verilator.mk:72` 临时改 `--coverage-line`，备份 + diff 在 `evidence/cov-debug-20261107/dbg3/`），冒烟作业 `127128086` **结果待收**；若仍崩则改 `EMU_THREADS=1` 重建。重跑与解析命令见 `matrix.md` §6.3。
 
@@ -154,17 +155,17 @@ python3 -I stage3/3.1.2-difftest/coverage/gen_hits.py \
 
 | # | 缺口 | 现状 | 补测建议 | 成本 |
 |---|---|---|---|---|
-| G1 | **F15 `vs1==vs2`** | 30 例 0 命中；extra `xo_v12_*` 10 例已随整套 129/129 通过（`127031933`） | 若要把 F15 从 gap 升为 covered，需在 30 例主清单内加例（extra 不进官方清单）；否则报告按 gap 披露 | 0.2 机时 |
+| G1 | **F15 `vs1==vs2`** | 30 例 0 命中；extra `xo_v12_*` 10 例已随整套 224/224 通过（`127194011`；历史 129/129 `127031933`） | 若要把 F15 从 gap 升为 covered，需在 30 例主清单内加例（extra 不进官方清单）；否则报告按 gap 披露 | 0.2 机时 |
 | G2 | **F28 寄存器空间** | vd 16/32、vs1 5/32、vs2 3/32 | 加 1 条 `vd/vs1/vs2 ∈ {0,1,15,16,31}` 扫描例（避开无意重叠 bin） | 0.1 机时 |
-| G3 | **F14 只有 `--no-diff`**（30 例内） | extra `xo_vs2_*` 10 例走 difftest 且已随 129/129 通过；30 例内仍只有 `--no-diff` 样本 | 在 30 例主清单内补 1 例 difftest 路径，或报告按 partial 披露 | 0.1 机时 |
+| G3 | **F14 只有 `--no-diff`**（30 例内） | extra `xo_vs2_*` 10 例走 difftest 且已随 224/224 通过（`127194011`；历史 129/129）；30 例内仍只有 `--no-diff` 样本 | 在 30 例主清单内补 1 例 difftest 路径，或报告按 partial 披露 | 0.1 机时 |
 | G4 | **F03 `vl_max`** | 30 例由 `vdot_rand` 的 `li t1,16` 命中；extra 的 `xb_vl_sweep` 只到 vl=8 | 在 `xb_vl_sweep` 加 `vl=16` 一档 | 0.1 机时 |
 | G5 | **F25 `vxsat`** | 仅 `vdot_matrix` 1 例 | extra 加「先 `csrw vxsat,1` 再 vdot 再读回」 | 0.1 机时 |
 | G6 | **7 个 CP 单点依赖 `vdot_matrix`、3 个依赖 `vdot_rand`** | 回归漏跑即回落为 gap | 覆盖率跑必须全选 30 例（脚本已如此） | 0 |
 | G7 | **F23 `perf_vdot` 未断言高 96 位** | 16/18 合法例命中 | 若要 17/18，在 `perf_vdot` 链后加 `vse32.v` + 断言 | 0.1 机时 |
-| G8 | **结构覆盖** | 【未运行（实跑受阻）】：覆盖 emu 已建，但 `--diff` 退出段 SIGSEGV（rc=139）、dat 0 字节 | line-only 重建后重跑（§D.1 末段 + §D.3） | 本次已耗 3.3 机时；重跑预计 2–3 机时 |
+| G8 | **结构覆盖** | **已实测（2026-11-08，line only）**：全 SoC 顶层行 67.5%（113,628/168,283）；`VdotReduce`/`VIMacU`/`VIMac64b` 的 `tree_line` 100%（分母 1/3/3）；`VIMacSrcTypeModule` 与 toggle/分支/expr/fsm 未采集（`report.md` §4.11.4） | toggle 需把构建扩到 `--coverage-toggle`，但 2026-11-07 已证该模式 dat 规模不可用（100 条指令 3.3 GB，见 §D.1），未排期 | 本次已耗 3.3 机时；重跑预计 2–3 机时 |
 | G9 | ACT4 `cr_vtype_agnostic` / `mask_enabled` / `cp_masking_edges` | **结构性不可达**（vdot 合法编码强制 `vm=1`） | 报告写 N/A；用 F10/F11/F12 替代，**不伪造 ACT4 cross 命中** | 0 |
 | G10 | ACT4 无 `vstart≠0`/`vill=1`/`VS=OFF` 的 trap bin | 用自定义 F02/F07/F20 覆盖 | 报告注明「ACT4 模板扩展」 | 0 |
-| G11 | 分数 LMUL（mf8/mf4/mf2） | extra `xn_lmul_mf8/mf4/mf2` 已随整套 129/129 通过（`127031933`） | 无（已闭合） | 0 |
+| G11 | 分数 LMUL（mf8/mf4/mf2） | extra `xn_lmul_mf8/mf4/mf2` 已随整套 224/224 通过（`127194011`；历史 129/129） | 无（已闭合） | 0 |
 
 ---
 
@@ -172,13 +173,13 @@ python3 -I stage3/3.1.2-difftest/coverage/gen_hits.py \
 
 | 评分格 | 本节提供的证据 | 边界（不得越界表述） |
 |---|---|---|
-| 可行性 10 分格「功能验证有效性：测试用例是否覆盖正数、负数、边界值，协同仿真是否通过」（`docx/02:92`） | 29 CP × 30 例 = 870 格矩阵；`covered 11 / thin 15 / partial 2 / gap 1`；正/负/边界/溢出四类各有定向例（F29/F21）；30/30 用例通过（`126676734`；**其中 `perf_vdot`/`perf_base`/`perf_vadd`/`perf_vmacc` 4 例按 `manifest.tsv:27-30` 第 4 列以 `--no-diff` 运行，属自检/性能口径，不计 difftest 逐位比对**）；extra 129/129 通过（`127031933`，含 `golden_crosscheck=达标`） | **不写「覆盖率 100%」**；gap 与 thin 逐条列出；结构覆盖【未运行（实跑受阻，§D.1）】；extra 不进 30 例官方清单 |
-| 3.1.2 协同仿真验证 | 覆盖率跑复用与 20-run **同一套自检串语义**（`95-coverage.sh` 的 `selfcheck_pattern()`），不另立宽松判据 | 覆盖率跑**未产出结果**（覆盖构建 + `--diff` 退出段 rc=139，§D.1），30/30 的结论仍只来自 `142246` |
+| 可行性 10 分格「功能验证有效性：测试用例是否覆盖正数、负数、边界值，协同仿真是否通过」（`docx/02:92`） | 29 CP × 30 例 = 870 格矩阵；`covered 11 / thin 15 / partial 2 / gap 1`；正/负/边界/溢出四类各有定向例（F29/F21）；30/30 用例通过（`126676734`；**其中 `perf_vdot`/`perf_base`/`perf_vadd`/`perf_vmacc` 4 例按 `manifest.tsv:27-30` 第 4 列以 `--no-diff` 运行，属自检/性能口径，不计 difftest 逐位比对**）；extra **224/224** 通过（`127194011`，含 `golden_crosscheck=达标`；历史 129/129 `127031933`） | **不写「覆盖率 100%」**；gap 与 thin 逐条列出；结构覆盖只到 line（§D 为 2026-11-07 历史受阻记录，现行数字见 `report.md` §4.11.4）；extra 不进 30 例官方清单 |
+| 3.1.2 协同仿真验证 | 覆盖率跑复用与 20-run **同一套自检串语义**（`95-coverage.sh` 的 `selfcheck_pattern()`），不另立宽松判据 | 覆盖率跑 2026-11-08 产出 line 数字（`report.md` §4.11.4）；30/30 的功能结论仍只来自 `142246`/`104227` |
 | 官方 12 项交付物 | **无「代码覆盖率」项**（`docx/02:45-66`） | 不声称完成一项官方覆盖率交付物 |
 
 **四条诚实边界（必须与本节数字同页出现）**：
 
-1. **结构覆盖是【未运行（实跑受阻）】，不是「低覆盖率」**：2026-11-07 实跑已建出覆盖 emu，但 `--diff` 用例退出段 SIGSEGV（rc=139）、`.coverage.dat` 0 字节（gdb 栈见 §D.1）；**没有数字，就不能说「RTL 覆盖率高/低」**。
+1. **结构覆盖只到 line，不是「覆盖率达标」**：2026-11-07 曾实跑受阻（§D.1 历史），2026-11-08 已用 line-only 重建实测（`report.md` §4.11.4）；能主张的只有 Verilator line 口径的观测值，toggle/branch/expr/fsm 未采集。
 2. **thin ≠ covered**：15 项只有 1 例支撑，回归漏跑即失效；本节不把它们合并成「28/29 覆盖」对外宣称（28/29 只是「至少命中一次」的折算，已在 §A.1 注明）。
-3. **extra 已到实跑终态（129/129），但仍是清单外证据**：作业 `127031933` `status=通过`、`pass=129`、`golden_crosscheck=达标`；`xo_v12_*` 10/10 通过。该结果**不进** 30 例官方回归清单，也**不参与** `regression_delta`，因此不得把 extra 的通过数并入「30/30」或「29 CP × 30 例」矩阵。
+3. **extra 已到实跑终态（224/224），但仍是清单外证据**：作业 `127194011` `status=通过`、`pass=224`、`golden_crosscheck=达标`；`xo_v12_*` 10/10 通过。该结果**不进** 30 例官方回归清单，也**不参与** `regression_delta`，因此不得把 extra 的通过数并入「30/30」或「29 CP × 30 例」矩阵。
 4. **条件行覆盖 ≠ 语句覆盖**（放行后写结构覆盖数字时同样适用）。
